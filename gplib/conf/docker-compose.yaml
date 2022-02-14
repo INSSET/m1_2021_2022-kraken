@@ -1,0 +1,21 @@
+version: "3.8"
+services:
+  ssh:
+    build:
+      context: .
+    image: php/symfony
+    ports:
+      - target: 8000
+        published: {PORT}
+    networks:
+      {GROUP}:
+        ipv4_address: {IP}
+    volumes:
+      - type: bind
+        source: {PROJET_DIR}
+        target: /opt/projet
+    container_name: {LOGIN}
+
+networks:
+  {GROUP}:
+     external: true
