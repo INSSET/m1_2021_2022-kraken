@@ -6,6 +6,10 @@ name: Lint Vue.js
 
 on:
   workflow_call:
+    inputs:
+      workdir:
+        required: true
+        type: string
 
 jobs:
   test-lint:
@@ -13,5 +17,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: |
+          cd ${{ inputs.workdir }}
           npm install
           npm run lint

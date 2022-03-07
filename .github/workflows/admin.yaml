@@ -13,9 +13,12 @@ jobs:
   # Run every required checking (lint, build, sonar, etc...)
   check-vue:
     uses: ./.github/workflows/VUE.yaml
+    with:
+      workdir: './admin'
 
   # Build & Push the Docker image from the admin panel
   build-and-push-image:
+    needs: ['check-vue']
     uses: ./.github/workflows/DOCKER.yaml
     with:
       # Dockerfile build entry point (see. https://docs.docker.com/engine/context/working-with-contexts/)
