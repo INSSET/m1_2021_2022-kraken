@@ -7,6 +7,9 @@ from flask import Blueprint, Response, abort, request
 from model.user import User
 from utils.json_encoder import Encoder
 
+import sys
+sys.path.append("/usr/src/app/gplib")
+
 import gestprojlib as GP
 
 users_routes = Blueprint("users_routes", __name__)

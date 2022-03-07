@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+
+  proxy:
+    image: jwilder/nginx-proxy
+    container_name: etud-proxy
+    environment:
+      - ENABLE_IPV6=true
+      - VIRTUAL_PROTO=https
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      #- ./proxy/nginx.conf:/etc/nginx/conf.d/nginx-proxy.conf:ro
+      - certs:/etc/nginx/certs:ro
+    networks:
+      - proxy
+
+  admin:
+    container_name: etud-admin
+    build:
+      context: admin
+      target: development
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./admin:/usr/src/app/adminapp
+      - /usr/src/app/adminapp/node_modules
+    environment:
+      - VIRTUAL_HOST=admin.insset.localhost
+      - VIRTUAL_PORT=3000
+    networks:
+      - proxy
+
+  api:
+    container_name: etud-backend
+    build:
+      context: ./backend
+    command: python3 api/app.py
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend/api:/usr/src/app/api
+      - ./backend/gplib:/usr/src/app/gplib
+      - ./backend/data:/usr/src/app/data
+      - ./backend/ovh:/usr/src/app/ovh
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - VIRTUAL_HOST=api.insset.localhost
+      - VIRTUAL_PORT=5000
+    networks:
+      - proxy
+
+
+networks:
+  proxy:
+
+volumes:
+  certs: {}

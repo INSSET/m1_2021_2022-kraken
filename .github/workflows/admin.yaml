@@ -1,0 +1,26 @@
+name: Build / Push Admin
+
+# This workflow deploy the Admin Panel
+# @author Fragan
+# @version 0.1.0
+
+on:
+  push:
+    branches: ['feature/**', 'develop', 'main']
+
+jobs:
+
+  # Run every required checking (lint, build, sonar, etc...)
+  check-vue:
+    uses: ./.github/workflows/_include/VUE.yaml
+
+  # Build & Push the Docker image from the admin panel
+  build-and-push-image:
+    uses: ./.github/workflows/_include/DOCKER.yaml
+    with:
+      # Dockerfile build entry point (see. https://docs.docker.com/engine/context/working-with-contexts/)
+      context: './admin'
+      # Dockerfile build target (see. https://docs.docker.com/develop/develop-images/multistage-build/)
+      target: 'production'
+      registry: ghcr.io
+      image_name: ${{ github.repository }}-admin

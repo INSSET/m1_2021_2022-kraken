@@ -1,0 +1,16 @@
+name: Lint Vue.js
+
+# This workflow check the code of a Vue.Js application
+# @author Fragan
+# @version 0.1.0
+
+on: push
+
+jobs:
+  test-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          npm ci
+          npm run lint
