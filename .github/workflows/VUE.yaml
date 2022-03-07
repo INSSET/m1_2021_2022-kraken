@@ -4,7 +4,8 @@ name: Lint Vue.js
 # @author Fragan
 # @version 0.1.0
 
-on: push
+on:
+  workflow_call:
 
 jobs:
   test-lint:
@@ -12,5 +13,5 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: |
-          npm ci
+          npm install
           npm run lint
