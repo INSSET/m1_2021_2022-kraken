@@ -1,71 +1,55 @@
-# GestProj
+# Gestoproj
+
 Gestoin du dépôt et test des projets étudiants
 
-## Initialisation server
-installer : apache2, openssh-server  
-module : dav_fs, proxy, authz_groupfile  
-créer repertoire : /home/etudiants  
-ajout group : sftp
-Créer certificat, et fixer variable APACHE_CRT_DIR dans envars  
-ajouter conf dans sshd_config  
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/INSSET/m1_2021_2022-kraken/admin.yaml) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/NSSET/m1_2021_2022-kraken?color=#56C230)
+
+## Sommaire
+
+* [Installation](#Installation)
+* [Backend](#Backend)
+* [Interface Admin](#Interface Admin)
+* [Interface etudiants](#Interface etudiants)
 
 
-    nopass et key ssh
-    PasswordAuthentication no
-    PermitEmptyPasswords no
+## Installation
 
+### Premier lancement
 
-    Match group sftp
-    ChrootDirectory %h
-    X11Forwarding no
-    AllowTcpForwarding no
-    ForceCommand internal-sftp
+Vous devez avoir `docker` et `docker-compose` d'installer sur votre machine. A la racine du dossier, lancez la commande suivante :  
 
-## Init image
+```shell
+docker-compose -d
+```
 
-    docker build -t php/symfony - < ../conf/Dockerfiles/symfony.dockerfile
+Cette commande permet de de lancer l'ensemble des services décrits dans les fichiers `docker-compose.*.yml` en mode détaché (cf. [références docker-compose](https://docs.docker.com/compose/reference/)).
 
-## Détail du répertoire conf
-- Repertoire **email** : il contient les maquettes des mails que l'on peut envoyer aux étudiants
-- Repertoire **sites-available** : il contient le prototype du fichier de conf pour le virtualhost de l'étudiant
-- repertoire **skel** : arborecence recopiée lors de la création du compte utilisateur (compte normal pas sftp)
-- Fichier **adduser.conf** : configuration utiliser par la commande adduser (obsolette on utilise useradd)
-- Fichier **docker-compose.yaml** : prototype de la configuration pour les services docker proposé à l'étudiants
+### Architecture des services
 
-## User guide & ref options
+Voici un schéma de décomposition des intéractions & dépendances entre les différents services :
 
-    # python3 GestProj.py -i ../data/l2-2020/test.txt -g l2-2020 --all create acces
-    # python3 GestProj.py -g l2-2020 --all delete group
-    
-Exute un docker-compose up pour chaque etudiant du group et démare le daemon sshd
-    
-    # python3 GestProj.py -g l2-2020 create container
-    # python3 GestProj.py -g l2-2020 delete container
-    
-## Droit sur les dossier pour bon fonctionnement du sftp chroot
-Tous les répertoires jusqu'au HOME sftp de l'étudiant doivent apartenir à root avec le mode 755  
-Le .ssh et sont contenu doit appartenir au usr et avoir les droits 755 (fichier inclus)
+```
+  
+ [Service]                       [Service]                                      [Service]
+ Admin UI <---------+--> Backend{API, Lib, CLI, API OVH} ----> Prometheus ----> Grafana
+                    |                   |                      [Service]    
+           Requests | Responses         |
+                    |                   |
+ Students UI <------+                +------+
+ [Service]                           | HOST |
+                                     +------+
+```
 
+Les services suivants : **Admin UI** - **Students UI** et le **Backend** sont déclarés dans le fichier `docker-compose.yml`. Les autres services considérés comme "non essentiels" (qui ne néscessitent pas de MAJ régulière) sont définis dans le fichier
+`docker-compose.override.yml`.
 
-## MYSQL
-Le gestionaire de base de données pour les TD et projets et MySQL. 
-MySQL est exécuté dans un container à partir de l'image officielle Docker.
-Le container est associé au bridge des container étudiants (ex:l3-2020)
-avec une adr IP fixe du bridge. On peut aussi ajouter phpmyadmin pour avoir une UI.
-Exemple
+### Environnement de développement
 
-    docker run --name=mysql -e MYSQL_ROOT_PASSWORD=mysql-pw --network=l3-2020 --ip=10.5.10.1 -d mysql
-    docker run --name=phpmyadmin --network=l3-2020 --ip 10.5.10.2 -e PMA_HOST=10.5.10.1 -d phpmyadmin/phpmyadmin
+Pour facilité le développement, les différents services qui disposent d'interfaces (Admin, Students, Grafana, etc...) sont "chachés" derrière un reverse-proxy Nginx vous permettant ainsi de définir
+des domaines locaux pour y avoir accès.
 
-Pour se connecter au serveur et créer des comptes db par exemple
+## Backend
 
-    docker run --rm -ti -v /home/harold/GestProj/data:/data --network=l3-2020 --ip=10.5.10.10 mysql mysql -u root -h 10.5.10.1 -p
-    
-Pour créer les comptes mysql et les base de données 
+## Interface Admin
 
-    mysql> source/createUserMySQL.sql;
-
-## Pour tester
-
-    $ docker build -t ubuntu/gestproj .
-    $ docker run -ti --rm -v /var/run/docker.sock:/var/run/docker.sock -v `pwd`/GestProj:/home/test ubuntu/gestproj
+## Interface etudiants
