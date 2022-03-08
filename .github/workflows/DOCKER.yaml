@@ -19,7 +19,7 @@ on:
         required: true
         type: string
       target:
-        required: true
+        required: false
         type: string
     secrets:
       token:
