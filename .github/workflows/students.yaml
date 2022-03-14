@@ -1,4 +1,4 @@
-name: Build / Push Admin
+name: Build / Push Students
 
 # This workflow deploy the Students Panel
 # @author Fragan
