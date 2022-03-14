@@ -14,7 +14,11 @@ WORKDIR /usr/src/app/adminapp
 
 COPY --from=builder_development /usr/src/app/adminapp ./
 
-EXPOSE 3000
+RUN mkdir node_modules/.vite && chmod -R 777 node_modules/.vite
+
+EXPOSE 4000
+
+USER node
 
 CMD ["npm", "run", "dev"]
 
