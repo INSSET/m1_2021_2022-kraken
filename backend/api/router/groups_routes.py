@@ -121,6 +121,8 @@ def upload_group(group_name):
         f.close()
         os.remove('/tmp/' + f.filename)
 
+    try:
+        gestprojlib.create_group(group_name)
         return Response(mimetype='application/json', status=201)
     except KeyError:
         gestprojlib.create_group(group_name)
