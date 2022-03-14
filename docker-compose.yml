@@ -8,13 +8,13 @@ services:
       context: admin
       target: development
     ports:
-      - "3000:3000"
+      - "4000:4000"
     volumes:
       - ./admin:/usr/src/app/adminapp
       - /usr/src/app/adminapp/node_modules
     environment:
       - VIRTUAL_HOST=admin.insset.localhost
-      - VIRTUAL_PORT=3000
+      - VIRTUAL_PORT=4000
     networks:
       - proxy
 
