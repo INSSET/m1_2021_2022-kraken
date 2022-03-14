@@ -1,0 +1,37 @@
+name: Vue.Js Workflow
+
+# This workflow check the code of a Vue.Js application
+# @author Fragan
+# @version 0.1.0
+
+on:
+  workflow_call:
+    inputs:
+      workdir:
+        required: true
+        type: string
+
+jobs:
+
+  build:
+    name: Check source code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        name: Setup node
+        with:
+          node-version: 16
+      - uses: actions/cache@v2
+        with:
+          path: '**/nodes_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install packages
+        run: cd ${{ inputs.workdir }} && npm install
+
+      - name: Lint source code
+        run: cd ${{ inputs.workdir }} && npm run lint
+
+      - name: Lint source code
+        run: cd ${{ inputs.workdir }} && npm run test:unit
