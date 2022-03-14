@@ -7,6 +7,7 @@ from flask import Blueprint, Response
 
 keys_routes = Blueprint('keys_routes', __name__)
 
+
 @keys_routes.route('/api/keys/<int:user_id>/', methods=['GET'])
 def get_keys(user_id):
     dir_path = pathlib.Path().absolute()
@@ -45,4 +46,3 @@ def get_sftp_keys(user_id):
         divided_key = key.split("/")
         key_part.append(divided_key[1][0:10])
     return Response(json.dumps(key_part), mimetype='application/json', status=200)
-
