@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: 16
       - run: cd ${{ inputs.workdir }} && npm install
-      - run: npm run build
+      - run: cd ${{ inputs.workdir }} && npm run build
       - uses: actions/cache@v2
         id: restore-build
         with:
