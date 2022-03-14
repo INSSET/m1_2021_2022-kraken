@@ -13,48 +13,25 @@ on:
 
 jobs:
 
-  cache-build:
-    name: Build - With Cache
+  build:
+    name: Check source code
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
+        name: Setup node
         with:
           node-version: 16
-      - run: cd ${{ inputs.workdir }} && npm install
-      - run: cd ${{ inputs.workdir }} && npm run build
       - uses: actions/cache@v2
-        id: restore-build
         with:
-          path: ./${{ inputs.workdir }}/*
-          key: ${{ github.sha }}
+          path: '**/nodes_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
-  vue-lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 16
-      - uses: actions/cache@v2
-        id: restore-build
-        with:
-          path: ./${{ inputs.workdir }}/*
-          key: ${{ github.sha }}
-      - run: |
-          ls -la
-          cd ${{ inputs.workdir }} && npm run lint
+      - name: Install packages
+        run: cd ${{ inputs.workdir }} && npm install
 
-  vue-unit-test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 16
-      - uses: actions/cache@v2
-        id: restore-build
-        with:
-          path: ./${{ inputs.workdir }}/*
-          key: ${{ github.sha }}
-      - run: |
-          ls -la
-          cd ${{ inputs.workdir }} && npm run test:unit
+      - name: Lint source code
+        run: cd ${{ inputs.workdir }} && npm run lint
+
+      - name: Lint source code
+        run: cd ${{ inputs.workdir }} && npm run test:unit
