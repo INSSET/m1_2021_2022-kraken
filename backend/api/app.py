@@ -1,12 +1,11 @@
 from flask import Flask, Response
+from flask.cli import load_dotenv
 from flask_cors import CORS
-from dotenv import load_dotenv
 
-from router.keys_routes import keys_routes
 from router.groups_routes import groups_routes
-from router.users_routes import users_routes
+from router.keys_routes import keys_routes
 from router.upload_routes import upload_routes
-
+from router.users_routes import users_routes
 
 app = Flask(__name__)
 app.register_blueprint(users_routes)
