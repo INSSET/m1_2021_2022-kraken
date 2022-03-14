@@ -18,7 +18,7 @@ jobs:
 
   # Build & Push the Docker image from the student panel
   build-and-push-image:
-    needs: ['check-vue']
+    needs: ['vue']
     uses: ./.github/workflows/DOCKER.yaml
     with:
       # Dockerfile build entry point (see. https://docs.docker.com/engine/context/working-with-contexts/)
