@@ -41,7 +41,6 @@ jobs:
           path: ./${{ inputs.workdir }}/*
           key: ${{ github.sha }}
       - run: |
-          cd ${{ inputs.workdir }}
           npm run lint
 
   vue-unit-test:
@@ -56,5 +55,4 @@ jobs:
           path: ./${{ inputs.workdir }}/*
           key: ${{ github.sha }}
       - run: |
-          cd ${{ inputs.workdir }}
           npm run test:unit
