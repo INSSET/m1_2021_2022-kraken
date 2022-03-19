@@ -1,6 +1,6 @@
 FROM node:16-slim as builder_development
 
-WORKDIR /usr/src/app/adminapp
+WORKDIR /usr/src/app/
 
 COPY package*.json ./
 
@@ -10,19 +10,23 @@ RUN set -eux; \
 
 FROM node:16-slim as development
 
-WORKDIR /usr/src/app/adminapp
+WORKDIR /usr/src/app/
 
-COPY --from=builder_development /usr/src/app/adminapp ./
+COPY --from=builder_development /usr/src/app/ ./
 
-EXPOSE 3000
+RUN mkdir node_modules/.vite && chmod -R 777 node_modules/.vite
+
+EXPOSE 4000
+
+USER node
 
 CMD ["npm", "run", "dev"]
 
 FROM node:16-slim as builder_production
 
-WORKDIR /usr/src/app/adminapp
+WORKDIR /usr/src/app/
 
-COPY --from=builder_development /usr/src/app/adminapp ./
+COPY --from=builder_development /usr/src/app/ ./
 
 COPY . .
 
@@ -33,7 +37,7 @@ FROM nginx:stable-alpine as production
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-COPY --from=builder_production /usr/src/app/adminapp/dist /app
+COPY --from=builder_production /usr/src/app//dist /app
 
 EXPOSE 80
 
