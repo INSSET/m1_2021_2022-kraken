@@ -1,13 +1,21 @@
-FROM ubuntu
+FROM ubuntu:20.04
 
+# Global update
 RUN apt update -y
-ENV TZ=Europe/Paris
+
+ENV TZ = Europe/Paris
+
+# Timezone setup
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime
 RUN echo $TZ > /etc/timezone
-RUN apt install -y apache2
-RUN apt install -y openssl
+
+# Apache installation
+RUN apt install -y apache2 openssl
+
 RUN mkdir /etc/apache2/ssl-certificat
 WORKDIR /etc/apache2/ssl-certificat
+
+# OpenSSL certification
 RUN openssl genrsa 2048 > server.key
 RUN openssl req -new  \
 	-subj "/C=FR/ST=Aisne/L=Saint-quentin/O=INSSET/OU=IT Department/CN=licence-st.u-picardie.fr" \
@@ -19,11 +27,10 @@ RUN openssl req -new -x509 -days 365 \
 RUN openssl x509 -req -in server.csr -out server.crt -CA ca.crt -CAkey ca.key -CAcreateserial -CAserial ca.srl
 RUN echo "export APACHE_CRT_DIR=\$APACHE_CONFDIR/ssl-certificate" >> /etc/apache2/envvars
 
-RUN a2enmod dav_fs
-RUN a2enmod proxy
-RUN a2enmod authz_groupfile
+RUN a2enmod dav_fs proxy authz_groupfile
 
 RUN apt install -y openssh-server
+
 RUN mkdir -p /run/sshd
 RUN echo "\n\
 Match group sftp\n\
