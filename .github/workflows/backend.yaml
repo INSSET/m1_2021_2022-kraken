@@ -1,0 +1,28 @@
+name: Build / Push Backend
+
+# This workflow deploy the Admin Panel
+# @author Fragan
+# @version 0.1.0
+
+on:
+  push:
+    branches: ['feature/**', 'hotfix/**', 'develop', 'main']
+
+jobs:
+
+  # Run every required checking (lint, build, sonar, etc...)
+  flask:
+    uses: ./.github/workflows/FLASK.yaml
+    with:
+      workdir: './backend'
+
+  # Build & Push the Docker image from the admin panel
+  build-and-push-image:
+    needs: ['flask']
+    uses: ./.github/workflows/DOCKER.yaml
+    with:
+      # Dockerfile build entry point (see. https://docs.docker.com/engine/context/working-with-contexts/)
+      context: './flask'
+      # Dockerfile build target (see. https://docs.docker.com/develop/develop-images/multistage-build/)
+      registry: ghcr.io
+      image_name: ${{ github.repository }}-flask
