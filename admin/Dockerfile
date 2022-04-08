@@ -1,4 +1,4 @@
-FROM node:16-slim as builder_development
+FROM node:16-slim as build_vendor
 
 ARG USER=admin
 ARG UID=1005
@@ -16,16 +16,6 @@ RUN set -eux; \
     npm install; \
     npm cache clean --force;
 
-FROM node:16-slim as development
-
-WORKDIR /usr/src/app
-
-COPY --from=builder_development /usr/src/app/ ./
-
-EXPOSE 4000
-
-CMD ["npm", "run", "dev"]
-
 FROM node:16-slim as builder_production
 
 WORKDIR /usr/src/app/
@@ -39,7 +29,7 @@ RUN set -eux; \
     chown -R $USER:$USER /home/$USER; \
     chown -R $USER:$USER /usr/src/app/
 
-COPY --chown=$USER:www-data --from=builder_development /usr/src/app/ ./
+COPY --chown=$USER:www-data --from=build_vendor /usr/src/app/ ./
 
 COPY --chown=$USER:www-data . .
 
