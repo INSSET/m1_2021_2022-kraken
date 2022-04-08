@@ -36,14 +36,17 @@ ARG UID=1005
 RUN set -eux; \
     useradd $USER -u $UID -G www-data,root; \
     mkdir -p /home/$USER/; \
-    chown -R $USER:$USER /home/$USER
+    chown -R $USER:$USER /home/$USER; \
+    chown -R $USER:$USER /usr/src/app/
 
 COPY --chown=$USER:www-data --from=builder_development /usr/src/app/ ./
 
 COPY --chown=$USER:www-data . .
 
+USER $USER
+
 RUN set -eux; \
-    npm run build;
+    npm run build
 
 FROM nginx:stable-alpine as production
 
