@@ -22,7 +22,7 @@ jobs:
     uses: ./.github/workflows/DOCKER.yaml
     with:
       # Dockerfile build entry point (see. https://docs.docker.com/engine/context/working-with-contexts/)
-      context: './flask'
+      context: './backend'
       # Dockerfile build target (see. https://docs.docker.com/develop/develop-images/multistage-build/)
       registry: ghcr.io
       image_name: ${{ github.repository }}-flask

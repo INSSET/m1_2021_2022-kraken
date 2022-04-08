@@ -23,9 +23,9 @@ jobs:
           python-version: 3.8
       - name: Install dependencies
         run: |
-          ls -la
-          cd ${{ inputs.workdir }} && python -m pip install --upgrade pip
-          cd ${{ inputs.workdir }} && pip install -r requirements.txt;
+          cd ${{ inputs.workdir }}
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt;
       - name: Test with unittest
         run: |
           cd ${{ inputs.workdir }} && python -m unittest
