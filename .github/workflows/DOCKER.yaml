@@ -26,7 +26,31 @@ on:
         required: false
 
 jobs:
+
+  build-image:
+    if: contains(github.head_ref, 'feature')
+      || contains(github.head_ref, 'hotfix')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Build Image
+        uses: int128/kaniko-action@v1
+        with:
+          context: ${{ inputs.context }}
+          target: ${{ inputs.target }}
+          push: false
+          cache: true
+          cache-repository: ghcr.io/${{ github.repository }}/cache
+
   build-and-push-image:
+    if: contains(github.head_ref, 'develop')
+      || contains(github.head_ref, 'master')
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -49,7 +73,7 @@ jobs:
         with:
           images: ${{ inputs.registry }}/${{ inputs.image_name }}
 
-      - name: Build / Push Admin
+      - name: Build and Push
         uses: int128/kaniko-action@v1
         with:
           context: ${{ inputs.context }}
