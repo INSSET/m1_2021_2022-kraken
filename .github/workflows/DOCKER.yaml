@@ -60,7 +60,7 @@ jobs:
           push: false
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache: true
+          cache: false
           cache-repository: ghcr.io/${{ github.repository }}/cache
 
   build-and-push-image:
