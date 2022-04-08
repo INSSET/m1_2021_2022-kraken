@@ -28,8 +28,8 @@ on:
 jobs:
 
   build-image:
-    if: contains(github.head_ref, 'feature')
-      || contains(github.head_ref, 'hotfix')
+    if: contains(github.ref_name, 'feature')
+      || contains(github.ref_name, 'hotfix')
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -49,8 +49,8 @@ jobs:
           cache-repository: ghcr.io/${{ github.repository }}/cache
 
   build-and-push-image:
-    if: contains(github.head_ref, 'develop')
-      || contains(github.head_ref, 'master')
+    if: contains(github.ref_name, 'develop')
+      || contains(github.ref_name, 'master')
     runs-on: ubuntu-latest
     permissions:
       contents: read
