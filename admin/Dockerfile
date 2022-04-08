@@ -1,7 +1,7 @@
 FROM node:16-slim as builder_development
 
 ARG USER=admin
-ARG UID=1000
+ARG UID=1005
 
 RUN set -eux; \
     useradd $USER -u $UID -G www-data,root; \
