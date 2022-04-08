@@ -1,14 +1,22 @@
-FROM node:16-slim as builder_development
+FROM node:16-slim as build_vendor
+
+ARG USER=students
+ARG UID=1005
+
+RUN set -eux; \
+    useradd $USER -u $UID -G www-data,root; \
+    mkdir -p /home/$USER/; \
+    chown -R $USER:$USER /home/$USER
 
 WORKDIR /usr/src/app/studentsapp
 
-COPY package*.json ./
+COPY --chown=$USER:www-data package*.json ./
 
 RUN set -eux; \
     npm install; \
     npm cache clean --force;
 
-FROM node:16-slim as development
+FROM node:16-slim as builder_production
 
 WORKDIR /usr/src/app/studentsapp
 
@@ -44,7 +52,7 @@ RUN set -eux; \
 
 FROM node:16-slim@sha256:9b43cdacd070d1b38976a804aec78f03139c600865a3c72501af3bbec8d4bdee as builder_production
 
-WORKDIR /usr/src/app/
+COPY --chown=$USER:www-data --from=build_vendor /usr/src/app/ ./
 
 ARG USER=students
 ARG UID=1005

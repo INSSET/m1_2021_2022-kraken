@@ -1,4 +1,4 @@
-FROM node:16-slim as builder_development
+FROM node:16-slim as build_vendor
 
 ARG USER=admin
 ARG UID=1005
