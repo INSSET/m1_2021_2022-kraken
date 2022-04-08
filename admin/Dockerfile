@@ -5,6 +5,7 @@ ARG UID=1005
 
 RUN set -eux; \
     useradd $USER -u $UID -G www-data,root; \
+    mkdir -p /home/$USER/; \
     chown -R $USER:$USER /home/$USER
 
 
@@ -27,6 +28,7 @@ ARG UID=1000
 
 RUN set -eux; \
     useradd $USER -u $UID -G www-data,root; \
+    mkdir -p /home/$USER/; \
     chown -R $USER:$USER /home/$USER
 
 COPY --from=builder_development /usr/src/app/ ./
@@ -48,6 +50,7 @@ ARG UID=1000
 
 RUN set -eux; \
     useradd $USER -u $UID -G www-data,root; \
+    mkdir -p /home/$USER/; \
     chown -R $USER:$USER /home/$USER
 
 COPY --chown=$USER:www-data --from=builder_development /usr/src/app/ ./
