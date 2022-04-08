@@ -61,6 +61,8 @@ COPY --chown=$USER:www-data --from=build_vendor /usr/src/app/ ./
 
 COPY --chown=$USER:www-data . .
 
+USER $USER
+
 RUN set -eux; \
     npm run build
 
