@@ -1,0 +1,30 @@
+name: Flask Workflow
+
+# This workflow check the code of a Vue.Js application
+# @author Fragan
+# @version 0.1.0
+
+on:
+  workflow_call:
+    inputs:
+      workdir:
+        required: true
+        type: string
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          cd ${{ inputs.workdir }} && python -m pip install --upgrade pip
+          cd ${{ inputs.workdir }} && pip install -r requirements.txt;
+      - name: Test with unittest
+        run: |
+          cd ${{ inputs.workdir }} && python -m unittest

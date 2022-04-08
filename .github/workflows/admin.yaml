@@ -6,7 +6,7 @@ name: Build / Push Admin
 
 on:
   push:
-    branches: ['feature/**', 'develop', 'main']
+    branches: ['feature/**', 'hotfix/**', 'develop', 'main']
 
 jobs:
 
