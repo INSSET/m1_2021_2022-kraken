@@ -49,7 +49,7 @@ def get_group(group_id):
 
         return Response(encoded_group, mimetype='application/json', status=200)
     except KeyError:
-        abort(404, description="Could not find group with ID " + group_id)
+        abort(404, description='Not found - Could not find group with ID ' + group_id)
 
 
 @groups_routes.route('/api/v1/students', methods=['POST'])
@@ -61,4 +61,34 @@ def create_group():
         gestprojlib.create_group(group_name)
         return Response(mimetype='application/json', status=201)
     except KeyError:
-        abort(500, description="Internal server error")
+        abort(500, description='Internal server error')
+
+
+@groups_routes.route('/api/v1/students/<int:group_id>/', methods=['PATCH'])
+def patch_group(group_id):
+    request_data = request.get_json()
+    group_name = request_data['groupName'].encode()
+
+    if group_name == '':
+        return Response('Bad request - Missing mandatory input value', mimetype='application/json', status=400)
+
+    try:
+        group = grp.getgrgid(group_id)
+
+        os.system('groupmod -n ' + group_name + ' ' + group.group_name)
+
+        return Response('Group with ID ' + group_id + ' has been updated', mimetype='application/json', status=200)
+    except KeyError:
+        abort(404, description='Not found - Could not find group with ID ' + group_id)
+
+
+@groups_routes.route('/api/v1/students/<int:group_id>/', methods=['DELETE'])
+def delete_group(group_id):
+    try:
+        group = grp.getgrgid(group_id)
+
+        os.system('groupdel ' + group)
+
+        return Response('Group with ID ' + group_id + ' has been deleted', mimetype='application/json', status=200)
+    except KeyError:
+        abort(404, description='Not found - Could not find group with ID ' + group_id)
