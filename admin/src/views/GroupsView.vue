@@ -1,31 +1,31 @@
 <template>
     <v-expansion-panels>
         <v-expansion-panel
-            v-for="i in 3"
-            :key="i"
+            v-for="group in groups"
+            :key="group.group_id"
         >
             <v-expansion-panel-title>
-                Item
+                {{ group.group_name }}
             </v-expansion-panel-title>
             <v-expansion-panel-text>
                 <v-table>
                     <thead>
                         <tr>
                             <th class="text-left">
-                                Name
+                                
                             </th>
                             <th class="text-left">
-                                Calories
+                                Nom
                             </th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr
-                            v-for="item in desserts"
-                            :key="item.name"
+                            v-for="(user,i) in group.users_names"
+                            :key="i"
                         >
-                            <td>{{ item.name }}</td>
-                            <td>{{ item.calories }}</td>
+                            <td>{{ i+1 }}</td>
+                            <td>{{ user.users_names }}</td>
                         </tr>
                     </tbody>
                 </v-table>
@@ -38,46 +38,30 @@
 export default {
     data () {
         return {
-            desserts: [
+            groups: [
                 {
-                    name: 'Frozen Yogurt',
-                    calories: 159,
+                    group_id: 1,
+                    group_name: "Group 1",
+                    users_names: [
+                        {
+                            users_names: "toto",
+                        },
+                        {
+                            users_names: "tata",
+                        },
+                    ],
                 },
                 {
-                    name: 'Ice cream sandwich',
-                    calories: 237,
-                },
-                {
-                    name: 'Eclair',
-                    calories: 262,
-                },
-                {
-                    name: 'Cupcake',
-                    calories: 305,
-                },
-                {
-                    name: 'Gingerbread',
-                    calories: 356,
-                },
-                {
-                    name: 'Jelly bean',
-                    calories: 375,
-                },
-                {
-                    name: 'Lollipop',
-                    calories: 392,
-                },
-                {
-                    name: 'Honeycomb',
-                    calories: 408,
-                },
-                {
-                    name: 'Donut',
-                    calories: 452,
-                },
-                {
-                    name: 'KitKat',
-                    calories: 518,
+                    group_id: 2,
+                    group_name: "Group 2",
+                    users_names: [
+                        {
+                            users_names: "tutu",
+                        },
+                        {
+                            users_names: "titi",
+                        },
+                    ],
                 },
             ],
         }
