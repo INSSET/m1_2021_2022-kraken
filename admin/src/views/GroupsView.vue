@@ -8,33 +8,25 @@
                 {{ group.group_name }}
             </v-expansion-panel-title>
             <v-expansion-panel-text>
-                <v-table>
-                    <thead>
-                        <tr>
-                            <th class="text-left">
-                                
-                            </th>
-                            <th class="text-left">
-                                Nom
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr
-                            v-for="(user,i) in group.users_names"
-                            :key="i"
-                        >
-                            <td>{{ i+1 }}</td>
-                            <td>{{ user.users_names }}</td>
-                        </tr>
-                    </tbody>
-                </v-table>
+                <v-list
+                    v-for="(user,i) in group.users_names"
+                    :key="i"
+                >
+                    <v-list-item>
+                        <v-list-item-header>
+                            {{ user.users_names }}
+                        </v-list-item-header>
+                    </v-list-item>
+                </v-list>
             </v-expansion-panel-text>
         </v-expansion-panel>
     </v-expansion-panels>
 </template>
 
 <script>
+fetch("0.0.0.0:5000/api/v1/students", {
+    "method": "GET"
+})
 export default {
     data () {
         return {
