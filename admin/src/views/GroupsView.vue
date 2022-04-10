@@ -5,8 +5,11 @@
             :key="group.group_id"
         >
             <v-expansion-panel-title>
-                <v-btn icon=edit></v-btn>
+                <v-btn @click="renameGroup($event, group.group_id)" icon=mdi-pencil class="mr-4"></v-btn>
                 {{ group.group_name }}
+                <v-text-field
+                    label="Nouveau nom" class="d-none group-{{group.group_id}}"
+                ></v-text-field>
             </v-expansion-panel-title>
             <v-expansion-panel-text>
                 <v-list
@@ -17,7 +20,9 @@
                         <v-list-item-header>
                             {{ user.users_names }}
                         </v-list-item-header>
+                        <template v-slot:append><v-btn icon=mdi-account-multiple-minus></v-btn></template>
                     </v-list-item>
+                    
                 </v-list>
             </v-expansion-panel-text>
         </v-expansion-panel>
@@ -59,5 +64,17 @@ export default {
             ],
         }
     },
+    methods: {
+        deleteUser: function () {
+            fetch("0.0.0.0:5000/", {
+                "method": ""
+            })
+        },
+        renameGroup: function(event, group_id) {
+            const input = document.getElementsByClassName('group-'+group_id);
+            console.log(input);
+            input[0].style.display = "block";
+        }
+    }
 }
 </script>
