@@ -5,6 +5,7 @@
             :key="group.group_id"
         >
             <v-expansion-panel-title>
+                <v-btn icon=edit></v-btn>
                 {{ group.group_name }}
             </v-expansion-panel-title>
             <v-expansion-panel-text>
