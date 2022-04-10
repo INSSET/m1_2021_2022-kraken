@@ -3,7 +3,7 @@
     <v-row class="text-center">
       <v-col cols="12">
         <v-img
-          :src="require('../assets/logo.svg')"
+          :src="logo"
           class="my-3"
           contain
           height="200"
@@ -15,6 +15,7 @@
           Welcome to Vuetify 3 Beta
         </h1>
 
+          <h4>Vite Preview</h4>
 
         <p class="subheading font-weight-regular">
           For help and collaboration with other Vuetify developers,
@@ -95,6 +96,8 @@
 <script lang='ts'>
 import { defineComponent } from 'vue'
 
+// Logo
+import logo from '../assets/logo.svg'
 
 export default defineComponent({
   name: 'HelloWorld',
@@ -133,6 +136,7 @@ export default defineComponent({
           href: 'https://medium.com/vuetify',
         },
       ],
+      logo,
       whatsNext: [
         {
           text: 'Explore components',
