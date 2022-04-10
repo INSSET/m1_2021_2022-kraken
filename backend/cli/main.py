@@ -69,7 +69,7 @@ def create_acces(group, liste_etudiant_input, sftp, vhost, skel, compose):
                    (info_grp.gr_name, info_grp.gr_gid))
         sys.exit()
     except KeyError:
-        click.echo("Creation du group_name %s " % group)
+        click.echo("Création du group_name %s " % group)
 
     liste = gp.init_liste(liste_etudiant_input)
     gp.create_group(group)
@@ -193,7 +193,7 @@ def delete_group(group, vhost, sftp):
             gp.sup_sftp_users(group)
         gp.sup_group(group)
     except KeyError as err_key:
-        print("pas de group_name specifie %s " % err_key)
+        print("pas de group_name spécifié %s " % err_key)
     return
 
 
@@ -207,7 +207,7 @@ def delete_vhost(group):
     try:
         gp.sup_vhost(group)
     except KeyError as err_key:
-        print("pas de group_name specifie (-g) %s " % err_key)
+        print("pas de group_name spécifié (-g) %s " % err_key)
     return
 
 
@@ -221,7 +221,7 @@ def delete_user(email_etudiant):
 
         gp.sup_user(email_etudiant)
     except KeyError:
-        print("indiquez l'email de l'etudiant que vous voulez supprimer"
+        print("indiquez l'email de l'étudiant que vous voulez supprimer"
               "prenom.nom@etud.u-picardie.fr )")
     return
 
@@ -252,7 +252,7 @@ def delete_sftp(group):
     try:
         gp.sup_sftp_users(group)
     except KeyError as err_key:
-        print("pas de group_name specifie  %s " % err_key)
+        print("pas de group_name spécifié  %s " % err_key)
     return
 
 ###------------------------------------ ADD COMMANDS -----------------------------------------###
@@ -331,7 +331,7 @@ def build_compte(cli_opts, group, liste):
         gp.create_sftp_users(liste)
 
     if cli_opts['vhost']:
-        print ("Vhost => ", end='')
+        print('Vhost => ', end='', flush=True)
         gp.create_vhost(liste)
         print("[ok]")
     if cli_opts['compose']:
