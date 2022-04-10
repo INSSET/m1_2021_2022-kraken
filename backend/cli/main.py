@@ -32,6 +32,14 @@ def delete():
 def add():
     pass
 
+@click.command(name='acces')
+@click.argument('group')
+@click.argument('liste_etudiant_input')
+@click.option('--sftp', is_flag=True, help='add this option to create sftp users')
+@click.option('--vhost', is_flag=True, help='add this option to create vhosts')
+@click.option('--skel')
+@click.option('--compose')
+def create_acces(group, liste_etudiant_input, sftp, vhost, skel, compose):
 
 @click.group()
 def run():
@@ -172,7 +180,6 @@ def create_sql(group, ipclass):
 
 ###------------------------------------ DELETE COMMANDS -----------------------------------------###
 
-
 @click.command(name='group')
 @click.argument('group')
 @click.option('--sftp', is_flag=True, help='add this option to delete sftp users')
@@ -312,6 +319,10 @@ def run_containers(group):
         print("Le group_name n'existe pas")
     return
 
+###------------------------------------ SEND COMMANDS -----------------------------------------###
+
+@click.command(name='send')
+def send_htpasswd():
 
 def build_compte(cli_opts, group, liste):
     if cli_opts['skel']:
