@@ -3,6 +3,7 @@ import HomeView from "../views/HomeView.vue";
 import GroupsView from "../views/GroupsView.vue";
 import GroupDetailView from "../views/GroupDetailView.vue";
 import AddGroupView from "../views/AddGroupView.vue";
+import GroupsEdit from "../views/GroupsEdit.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,7 +22,6 @@ const router = createRouter({
       component: () => import("../views/AboutView.vue"),
     },
     {
-<<<<<<< HEAD
       path: "/groups",
       name: "groups",
       component: GroupsView,
@@ -35,11 +35,6 @@ const router = createRouter({
       path: "/groups/:group_id",
       name: "groupDetail",
       component: GroupDetailView,
-=======
-      path: "/edit-group",
-      name: "edit-group",
-      component: () => import("../views/EditGroup.vue"),
->>>>>>> init router + start editing App.vue
     },
   ],
 });
