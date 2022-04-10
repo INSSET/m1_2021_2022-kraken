@@ -43,7 +43,6 @@
 </template>
 
 <script>
-import { createGroupsWithCSV } from '../utils/requests';
 export default {
     data() {
         return {
@@ -69,7 +68,7 @@ export default {
             fileReader.readAsText(e.target.files[0])
         },
         onSubmit: function(e) {
-            createGroupsWithCSV(this.group_name, this.csvFile)
+            //createGroupsWithCSV(this.group_name, this.csvFile)
         }
     }
 }
