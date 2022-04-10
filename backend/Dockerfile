@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:20.04@sha256:9101220a875cee98b016668342c489ff0674f247f6ca20dfc91b91c0f28581ae
 
 # Arguments pour le build
 ARG TIMEZONE=Europe/Paris
@@ -87,8 +87,8 @@ COPY --chown=$USER:$USER cli cli/
 COPY --chown=$USER:$USER ovh ovh/
 
 RUN set -eux; \
-    pip install -r api/requirements.txt; \
-    pip install -r cli/requirements.txt
+    pip install -r api/requirements.txt --no-cache-dir; \
+    pip install -r cli/requirements.txt --no-cache-dir
 
 # Préparation du volume data dans lequel sera stocké les données
 
