@@ -14,7 +14,7 @@ jobs:
   flask:
     uses: ./.github/workflows/FLASK.yaml
     with:
-      workdir: './backend'
+      workdir: './backend/api'
 
   # Build & Push the Docker image from the admin panel
   build-and-push-image:
@@ -25,4 +25,4 @@ jobs:
       context: './backend'
       # Dockerfile build target (see. https://docs.docker.com/develop/develop-images/multistage-build/)
       registry: ghcr.io
-      image_name: ${{ github.repository }}-flask
+      image_name: ${{ github.repository }}-backend
