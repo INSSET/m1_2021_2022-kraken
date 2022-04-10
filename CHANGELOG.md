@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+* Docker compose production
 * Github workflows
 * Kaniko action to improve image build
 * Development environment handled with docker-compose

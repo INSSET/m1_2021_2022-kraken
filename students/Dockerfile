@@ -1,4 +1,4 @@
-FROM node:16-slim as build_vendor
+FROM node:16-slim@sha256:9b43cdacd070d1b38976a804aec78f03139c600865a3c72501af3bbec8d4bdee as build_vendor
 
 ARG USER=students
 ARG UID=1005
@@ -16,7 +16,7 @@ RUN set -eux; \
     npm install; \
     npm cache clean --force;
 
-FROM node:16-slim as builder_production
+FROM node:16-slim@sha256:9b43cdacd070d1b38976a804aec78f03139c600865a3c72501af3bbec8d4bdee as builder_production
 
 WORKDIR /usr/src/app/
 
@@ -38,7 +38,7 @@ USER $USER
 RUN set -eux; \
     npm run build
 
-FROM nginx:stable-alpine as production
+FROM nginx:stable-alpine@sha256:26716e37188bd01374360199773bc8ad8736edb7e234a2a1956a13b9800fccc4 as production
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
