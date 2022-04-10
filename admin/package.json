@@ -2,11 +2,10 @@
   "name": "admin",
   "version": "0.0.0",
   "scripts": {
-    "serve": "vite preview",
-    "build": "vite build",
+    "build": "vue-tsc --noEmit && vite build",
     "test:unit": "vitest --environment jsdom",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
-    "dev": "vite",
+    "dev": "vite --host --port 4000",
     "preview": "vite preview --host --port 4000",
     "typecheck": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false"
   },
