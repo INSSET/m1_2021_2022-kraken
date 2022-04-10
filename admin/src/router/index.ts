@@ -25,6 +25,7 @@ const router = createRouter({
       name: "groups",
       component: GroupsView,
     },
+<<<<<<< HEAD
     {
       path: "/groups/add",
       name: "addGroup",
@@ -40,6 +41,8 @@ const router = createRouter({
       name: "addGroup",
       component: AddGroupView,
     },
+=======
+>>>>>>> 05e8cec (Add front for groups list)
   ],
 });
 
