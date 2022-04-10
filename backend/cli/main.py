@@ -50,8 +50,7 @@ def run():
 @click.option('--skel')
 @click.option('--compose')
 def create_acces(group, liste_etudiant_input, sftp, vhost, skel, compose):
-
-    """Cree un groupe a partir d'une liste d'etudiants
+    """Crée un groupe à partir d'une liste d'étudiants
 
     group: nom du groupe
     liste_etudiant_input : fichier csv ou liste d'adresses mails
@@ -60,10 +59,10 @@ def create_acces(group, liste_etudiant_input, sftp, vhost, skel, compose):
     cli_opts = {'sftp' : sftp, 'vhost' : vhost, 'skel' : skel, 'compose' : compose}
     try:
         info_grp = grp.getgrnam(group)
-        click.echo("Le Groupe %s existe deja %d " % (info_grp.gr_name, info_grp.gr_gid))
+        click.echo("Le Groupe %s existe déjà %d " % (info_grp.gr_name, info_grp.gr_gid))
         sys.exit()
     except KeyError:
-        click.echo("Creation du group_name %s " % group)
+        click.echo("Création du group_name %s " % group)
 
     liste = gp.init_liste(liste_etudiant_input)
     gp.create_group(group)
@@ -73,7 +72,7 @@ def create_acces(group, liste_etudiant_input, sftp, vhost, skel, compose):
 @click.command(name='vhost')
 @click.argument('group')
 def create_vhost(group):
-    """Cree des virtual hosts pour les membres du groupe
+    """Crée des virtual hosts pour les membres du groupe
     
     group: nom du groupe
     """
@@ -103,7 +102,7 @@ def create_compose(group, compose):
 @click.command(name='container')
 @click.argument('group')
 def create_containers(group):
-    """Cree des containers pour les membres du groupe
+    """Crée des containers pour les membres du groupe
     
     group: nom du groupe
     """
@@ -128,7 +127,7 @@ def create_containers(group):
 @click.command(name='sftp')
 @click.argument('group')
 def create_sftp(group):
-    """Cree des utilisateurs SFTP pour les membres du groupe
+    """Crée des accès SFTP pour les membres du groupe
     
     group: nom du groupe
     """
@@ -143,7 +142,7 @@ def create_sftp(group):
 @click.command(name='domain')
 @click.argument('liste_etudiant_input')
 def create_domain(liste_etudiant_input):
-    """Cree des domaines pour les utilisateurs de la liste
+    """Crée des domaines pour les utilisateurs de la liste
     
     liste_etudiant_input : fichier csv ou liste d'adresses mails
     """
@@ -171,7 +170,7 @@ def create_domain(liste_etudiant_input):
 @click.command(name='sql')
 @click.argument('group')
 def create_sql(group):
-    """Cree un utilisateur SQL pour chaque membres du groupe
+    """Crée un utilisateur SQL pour chaque membres du groupe
     
     group: nom du groupe
     """
@@ -219,7 +218,7 @@ def delete_group(group, vhost, sftp):
             gp.sup_sftp_users(group)
         gp.sup_group(group)
     except KeyError as err_key:
-        print("pas de group_name specifie %s " % err_key)
+        print("pas de group_name spécifié %s " % err_key)
     return
 
 @click.command(name='vhost')
@@ -232,21 +231,21 @@ def delete_vhost(group):
     try:
         gp.sup_vhost(group)
     except KeyError as err_key:
-        print("pas de group_name specifie (-g) %s " % err_key)
+        print("pas de group_name spécifié (-g) %s " % err_key)
     return
 
 @click.command(name='user')
 @click.argument('email_etudiant')
 def delete_user(email_etudiant):
-    """Supprime un etudiant a partir de son email
+    """Supprime un étudiant à partir de son email
     
-    email_etudiant: adresse mail de l'etudiant
+    email_etudiant: adresse mail de l'étudiant
     """
     try:
 
         gp.sup_user(email_etudiant)
     except KeyError:
-        print("indiquez l'email de l'etudiant que vous voulez supprimer"
+        print("indiquez l'email de l'étudiant que vous voulez supprimer"
               "prenom.nom@etud.u-picardie.fr )")
     return
 
@@ -279,7 +278,7 @@ def delete_sftp(group):
     try:
         gp.sup_sftp_users(group)
     except KeyError as err_key:
-        print("pas de group_name specifie  %s " % err_key)
+        print("pas de group_name spécifié  %s " % err_key)
     return
 
 ###------------------------------------ ADD COMMANDS -----------------------------------------###
@@ -291,7 +290,7 @@ def delete_sftp(group):
 @click.option('--vhost', is_flag=True, help='add this option to create vhosts')
 @click.option('--skel')
 @click.option('--compose')
-def add_acces(group, liste_etudiant_input, sftp, vhost, skel, compose):
+def add_acces(group, liste_etudiant_input):
     cli_opts = {'sftp' : sftp, 'vhost' : vhost, 'skel' : skel, 'compose' : compose}
     # (options -i xxx avec xxx fichier csv | mail | liste de mails)
     try:
