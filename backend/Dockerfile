@@ -88,7 +88,8 @@ COPY --chown=$USER:$USER ovh ovh/
 
 RUN set -eux; \
     pip install -r api/requirements.txt --no-cache-dir; \
-    pip install -r cli/requirements.txt --no-cache-dir
+    pip install -r cli/requirements.txt --no-cache-dir; \
+    pip install -r ovh/requirements.txt --no-cache-dir
 
 # Préparation du volume data dans lequel sera stocké les données
 
