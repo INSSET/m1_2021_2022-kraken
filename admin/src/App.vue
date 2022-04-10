@@ -21,12 +21,6 @@
                   Groups
                 </v-btn>
               </v-list-item>
-              <v-list-item>
-                <v-btn  to="/groupsEdit/1" variant="plain">
-                  <v-icon>mdi-account-multiple</v-icon>
-                  Edit Groups
-                </v-btn>
-              </v-list-item>
               <v-list-item >
                 <v-btn  to="/about" variant="plain">
                   <v-icon>mdi-help-circle</v-icon>
