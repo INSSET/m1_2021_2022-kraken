@@ -9,9 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 * Github workflows
+* Kaniko action to improve image build
 * Development environment handled with docker-compose
 
 ### Updated
 
+* Update Backend Dockerfile
 * Admin UI Dockerfile with multi-staging
 * Service "Backend" with CLI / Lib and exposed API
