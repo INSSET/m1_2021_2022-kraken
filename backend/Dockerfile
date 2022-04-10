@@ -1,7 +1,6 @@
 FROM ubuntu:20.04
 
 # Arguments pour le build
-
 ARG TIMEZONE=Europe/Paris
 ARG USER=gestproj
 ARG UID=1000
@@ -93,13 +92,12 @@ RUN set -eux; \
 
 # Préparation du volume data dans lequel sera stocké les données
 
-RUN mkdir data
+RUN set -eux; \
+    ln -s /home/test/lib/gestprojlib.py /usr/lib/$PYTHON_VERSION/gestprojlib.py; \
+    mkdir data
 
 # On "expose" le dossier data comme volume pour permettre une persistance des données hors conteneur
 VOLUME data
-
-# Le numéro de version de python est à changer en fonction de la version de python installée
-RUN ln -s /home/test/lib/gestprojlib.py /usr/lib/$PYTHON_VERSION/gestprojlib.py
 
 ENV CONF_OVH_PATH=/home/$USER/ovh/conf
 ENV CONF_OVH_FILE="Gestproj_12_2021_ovh.conf"
@@ -108,5 +106,7 @@ ENV PYTHONPATH=/home/$USER/gplib
 EXPOSE 5000
 
 WORKDIR /home/$USER/api
+
+USER $USER
 
 CMD ["python3", "-m" , "flask", "run", "--host=0.0.0.0"]

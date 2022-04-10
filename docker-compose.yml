@@ -1,0 +1,42 @@
+version: '3.9'
+
+services:
+
+  admin:
+    container_name: ${APP_NAME}-admin
+    build:
+      context: ./admin
+    ports:
+      - "4500:80"
+    networks:
+      - gestproj
+
+  students:
+    container_name: ${APP_NAME}-students
+    build:
+      context: ./students
+    ports:
+      - "4000:80"
+    networks:
+      - gestproj
+
+  backend:
+    container_name: ${APP_NAME}-backend
+    build:
+      context: ./backend
+      args:
+        - USER=gestproj
+        - UID=1000
+    ports:
+      - "5000:5000"
+    volumes:
+      - data:/home/gestproj/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - gestproj
+
+volumes:
+  data: {}
+
+networks:
+  gestproj:
