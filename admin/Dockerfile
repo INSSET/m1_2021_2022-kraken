@@ -1,4 +1,4 @@
-FROM node:16-slim as build_vendor
+FROM node:16-slim@sha256:9b43cdacd070d1b38976a804aec78f03139c600865a3c72501af3bbec8d4bdee as build_vendor
 
 ARG USER=admin
 ARG UID=1005
@@ -16,6 +16,7 @@ RUN set -eux; \
     npm install; \
     npm cache clean --force;
 
+<<<<<<< HEAD
 FROM node:16-slim as development
 
 WORKDIR /usr/src/app
@@ -44,6 +45,8 @@ RUN set -eux; \
     npm install; \
     npm cache clean --force;
 
+=======
+>>>>>>> 6ff0aff (Docker Image optimisation)
 FROM node:16-slim@sha256:9b43cdacd070d1b38976a804aec78f03139c600865a3c72501af3bbec8d4bdee as builder_production
 
 WORKDIR /usr/src/app/
