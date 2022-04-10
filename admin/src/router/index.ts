@@ -21,6 +21,7 @@ const router = createRouter({
       component: () => import("../views/AboutView.vue"),
     },
     {
+<<<<<<< HEAD
       path: "/groups",
       name: "groups",
       component: GroupsView,
@@ -34,6 +35,11 @@ const router = createRouter({
       path: "/groups/:group_id",
       name: "groupDetail",
       component: GroupDetailView,
+=======
+      path: "/edit-group",
+      name: "edit-group",
+      component: () => import("../views/EditGroup.vue"),
+>>>>>>> init router + start editing App.vue
     },
   ],
 });
