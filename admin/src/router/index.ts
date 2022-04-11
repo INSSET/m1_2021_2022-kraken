@@ -1,13 +1,9 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import GroupsView from "../views/GroupsView.vue";
-<<<<<<< HEAD
 import AddGroupView from "../views/AddGroupView.vue";
 import GroupsEdit from "../views/GroupsEdit.vue";
 import GroupDetailView from "../views/GroupDetailView.vue";
-=======
-import GroupsEdit from "../views/GroupsEdit.vue";
->>>>>>> Add front for groups list
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,7 +23,6 @@ const router = createRouter({
     },
     {
       path: "/groups",
-<<<<<<< HEAD
       name: "groupsView",
       component: GroupsView,
     },
@@ -45,16 +40,7 @@ const router = createRouter({
       path: "/groups/:group_id",
       name: "groupDetail",
       component: GroupDetailView,
-=======
-      name: "groups",
-      component: GroupsView,
-    },
-    {
-      path: "/groupsEdit/:id_group",
-      name: "groupsEdit",
-      component: GroupsEdit,
->>>>>>> Add front for groups list
-    },
+    }
   ],
 });
 
