@@ -1,3 +1,5 @@
+# @author Fragan
+# @version 0.1.0
 name: SonarQube Workflow
 
 on:
