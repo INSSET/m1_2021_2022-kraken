@@ -4,6 +4,10 @@ name: SonarQube Workflow
 
 on:
   workflow_call:
+    inputs:
+      workdir:
+        required: true
+        type: string
 
 jobs:
 
@@ -19,3 +23,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: a3d5ea3bd83242bdc14a4f526ff8222946ce406e
+        with:
+          projectBaseDir: ${{ inputs.workdir }}

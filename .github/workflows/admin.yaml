@@ -18,6 +18,8 @@ jobs:
 
   sonarqube:
     uses: ./.github/workflows/SONARQUBE.yaml
+    with:
+      workdir: './admin'
 
   # Build & Push the Docker image from the admin panel
   docker:
