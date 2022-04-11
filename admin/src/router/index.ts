@@ -4,6 +4,7 @@ import GroupsView from "../views/GroupsView.vue";
 import GroupDetailView from "../views/GroupDetailView.vue";
 import AddGroupView from "../views/AddGroupView.vue";
 import GroupsEdit from "../views/GroupsEdit.vue";
+import GroupDetailView from "../views/GroupDetailView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
