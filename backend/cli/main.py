@@ -384,7 +384,7 @@ def build_compte(cli_opts, group, liste):
         gp.create_sftp_users(liste)
 
     if cli_opts['vhost']:
-        print ("Vhost => ", end='')
+        print('Vhost => ', end='', flush=True)
         gp.create_vhost(liste)
         print("[ok]")
     if cli_opts['compose']:
