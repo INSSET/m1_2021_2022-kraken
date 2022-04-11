@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 const fetch_groups = fetch("https://0.0.0.0:5000/api/v1/students", {
     "method": "GET",
 })
@@ -44,29 +45,14 @@ const fetch_groups = fetch("https://0.0.0.0:5000/api/v1/students", {
 .catch(err=>{
     console.log(err);
 });
-console.log(fetch_groups);
 export default {
     data () {
         return {
-            groups: [
-                {
-                    group_id: 1,
-                    group_name: "Group 1",
-                    users_names: [
-                        "toto",
-                        "tata",
-                    ],
-                },
-                {
-                    group_id: 2,
-                    group_name: "Group 2",
-                    users_names: [
-                        "tutu",
-                        "titi",
-                    ],
-                },
-            ],
+            
         }
     },
+    computed: mapState({
+        groups: 'groups',
+    })
 }
 </script>
