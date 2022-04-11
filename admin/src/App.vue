@@ -16,9 +16,15 @@
                 </v-btn>
               </v-list-item>
               <v-list-item>
-                <v-btn  to="/groupsEdit" variant="plain">
+                <v-btn  to="/groups" variant="plain">
                   <v-icon>mdi-account-multiple</v-icon>
                   Groups
+                </v-btn>
+              </v-list-item>
+              <v-list-item>
+                <v-btn  to="/groupsEdit/1" variant="plain">
+                  <v-icon>mdi-account-multiple</v-icon>
+                  Edit Groups
                 </v-btn>
               </v-list-item>
               <v-list-item >
