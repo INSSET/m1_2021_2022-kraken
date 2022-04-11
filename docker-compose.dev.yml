@@ -43,7 +43,10 @@ services:
         - UID=1000
     ports:
       - "5000:5000"
-<<<<<<< HEAD
+#<<<<<<< HEAD
+#<<<<<<< HEAD
+#=======
+#>>>>>>> da4dda8 (Fixing dev containers issues)
     environment:
       - VIRTUAL_HOST=api.insset.localhost
       - VIRTUAL_PORT=5000
@@ -56,17 +59,18 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - proxy
-=======
+#<<<<<<< HEAD
+#=======
     volumes:
-<<<<<<<< HEAD:docker-compose.dev.yml
+#<<<<<<<< HEAD:docker-compose.dev.yml
       - ./backend/api:/usr/src/app/api
       - ./backend/gplib:/usr/src/app/gplib
       - ./backend/data:/usr/src/app/data
       - ./backend/ovh:/usr/src/app/ovh
       - ./backend/cli:/usr/src/app/cli
-========
+#========
       - data:/home/gestproj/data
->>>>>>>> 4712ca3 (Update CI):docker-compose.yml
+#>>>>>>>> 4712ca3 (Update CI):docker-compose.yml
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - gestproj
@@ -76,4 +80,6 @@ volumes:
 
 networks:
   gestproj:
->>>>>>> 4712ca3 (Update CI)
+#>>>>>>> 4712ca3 (Update CI)
+#=======
+#>>>>>>> da4dda8 (Fixing dev containers issues)
