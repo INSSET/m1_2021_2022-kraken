@@ -21,7 +21,7 @@ jobs:
 
   # Build & Push the Docker image from the admin panel
   docker:
-    needs: ['vue']
+    needs: ['vue', 'sonarqube']
     uses: ./.github/workflows/DOCKER.yaml
     with:
       # Dockerfile build entry point (see. https://docs.docker.com/engine/context/working-with-contexts/)
