@@ -5,7 +5,7 @@ from flask import Blueprint, Response, abort, request
 
 from model.group import Group
 from utils.json_encoder import Encoder
-from backend.gplib import gestprojlib
+import gestprojlib
 
 groups_routes = Blueprint('groups_routes', __name__)
 
