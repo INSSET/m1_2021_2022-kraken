@@ -10,7 +10,7 @@ from backend.gplib import gestprojlib
 groups_routes = Blueprint('groups_routes', __name__)
 
 
-@groups_routes.route('/api/v1/students', methods=['GET'])
+@groups_routes.route('/api/v1/groups', methods=['GET'])
 def get_groups():
     """ Retourne les noms et ids des groupes dont l'id est supérieur à 10000
     ainsi qu'un tableau avec la liste de tous les users appartenant au group """
@@ -32,7 +32,7 @@ def get_groups():
     return Response(encoded_groups, mimetype='application/json', status=200)
 
 
-@groups_routes.route('/api/v1/students/<int:group_id>/', methods=['GET'])
+@groups_routes.route('/api/v1/groups/<int:group_id>', methods=['GET'])
 def get_group(group_id):
     """ Retourne les informations d'un group
     L'id du group concerné est spécifié dans l'url <int:grp_id>
@@ -52,7 +52,7 @@ def get_group(group_id):
         abort(404, description='Not found - Could not find group with ID ' + group_id)
 
 
-@groups_routes.route('/api/v1/students', methods=['POST'])
+@groups_routes.route('/api/v1/groups', methods=['POST'])
 def create_group():
     request_data = request.get_json()
     group_name = request_data['groupName'].encode()
@@ -64,7 +64,7 @@ def create_group():
         abort(500, description='Internal server error')
 
 
-@groups_routes.route('/api/v1/students/<int:group_id>/', methods=['PATCH'])
+@groups_routes.route('/api/v1/groups/<int:group_id>', methods=['PATCH'])
 def patch_group(group_id):
     request_data = request.get_json()
     group_name = request_data['groupName'].encode()
@@ -82,7 +82,7 @@ def patch_group(group_id):
         abort(404, description='Not found - Could not find group with ID ' + group_id)
 
 
-@groups_routes.route('/api/v1/students/<int:group_id>/', methods=['DELETE'])
+@groups_routes.route('/api/v1/groups/<int:group_id>', methods=['DELETE'])
 def delete_group(group_id):
     try:
         group = grp.getgrgid(group_id)
