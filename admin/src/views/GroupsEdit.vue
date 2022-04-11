@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <h1>Groupe : {{group_name}}</h1>
+        <h1>Groupe : {{group_name}} <v-btn class="ml-4" icon="mdi-pencil"></v-btn></h1>
         <v-table>
             <thead>
                 <tr>
@@ -14,8 +14,7 @@
                     v-for="(user,i) in users_names"
                     :key="i"
                 >
-                
-                    <td>{{ user.users_names }}</td>
+                    <td>{{ user.users_names }} <v-btn class="ml-4" icon=mdi-minus @click="deleteUser(user.users_names)"></v-btn></td>
                 </tr>
             </tbody>
         </v-table>
