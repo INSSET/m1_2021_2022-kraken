@@ -128,7 +128,7 @@ def create_containers(group):
 @click.command(name='sftp')
 @click.argument('group')
 def create_sftp(group):
-    """Cree des acces SFTP pour les membres du groupe
+    """Cree des utilisateurs SFTP pour les membres du groupe
     
     group: nom du groupe
     """
@@ -303,37 +303,6 @@ def add_acces(group, liste_etudiant_input, sftp, vhost, skel, compose):
         print("Le group_name %s n'existe pas ! " % group)
     return
 
-###------------------------------------ EXTRA COMMANDS -----------------------------------------###
-
-@click.command()
-@click.argument('group')
-def extra(group):
-    try:
-
-        grp.getgrnam(group)
-        liste = gp.liste_etudiant_group(group)
-
-        for etud in liste:
-            # os.system("cp %s/.bash_profile %s/.bashrc" % (etud['user'].pw_dir, etud['user'].pw_dir) )
-            os.system("chown -R www-data: %s/sftp/Projets" % etud['user'].pw_dir)
-            # os.system("rm %s/.ssh/known_hosts" % etud['user'].pw_dir)
-            # os.system("chown www-data:sftp /home/sftp/sftp.%s/.ssh/authorized_keys" % etud['user'].pw_name)
-            # print("chown www-data:sftp /home/sftp/sftp.%s/.ssh/authorized_keys" % etud['user'].pw_name)
-
-            print("ok")
-        sys.exit()
-
-        # remplace un element dans le bash_profile de chaque users
-        # for etud in liste:
-        #     with open(etud['user'].pw_dir + '/.bash_profile', "r+") as file:
-        #         content = file.read()
-        #         file.seek(0, 0)
-        #         file.write(content.replace('dev@', 'www-data@'))
-        #         file.close()
-    except KeyError:
-        print("Le groupe n'existe pas")
-    return
-
 ###------------------------------------ SEND COMMANDS -----------------------------------------###
 
 @click.command(name='send')
@@ -394,7 +363,6 @@ def build_compte(cli_opts, group, liste):
 start.add_command(create)
 start.add_command(delete)
 start.add_command(add)
-start.add_command(extra)
 start.add_command(send_htpasswd)
 start.add_command(run)
 
