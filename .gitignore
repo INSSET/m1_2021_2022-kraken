@@ -15,3 +15,5 @@ src/__pycache__
 data/
 src/ovh/ovh.conf
 .env
+./ui/.idea
+./ui/node_modules
