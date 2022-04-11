@@ -1,3 +1,25 @@
+FROM node:16-slim as builder_development
+
+WORKDIR /usr/src/app/studentsapp
+
+COPY package*.json ./
+
+RUN set -eux; \
+    npm install; \
+    npm cache clean --force;
+
+FROM node:16-slim as development
+
+WORKDIR /usr/src/app/studentsapp
+
+COPY --from=builder_development /usr/src/app/studentsapp ./
+
+RUN mkdir node_modules/.vite && chmod -R 777 node_modules/.vite
+
+EXPOSE 3000
+
+CMD ["npm", "run", "dev"]
+
 FROM node:16-slim@sha256:9b43cdacd070d1b38976a804aec78f03139c600865a3c72501af3bbec8d4bdee as build_vendor
 
 ARG USER=students

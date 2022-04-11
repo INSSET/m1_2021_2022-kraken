@@ -1,0 +1,87 @@
+version: '3.8'
+
+services:
+
+  # Reverse Proxy
+  # @author Fragan
+  # @version 0.1.0
+
+  proxy:
+    image: jwilder/nginx-proxy
+    container_name: ${APP_NAME}-proxy
+    environment:
+      - ENABLE_IPV6=true
+      - VIRTUAL_PROTO=https
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      #- ./proxy/nginx.conf:/etc/nginx/conf.d/nginx-proxy.conf:ro
+    networks:
+      - proxy
+
+  # Node exporter for Prometheus metrics
+  # @author Fragan
+  # @version 0.1.0
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: ${APP_NAME}-node-exporter
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - ../:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    networks:
+      - proxy
+
+  # Prometheus core
+  # @author Fragan
+  # @version 0.1.0
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: ${APP_NAME}-prometheus
+    environment:
+      - VIRTUAL_HOST=prometheus.insset.localhost
+      - VIRTUAL_PORT=9090
+    volumes:
+      #- ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    expose:
+      - 9090
+    networks:
+      - proxy
+
+  # Grafana
+  # @author Fragan
+  # @version 0.1.0
+
+  grafana:
+    image: grafana/grafana
+    container_name: ${APP_NAME}-grafana
+    volumes:
+      - grafana:/etc/grafana/provisioning
+    environment:
+      - VIRTUAL_HOST=grafana.insset.localhost
+      - VIRTUAL_PORT=3000
+    networks:
+      - proxy
+
+networks:
+  proxy:
+
+volumes:
+  prometheus: {}
+  grafana: {}
