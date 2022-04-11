@@ -14,7 +14,7 @@
                     v-for="(user,i) in users_names"
                     :key="i"
                 >
-                    <td>{{ user.users_names }} <v-btn class="ml-4" icon=mdi-minus @click="deleteUser(user.users_names)"></v-btn></td>
+                    <td>{{ user.users_names }} <v-btn class="float-right" flat icon=mdi-minus @click="deleteUser(user.users_names)"></v-btn></td>
                 </tr>
             </tbody>
         </v-table>
