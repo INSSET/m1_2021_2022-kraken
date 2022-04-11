@@ -124,7 +124,7 @@ def create_containers(group):
 @click.argument('group')
 def create_sftp(group):
     """Cree des utilisateurs SFTP pour les membres du groupe
-
+    
     group: nom du groupe
     """
     try:
