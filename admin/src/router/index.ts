@@ -20,9 +20,9 @@ const router = createRouter({
       component: () => import("../views/AboutView.vue"),
     },
     {
-      path: "/groupsEdit/:id_group",
-      name: "groupsEdit",
-      component: GroupsEdit,
+      path: "/groups",
+      name: "groupsView",
+      component: GroupsView,
     },
     {
       path: "/groupsEdit/:id_group",
