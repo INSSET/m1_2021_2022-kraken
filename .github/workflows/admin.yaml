@@ -16,6 +16,9 @@ jobs:
     with:
       workdir: './admin'
 
+  sonarqube:
+    uses: ./.github/workflows/SONARQUBE.yaml
+
   # Build & Push the Docker image from the admin panel
   docker:
     needs: ['vue']
