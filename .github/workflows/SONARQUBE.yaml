@@ -25,3 +25,6 @@ jobs:
           SONAR_TOKEN: a3d5ea3bd83242bdc14a4f526ff8222946ce406e
         with:
           projectBaseDir: ${{ inputs.workdir }}
+          args: >
+            -Dsonar.organization=insset
+            -Dsonar.projectKey=INSSET_m1_2021_2022-kraken
