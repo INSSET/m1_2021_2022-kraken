@@ -108,6 +108,4 @@ EXPOSE 5000
 
 WORKDIR /home/$USER/api
 
-USER $USER
-
 CMD ["python3", "-m" , "flask", "run", "--host=0.0.0.0"]

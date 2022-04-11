@@ -82,7 +82,7 @@ def delete(sous_domaine, domaine):
     result = get_id_sub(sous_domaine, domaine)
     for id_sub in result:
         client.delete('/domain/zone/' + domaine + '/record/' + str(id_sub))
-        click.echo(sous_domaine+"( "+str(id_sub)+" ) suprimé")
+        click.echo(sous_domaine+"( "+str(id_sub)+" ) suprime")
     client.post('/domain/zone/'+domaine+'/refresh')
 
 
@@ -95,7 +95,7 @@ def delete(input_file, domaine):
         result = get_id_sub(etudiant['domain'], domaine)
         for id_sub in result:
             client.delete('/domain/zone/' + domaine + '/record/' + str(id_sub))
-            click.echo(etudiant['domain']+"( "+str(id_sub)+" ) suprimé")
+            click.echo(etudiant['domain']+"( "+str(id_sub)+" ) suprime")
     client.post('/domain/zone/'+domaine+'/refresh')
 
 
