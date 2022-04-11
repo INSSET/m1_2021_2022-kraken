@@ -22,6 +22,7 @@ const router = createRouter({
     },
     {
 <<<<<<< HEAD
+<<<<<<< HEAD
       path: "/groups",
       name: "groupsView",
       component: GroupsView,
@@ -30,6 +31,11 @@ const router = createRouter({
       name: "groupsEdit",
       component: GroupsEdit,
 >>>>>>> Group list
+=======
+      path: "/groups",
+      name: "groupsView",
+      component: GroupsView,
+>>>>>>> exemple of group edit on the nav
     },
     {
       path: "/groups/add",
