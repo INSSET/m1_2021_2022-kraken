@@ -52,7 +52,7 @@ components:
             - users_names: "toto@toto.com"
             - users_names: "tata@tata.com"
 paths:
-  /api/v1/students:
+  /api/v1/groups:
     get:
       tags:
         - "groups"
@@ -82,7 +82,7 @@ paths:
           description: CREATED
         500:
           description: Internal server error
-  /api/v1/students/{group_id}:
+  /api/v1/groups/{group_id}:
     get:
       tags:
         - "groups"
