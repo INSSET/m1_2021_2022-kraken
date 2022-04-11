@@ -5,34 +5,38 @@ services:
   admin:
     container_name: ${APP_NAME}-admin
     build:
-      context: admin
-      target: development
+      context: ./admin
     ports:
-      - "4000:4000"
-    volumes:
-      - ./admin:/usr/src/app/adminapp
-      - /usr/src/app/adminapp/node_modules
-    environment:
-      - VIRTUAL_HOST=admin.insset.localhost
-      - VIRTUAL_PORT=4000
+      - "4500:80"
     networks:
-      - proxy
+      - gestproj
 
-  api:
+  students:
+    container_name: ${APP_NAME}-students
+    build:
+      context: ./students
+    ports:
+      - "4000:80"
+    networks:
+      - gestproj
+
+  backend:
     container_name: ${APP_NAME}-backend
     build:
       context: ./backend
-    command: python3 api/app.py
+      args:
+        - USER=gestproj
+        - UID=1000
     ports:
       - "5000:5000"
     volumes:
-      - ./backend/api:/usr/src/app/api
-      - ./backend/gplib:/usr/src/app/gplib
-      - ./backend/data:/usr/src/app/data
-      - ./backend/ovh:/usr/src/app/ovh
+      - data:/home/gestproj/data
       - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      - VIRTUAL_HOST=api.insset.localhost
-      - VIRTUAL_PORT=5000
     networks:
-      - proxy
+      - gestproj
+
+volumes:
+  data: {}
+
+networks:
+  gestproj:

@@ -1,4 +1,8 @@
+import sys
+sys.path.append("/usr/src/app/gplib")
+
 import gestprojlib as gp
+
 import getopt
 import sys
 import os
