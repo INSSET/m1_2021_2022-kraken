@@ -44,7 +44,7 @@ export default {
     },
     computed: mapState({
         groups: 'groups',
-    }),edit group button
+    }),
     mounted() {
         getGroups()
     }
