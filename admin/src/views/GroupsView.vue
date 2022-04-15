@@ -29,22 +29,6 @@
 
 <script>
 import { mapState } from 'vuex';
-const fetch_groups = fetch("https://0.0.0.0:5000/api/v1/students", {
-    "method": "GET",
-})
-.then(response => {
-    if (response.ok) {
-        return response.json();
-    } else {
-        console.log(response.statusText);
-    }
-})
-.then(json => {
-    return json.body;
-})
-.catch(err=>{
-    console.log(err);
-});
 export default {
     data () {
         return {
