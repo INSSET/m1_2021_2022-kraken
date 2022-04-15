@@ -486,7 +486,7 @@ def create_domains(liste):
         #print(result['subDomain'] + '=' + str(result['id']))
 
 
-def create_sql(liste):
+def create_sql(liste, ipclass):
     with open("../data/createUserMySQL.sql", 'w') as sql_file:
         for etud in liste:
             with open("/home/etudiants/%s/sftp/Projets/pass.txt" % etud['user'].pw_name, "r") as pass_file:

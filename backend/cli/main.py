@@ -156,7 +156,7 @@ def create_domain(liste_etudiant_input):
 @click.command(name='sql')
 @click.argument('group')
 @click.argument('ipclass')
-def create_sql(group):
+def create_sql(group, ipclass):
     """Cree un utilisateur SQL pour chaque membres du groupe
 
     group: nom du groupe
@@ -165,7 +165,7 @@ def create_sql(group):
 
         grp.getgrnam(group)  # juste pour tester l'existance du group_name
         liste = gp.liste_etudiant_group(group)
-        gp.create_sql(liste)
+        gp.create_sql(liste, ipclass)
     except KeyError:
         print("Le group_name n'existe pas")
     return
