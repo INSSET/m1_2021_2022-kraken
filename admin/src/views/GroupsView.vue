@@ -29,6 +29,7 @@
 
 <script>
 import { mapState } from 'vuex';
+import { getGroups } from '../utils/requests'
 export default {
     data () {
         return {
@@ -37,6 +38,9 @@ export default {
     },
     computed: mapState({
         groups: 'groups',
-    })
+    }),
+    mounted() {
+        getGroups()
+    }
 }
 </script>
