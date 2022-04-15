@@ -6,7 +6,7 @@
                     <th class="text-left">
                         Nom
                     </th>
-                    <th class="text-left">
+                    <th class="text-right">
                         Actions
                     </th>
                 </tr>
@@ -17,9 +17,9 @@
                     :key="group.group_id"
                 >
                     <td>{{ group.group_name }}</td>
-                    <td>
-                        <v-btn  :to="'/groups/'+group.group_id" icon="mdi-magnify" ></v-btn>
-                        <v-btn  to="/about" icon="mdi-pencil" ></v-btn>
+                    <td class="text-right" >
+                        <v-btn class="mx-4" size="small" :to="'/groups/'+group.group_id" icon="mdi-magnify" ></v-btn>
+                        <v-btn size="small" to="/about" icon="mdi-pencil" ></v-btn>
                     </td>
                 </tr>
             </tbody>
