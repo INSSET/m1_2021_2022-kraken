@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <h1>Groupe : {{group_name}} <v-btn class="ml-4" icon="mdi-pencil"></v-btn></h1>
+        <h1>Groupe :<v-text-field placeholder={{group_name}} persistent-placeholder disabled></v-text-field><v-btn class="ml-4" icon="mdi-pencil"></v-btn></h1>
         <v-table>
             <thead>
                 <tr>
@@ -85,7 +85,7 @@ export default {
     .inputNameGroup {
         width: 400px;
     }
-    .inputNameGroup.v-input--disabled {
-        
+    .inputNameGroup input[disabled]::placeholder {
+        color: black;
     }
 </style>
