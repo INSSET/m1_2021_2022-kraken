@@ -1,6 +1,9 @@
 <template>
     <v-container>
-        Nom : {{ group.group_name }}
+        <v-container>
+            Nom : {{ group.group_name }}
+            <v-btn class="mx-4" size="small" to="/about" icon="mdi-pencil" ></v-btn>
+        </v-container>
         <v-divider insset />
         <v-table>
             <thead>
