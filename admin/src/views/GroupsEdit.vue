@@ -1,4 +1,4 @@
-<template>
+ <template>
     <v-container>
         <h1 class="d-flex">
             <span>Groupe :</span>
