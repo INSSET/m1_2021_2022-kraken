@@ -1,6 +1,10 @@
 <template>
     <v-container>
-        <h1>Groupe : {{group_name}} <v-btn class="ml-4" icon="mdi-pencil"></v-btn></h1>
+        <h1 class="">
+            Groupe :
+            <v-form @submit="renameGroup(group_id)"><v-text-field v-model="group_name" :disabled="disabled == 1"></v-text-field></v-form>
+            <v-btn class="ml-4" icon="mdi-pencil" @click="disabled = (disabled + 1) % 2"></v-btn>
+        </h1>
         <v-table>
             <thead>
                 <tr>
@@ -64,6 +68,7 @@ export default {
                     users_names: "rrr",
                 },
             ],
+            disabled: 1
         }
     },
     methods: {
@@ -76,6 +81,7 @@ export default {
             fetch("0.0.0.0:5000/api/v1/students/"+group_id, {
                 "method": "PATCH"
             })
+            this.disabled = 1
         }
     }
 }
@@ -85,7 +91,7 @@ export default {
     .inputNameGroup {
         width: 400px;
     }
-    .inputNameGroup.v-input--disabled {
-        
+    .v-field__input input[disabled]::placeholder {
+        color: black;
     }
 </style>
