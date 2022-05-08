@@ -1,5 +1,11 @@
 <template>
     <v-container>
+        <v-btn class="bg-deep-purple" :to="'/groups/add'" >
+            <v-icon large class="mr-1">
+                mdi-plus
+            </v-icon>
+            Ajouter un groupe
+        </v-btn>
         <v-table>
             <thead>
                 <tr>
