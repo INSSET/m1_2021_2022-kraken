@@ -4,13 +4,13 @@ import pathlib
 import pwd
 
 from flask import Blueprint, Response, abort, request
-from model.user import User
-from utils.json_encoder import Encoder
-
 import sys
-sys.path.append("/usr/src/app/gplib")
 
+from api.model.user import User
+from api.utils.json_encoder import Encoder
 import gestprojlib as GP
+
+sys.path.append("/usr/src/app/gplib")
 
 users_routes = Blueprint("users_routes", __name__)
 

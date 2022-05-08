@@ -7,6 +7,7 @@ from flask import request, abort, Response, json, Blueprint
 
 upload_routes = Blueprint('upload_routes', __name__)
 
+
 @upload_routes.route('/api/upload/', methods=['POST'])
 # @cross_origin(headers=["Content-Type", "Authorization"])
 # @requires_auth
@@ -141,4 +142,3 @@ def upload_users_list():
                     }
     os.remove('./data.txt')
     return Response(json.dumps(response), mimetype='application/json', status=201)
-
