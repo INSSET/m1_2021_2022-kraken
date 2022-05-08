@@ -19,7 +19,7 @@
                     <td>{{ group.group_name }}</td>
                     <td class="text-right" >
                         <v-btn class="mx-4" size="small" :to="'/groups/'+group.group_id" icon="mdi-magnify" ></v-btn>
-                        <v-btn size="small" to="/about" icon="mdi-pencil" ></v-btn>
+                        <v-btn size="small" :to="'/groupsEdit/'+group.group_id" icon="mdi-pencil" ></v-btn>
                     </td>
                 </tr>
             </tbody>

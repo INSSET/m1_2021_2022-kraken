@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import GroupsView from "../views/GroupsView.vue";
+import GroupsEdit from "../views/GroupsEdit.vue";
 import GroupDetailView from "../views/GroupDetailView.vue";
 
 const router = createRouter({
@@ -21,8 +22,13 @@ const router = createRouter({
     },
     {
       path: "/groups",
-      name: "groups",
+      name: "groupsView",
       component: GroupsView,
+    },
+    {
+      path: "/groupsEdit/:group_id",
+      name: "groupsEdit",
+      component: GroupsEdit,
     },
     {
       path: "/groups/:group_id",
