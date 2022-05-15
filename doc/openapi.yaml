@@ -18,6 +18,15 @@ components:
           type: array
           items:
             type: string
+    PostUserRequestDto:
+      type: object
+      properties:
+        firstname:
+          type: string
+        lastname:
+          type: string
+        groupName:
+          type: string
   parameters:
     group_id:
       in: path
@@ -33,6 +42,13 @@ components:
       required: true
       schema:
         type: string
+    user_id:
+      in: path
+      name: user_id
+      description: UIDs
+      required: true
+      schema:
+        type: integer
   responses:
     get-groups-200:
       description: GET groups list OK
@@ -149,7 +165,7 @@ paths:
       tags:
         - "groups"
       summary: "Upload CSV files to create Users with given group name, also use to update a group with a new CSV"
-      operationId: "postUsers"
+      operationId: "postUsersFromCSV"
       parameters:
         - $ref: "#/components/parameters/group_name"
       requestBody:
@@ -165,3 +181,41 @@ paths:
       responses:
         201:
           description: CREATED
+  /api/v1/students/:
+    post:
+      tags:
+        - "users"
+      summary: "Create new single user"
+      operationId: "postNewUser"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostUserRequestDto"
+      responses:
+        201:
+          description: CREATED
+        409:
+          description: CONFLICT
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "L'étudiant·e existe déjà !"
+    delete:
+      tags:
+        - "users"
+      summary: "Delete user by UID"
+      operationId: "deleteUserById"
+      parameters:
+        - $ref: "#/components/parameters/user_id"
+      responses:
+        200:
+          description: OK
+        404:
+          description: "Not found - Could not find user with ID {userId}"
