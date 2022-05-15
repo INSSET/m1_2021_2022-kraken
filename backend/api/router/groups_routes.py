@@ -58,6 +58,9 @@ def create_group():
     request_data = request.get_json()
     group_name = request_data['groupName']
 
+    if group_name == '':
+        return Response('Bad request - Missing mandatory input value', mimetype='application/json', status=400)
+
     try:
         gestprojlib.create_group(group_name)
         return Response(mimetype='application/json', status=201)
@@ -83,20 +86,85 @@ def patch_group(group_id):
         abort(404, description='Not found - Could not find group with ID ' + group_id)
 
 
-@groups_routes.route('/api/v1/groups/<int:group_id>/upload', methods=['POST'])
-def upload_group(group_id):
-    group = grp.getgrgid(group_id)
+@groups_routes.route('/api/v1/groups/<string:group_name>/upload', methods=['POST'])
+def upload_group(group_name):
+    try:
+        grp.getgrnam(group_name)
 
-    f = request.files['file']
-    f.save('/tmp/' + f.filename)
-    student_list = gestprojlib.init_liste('/tmp/' + f.filename)
+        f = request.files['file']
+        f.save('/tmp/' + f.filename)
 
-    gestprojlib.create_users(student_list, group.gr_name)
+        student_list = gestprojlib.init_liste('/tmp/' + f.filename)
 
-    gestprojlib.create_sftp_users(student_list)
+        stored_users = gestprojlib.liste_etudiant_group(group_name)
 
-    f.close()
-    os.remove('/tmp/' + f.filename)
+        users_list = []
+        students = []
+
+        for users in stored_users:
+            users_list.append(users.get('user')[0])
+
+        for student in student_list:
+            students.append(student.get('login'))
+
+        for u in users_list:
+            if u not in students:
+                os.system('userdel -f --remove %s' % u)
+                os.system("userdel -f --remove sftp.%s" % u)
+
+        gestprojlib.create_users(student_list, group_name)
+
+        gestprojlib.create_sftp_users(student_list)
+
+        f.close()
+        os.remove('/tmp/' + f.filename)
+
+        return Response(mimetype='application/json', status=201)
+    except KeyError:
+        gestprojlib.create_group(group_name)
+
+        f = request.files['file']
+        f.save('/tmp/' + f.filename)
+        student_list = gestprojlib.init_liste('/tmp/' + f.filename)
+
+        gestprojlib.create_users(student_list, group_name)
+
+        gestprojlib.create_sftp_users(student_list)
+
+        f.close()
+        os.remove('/tmp/' + f.filename)
+
+        return Response(mimetype='application/json', status=201)
+
+    # @groups_routes.route('/api/v1/groups/<string:group_name>/update', methods=['POST'])
+    # def update_group(group_name):
+    #     f = request.files['file']
+    #     f.save('/tmp/' + f.filename)
+    #     student_list = gestprojlib.init_liste('/tmp/' + f.filename)
+    #
+    #     stored_users = gestprojlib.liste_etudiant_group(group_name)
+    #
+    #     users_list = []
+    #     new_students = []
+    #
+    #     for users in stored_users:
+    #         users_list.append(users.get('user')[0])
+    #
+    #     for s in student_list:
+    #         if s.get('login') not in users_list:
+    #             new_students.append(s.get('login'))
+    #
+    #     gestprojlib.create_users(new_students, group_name)
+    #
+    #     gestprojlib.create_sftp_users(new_students)
+    #
+    #     for u in users_list:
+    #         if u not in student_list:
+    #             os.system('userdel -r ' + u)
+    #             os.system('userdel -r ' + 'sftp.' + u)
+    #
+    #     f.close()
+    #     os.remove('/tmp/' + f.filename)
 
     return Response(mimetype='application/json', status=201)
 
@@ -106,8 +174,9 @@ def delete_group(group_id):
     try:
         group = grp.getgrgid(group_id)
 
-        os.system('groupdel ' + group.gr_name)
+        gestprojlib.sup_sftp_users(group.gr_name)
+        gestprojlib.sup_group(group.gr_name)
 
-        return Response('Group with ID ' + str(group_id) + ' has been deleted', mimetype='application/json', status=200)
+        return Response('Group ' + group.gr_name + ' has been deleted', mimetype='application/json', status=200)
     except KeyError:
         abort(404, description='Not found - Could not find group with ID ' + group_id)

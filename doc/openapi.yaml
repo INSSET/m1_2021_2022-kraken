@@ -17,9 +17,7 @@ components:
         users_names:
           type: array
           items:
-            properties:
-              users_names:
-                type: string
+            type: string
   parameters:
     group_id:
       in: path
@@ -28,6 +26,13 @@ components:
       required: true
       schema:
         type: integer
+    group_name:
+      in: path
+      name: group_name
+      description: Group name
+      required: true
+      schema:
+        type: string
   responses:
     get-groups-200:
       description: GET groups list OK
@@ -44,13 +49,11 @@ components:
         - group_id: 10001
           group_name: ccm1
           users_names:
-            - users_names: "toto@toto.com"
-            - users_names: "tata@tata.com"
+            - "toto@toto.com, tata@tata.com"
         - group_id: 10002
           group_name: ccm2
           users_names:
-            - users_names: "toto@toto.com"
-            - users_names: "tata@tata.com"
+            - "toto.toto, tata.tata"
 paths:
   /api/v1/groups:
     get:
@@ -103,8 +106,7 @@ paths:
                     group_id: 10001
                     group_name: ccm1
                     users_names:
-                      - users_names: "toto@toto.com"
-                      - users_names: "tata@tata.com"
+                      - "toto.toto, tata.tata"
         404:
           description: "Not found - Could not find group with ID {groupId}"
     patch:
@@ -142,3 +144,24 @@ paths:
           description: OK
         404:
           description: "Not found - Could not find group with ID {groupId}"
+  /api/v1/groups/{group_name}/upload:
+    post:
+      tags:
+        - "groups"
+      summary: "Upload CSV files to create Users with given group name, also use to update a group with a new CSV"
+      operationId: "postUsers"
+      parameters:
+        - $ref: "#/components/parameters/group_name"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        201:
+          description: CREATED
