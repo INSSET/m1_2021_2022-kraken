@@ -116,6 +116,8 @@ def upload_group(group_name):
 
         gestprojlib.create_sftp_users(student_list)
 
+        gestprojlib.create_vhost(student_list)
+
         f.close()
         os.remove('/tmp/' + f.filename)
 
@@ -130,6 +132,8 @@ def upload_group(group_name):
         gestprojlib.create_users(student_list, group_name)
 
         gestprojlib.create_sftp_users(student_list)
+
+        gestprojlib.create_vhost(student_list)
 
         f.close()
         os.remove('/tmp/' + f.filename)
