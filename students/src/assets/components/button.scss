@@ -1,0 +1,41 @@
+.big-button {
+
+  border: none;
+  padding: 8px 14px;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: map-get($colors, "white");
+  border-radius: 25px;
+  background-color: map-get($colors, "primary");
+  width: 100%;
+  margin: 1em 0;
+  transition: .3s;
+
+  &:hover {
+
+
+
+  }
+
+}
+
+.btn {
+
+  border-radius: 5px;
+  border: none;
+  color: map-get($colors, "white");
+
+  &.btn-primary {
+
+    background-color: map-get($colors, "primary");
+
+  }
+
+  &.btn-warning {
+
+    background-color: #ffbc00;
+    color: map-get($colors, "secondary")
+
+  }
+
+}

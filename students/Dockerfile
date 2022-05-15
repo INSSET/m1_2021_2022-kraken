@@ -1,4 +1,4 @@
-FROM node:16-slim as builder_development
+FROM node:16-slim as development
 
 WORKDIR /usr/src/app/studentsapp
 
@@ -7,12 +7,6 @@ COPY package*.json ./
 RUN set -eux; \
     npm install; \
     npm cache clean --force;
-
-FROM node:16-slim as development
-
-WORKDIR /usr/src/app/studentsapp
-
-COPY --from=builder_development /usr/src/app/studentsapp ./
 
 RUN mkdir node_modules/.vite && chmod -R 777 node_modules/.vite
 
