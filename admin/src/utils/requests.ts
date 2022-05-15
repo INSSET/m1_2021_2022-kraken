@@ -24,3 +24,15 @@ export function getGroups() {
         })
     })
 }
+
+export function createGroupsWithCSV(group_name : string, file : object) {
+    fetchAPI(`groups/${group_name}/upload`, Method.POST, {
+        file: file,
+    })
+    .then(response => {
+        
+    })
+    .catch(err => {
+
+    })
+}

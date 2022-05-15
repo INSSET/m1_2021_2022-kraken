@@ -43,15 +43,18 @@
 </template>
 
 <script>
+import { createGroupsWithCSV } from '../utils/requests';
 export default {
     data() {
         return {
             group_name: "",
             students_names: [],
+            csvFile: null,
         }
     },
     methods: {
         onChangeFile: function(e) {
+            this.csvFile = e.target.files[0];
             let fileReader = new FileReader();
             fileReader.onload = () => {
                 let content = fileReader.result;
@@ -66,8 +69,7 @@ export default {
             fileReader.readAsText(e.target.files[0])
         },
         onSubmit: function(e) {
-            console.log(this.students_names);
-            console.log(this.group_name);
+            createGroupsWithCSV(this.group_name, this.csvFile)
         }
     }
 }
