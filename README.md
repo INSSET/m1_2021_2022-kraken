@@ -22,7 +22,7 @@ Gestoin du dépôt et test des projets étudiants
 Vous devez avoir `docker` et `docker-compose` d'installer sur votre machine. A la racine du dossier, lancez la commande suivante :  
 
 ```shell
-doco -f docker-compose.dev.yml -f docker-compose.override.yml up -d
+docker-compose -f docker-compose.dev.yml -f docker-compose.override.yml up -d --build
 ```
 
 Cette commande permet de de lancer l'ensemble des services décrits dans les fichiers `docker-compose.*.yml` en mode détaché (cf. [références docker-compose](https://docs.docker.com/compose/reference/)).

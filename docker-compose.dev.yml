@@ -26,8 +26,8 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./students:/usr/src/app/students
-      - /usr/src/app/adminapp/node_modules
+      - ./students:/usr/src/app/studentsapp
+      - /usr/src/app/studentsapp/node_modules
     environment:
       - VIRTUAL_HOST=students.insset.localhost
       - VIRTUAL_PORT=3000
