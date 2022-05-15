@@ -136,38 +136,6 @@ def upload_group(group_name):
 
         return Response(mimetype='application/json', status=201)
 
-    # @groups_routes.route('/api/v1/groups/<string:group_name>/update', methods=['POST'])
-    # def update_group(group_name):
-    #     f = request.files['file']
-    #     f.save('/tmp/' + f.filename)
-    #     student_list = gestprojlib.init_liste('/tmp/' + f.filename)
-    #
-    #     stored_users = gestprojlib.liste_etudiant_group(group_name)
-    #
-    #     users_list = []
-    #     new_students = []
-    #
-    #     for users in stored_users:
-    #         users_list.append(users.get('user')[0])
-    #
-    #     for s in student_list:
-    #         if s.get('login') not in users_list:
-    #             new_students.append(s.get('login'))
-    #
-    #     gestprojlib.create_users(new_students, group_name)
-    #
-    #     gestprojlib.create_sftp_users(new_students)
-    #
-    #     for u in users_list:
-    #         if u not in student_list:
-    #             os.system('userdel -r ' + u)
-    #             os.system('userdel -r ' + 'sftp.' + u)
-    #
-    #     f.close()
-    #     os.remove('/tmp/' + f.filename)
-
-    return Response(mimetype='application/json', status=201)
-
 
 @groups_routes.route('/api/v1/groups/<int:group_id>', methods=['DELETE'])
 def delete_group(group_id):
