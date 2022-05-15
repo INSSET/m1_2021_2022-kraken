@@ -17,3 +17,4 @@ src/ovh/ovh.conf
 .env
 ./ui/.idea
 ./ui/node_modules
+node_modules
