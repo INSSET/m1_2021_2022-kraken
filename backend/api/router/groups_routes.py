@@ -1,5 +1,6 @@
 import grp
 import json
+import os
 
 from flask import Blueprint, Response, abort, request
 
@@ -55,7 +56,10 @@ def get_group(group_id):
 @groups_routes.route('/api/v1/groups', methods=['POST'])
 def create_group():
     request_data = request.get_json()
-    group_name = request_data['groupName'].encode()
+    group_name = request_data['groupName']
+
+    if group_name == '':
+        return Response('Bad request - Missing mandatory input value', mimetype='application/json', status=400)
 
     try:
         gestprojlib.create_group(group_name)
@@ -67,19 +71,70 @@ def create_group():
 @groups_routes.route('/api/v1/groups/<int:group_id>', methods=['PATCH'])
 def patch_group(group_id):
     request_data = request.get_json()
-    group_name = request_data['groupName'].encode()
+    new_group_name = request_data['groupName']
 
-    if group_name == '':
+    if new_group_name == '':
         return Response('Bad request - Missing mandatory input value', mimetype='application/json', status=400)
 
     try:
         group = grp.getgrgid(group_id)
 
-        os.system('groupmod -n ' + group_name + ' ' + group.group_name)
+        os.system('groupmod -n ' + new_group_name + ' ' + group.gr_name)
 
-        return Response('Group with ID ' + group_id + ' has been updated', mimetype='application/json', status=200)
+        return Response('Group with ID ' + str(group_id) + ' has been updated', mimetype='application/json', status=200)
     except KeyError:
         abort(404, description='Not found - Could not find group with ID ' + group_id)
+
+
+@groups_routes.route('/api/v1/groups/<string:group_name>/upload', methods=['POST'])
+def upload_group(group_name):
+    try:
+        grp.getgrnam(group_name)
+
+        f = request.files['file']
+        f.save('/tmp/' + f.filename)
+
+        student_list = gestprojlib.init_liste('/tmp/' + f.filename)
+
+        stored_users = gestprojlib.liste_etudiant_group(group_name)
+
+        users_list = []
+        students = []
+
+        for users in stored_users:
+            users_list.append(users.get('user')[0])
+
+        for student in student_list:
+            students.append(student.get('login'))
+
+        for u in users_list:
+            if u not in students:
+                os.system('userdel -f --remove %s' % u)
+                os.system("userdel -f --remove sftp.%s" % u)
+
+        gestprojlib.create_users(student_list, group_name)
+
+        gestprojlib.create_sftp_users(student_list)
+
+        f.close()
+        os.remove('/tmp/' + f.filename)
+
+        return Response(mimetype='application/json', status=201)
+    except KeyError:
+        gestprojlib.create_group(group_name)
+
+        f = request.files['file']
+        f.save('/tmp/' + f.filename)
+        student_list = gestprojlib.init_liste('/tmp/' + f.filename)
+
+        gestprojlib.create_users(student_list, group_name)
+
+        gestprojlib.create_sftp_users(student_list)
+
+        f.close()
+        os.remove('/tmp/' + f.filename)
+
+        return Response(mimetype='application/json', status=201)
 
 
 @groups_routes.route('/api/v1/groups/<int:group_id>', methods=['DELETE'])
@@ -87,8 +142,9 @@ def delete_group(group_id):
     try:
         group = grp.getgrgid(group_id)
 
-        os.system('groupdel ' + group)
+        gestprojlib.sup_sftp_users(group.gr_name)
+        gestprojlib.sup_group(group.gr_name)
 
-        return Response('Group with ID ' + group_id + ' has been deleted', mimetype='application/json', status=200)
+        return Response('Group ' + group.gr_name + ' has been deleted', mimetype='application/json', status=200)
     except KeyError:
         abort(404, description='Not found - Could not find group with ID ' + group_id)
