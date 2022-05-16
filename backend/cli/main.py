@@ -290,7 +290,7 @@ def delete_sftp(group):
 @click.option('--vhost', is_flag=True, help='add this option to create vhosts')
 @click.option('--skel')
 @click.option('--compose')
-def add_acces(group, liste_etudiant_input):
+def add_acces(group, liste_etudiant_input, sftp, vhost, skel, compose):
     cli_opts = {'sftp' : sftp, 'vhost' : vhost, 'skel' : skel, 'compose' : compose}
     # (options -i xxx avec xxx fichier csv | mail | liste de mails)
     try:
