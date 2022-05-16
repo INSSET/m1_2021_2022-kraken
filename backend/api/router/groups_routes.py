@@ -1,6 +1,5 @@
 import grp
 import json
-import os
 
 from flask import Blueprint, Response, abort, request
 
@@ -56,10 +55,7 @@ def get_group(group_id):
 @groups_routes.route('/api/v1/groups', methods=['POST'])
 def create_group():
     request_data = request.get_json()
-    group_name = request_data['groupName']
-
-    if group_name == '':
-        return Response('Bad request - Missing mandatory input value', mimetype='application/json', status=400)
+    group_name = request_data['groupName'].encode()
 
     try:
         gestprojlib.create_group(group_name)
@@ -71,17 +67,17 @@ def create_group():
 @groups_routes.route('/api/v1/groups/<int:group_id>', methods=['PATCH'])
 def patch_group(group_id):
     request_data = request.get_json()
-    new_group_name = request_data['groupName']
+    group_name = request_data['groupName'].encode()
 
-    if new_group_name == '':
+    if group_name == '':
         return Response('Bad request - Missing mandatory input value', mimetype='application/json', status=400)
 
     try:
         group = grp.getgrgid(group_id)
 
-        os.system('groupmod -n ' + new_group_name + ' ' + group.gr_name)
+        os.system('groupmod -n ' + group_name + ' ' + group.group_name)
 
-        return Response('Group with ID ' + str(group_id) + ' has been updated', mimetype='application/json', status=200)
+        return Response('Group with ID ' + group_id + ' has been updated', mimetype='application/json', status=200)
     except KeyError:
         abort(404, description='Not found - Could not find group with ID ' + group_id)
 
@@ -148,9 +144,8 @@ def delete_group(group_id):
     try:
         group = grp.getgrgid(group_id)
 
-        gestprojlib.sup_sftp_users(group.gr_name)
-        gestprojlib.sup_group(group.gr_name)
+        os.system('groupdel ' + group)
 
-        return Response('Group ' + group.gr_name + ' has been deleted', mimetype='application/json', status=200)
+        return Response('Group with ID ' + group_id + ' has been deleted', mimetype='application/json', status=200)
     except KeyError:
         abort(404, description='Not found - Could not find group with ID ' + group_id)

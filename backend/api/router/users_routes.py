@@ -4,10 +4,15 @@ import pwd
 import sys
 
 from flask import Blueprint, Response, abort, request
+import sys
 
+from api.model.user import User
+from api.utils.json_encoder import Encoder
 import gestprojlib as GP
 from api.model.user import User
 from api.utils.json_encoder import Encoder
+
+sys.path.append("/usr/src/app/gplib")
 
 sys.path.append("/usr/src/app/gplib")
 
