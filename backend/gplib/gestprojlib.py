@@ -5,9 +5,11 @@ import pwd
 import logging
 import logging.handlers
 import subprocess
+import ovh
 
 CONF_PATH = os.path.dirname(__file__)+"/conf"
 SENDMAIL = False
+DOMAIN = 'insset.ovh'
 
 
 """
@@ -73,8 +75,10 @@ def init_liste_etudiant_csv(nom_fichier_csv):
         for etudiant in etudiants_reader:
             mail = etudiant[num_col]
             login = (mail.split('@'))[0]
-            login = login[0:26]  # pour éviter de dépasser les 32 caractères du login quand on rajoute sftp. devant
-            liste.append({'email': mail, 'login': login, 'domain': login.replace('.', '-')})
+            # pour éviter de dépasser les 32 caractères du login quand on rajoute sftp. devant
+            login = login[0:26]
+            liste.append({'email': mail, 'login': login,
+                         'domain': login.replace('.', '-')})
 
     return liste
 
@@ -90,13 +94,15 @@ def init_liste_etudiant_txt(nom_fichier_txt):
     with open(nom_fichier_txt, newline='') as txtfile:
         for mail in txtfile:
             login = (mail.split('@'))[0]
-            login = login[0:26]  # pour éviter de dépasser les 32 caractères du login quand on rajoute sftp. devant
+            # pour éviter de dépasser les 32 caractères du login quand on rajoute sftp. devant
+            login = login[0:26]
             testexist = False
             for user in pwd.getpwall():
                 if user.pw_name == login:
                     testexist = True
             if not testexist:
-                liste.append({'email': mail, 'login': login, 'domain': login.replace('.', '-')})
+                liste.append({'email': mail, 'login': login,
+                             'domain': login.replace('.', '-')})
 
     return liste
 
@@ -113,7 +119,8 @@ def liste_etudiant_group(group):
         info_grp = grp.getgrnam(group)
         for user in pwd.getpwall():
             if user.pw_gid == info_grp.gr_gid:
-                liste.append({'user': user, 'login': user.pw_name, 'domain': user.pw_name.replace('.', '-')})
+                liste.append({'user': user, 'login': user.pw_name,
+                             'domain': user.pw_name.replace('.', '-')})
     except KeyError:
         logger.error("Ref user non trouvé ")
 
@@ -167,33 +174,42 @@ def create_vhost(liste, default=CONF_PATH+"/sites-available/virtualhost.conf", d
                 cf_v_host = vhostFileProto.read()
                 with open("%s/%s-%s.conf" % (dirpath, user_info.pw_uid, etudiant['login'].replace('.', '-')),
                           'w') as vhostFileEtud:
-                    cf_v_host = cf_v_host.replace("{SUBDOMAIN}", etudiant['domain'])
+                    cf_v_host = cf_v_host.replace(
+                        "{SUBDOMAIN}", etudiant['domain'])
                     cf_v_host = cf_v_host.replace("{LOGIN}", etudiant['login'])
-                    cf_v_host = cf_v_host.replace("{PORT}", str(user_info.pw_uid))
-                    cf_v_host = cf_v_host.replace("{PROJET_DIR}", user_info.pw_dir + '/sftp/Projets')
+                    cf_v_host = cf_v_host.replace(
+                        "{PORT}", str(user_info.pw_uid))
+                    cf_v_host = cf_v_host.replace(
+                        "{PROJET_DIR}", user_info.pw_dir + '/sftp/Projets')
                     group_info = grp.getgrgid(user_info.pw_gid)
-                    cf_v_host = cf_v_host.replace("{GROUP}", group_info.gr_name)
+                    cf_v_host = cf_v_host.replace(
+                        "{GROUP}", group_info.gr_name)
                     if os.path.exists('/etc/apache2/passwd/' + group_info.gr_name):
                         import secrets
                         import string
                         alphabet = string.ascii_letters + string.digits
-                        password = ''.join(secrets.choice(alphabet) for i in range(8))
+                        password = ''.join(secrets.choice(alphabet)
+                                           for i in range(8))
                         os.system("htpasswd -b /etc/apache2/passwd/%s %s %s" % (
                             group_info.gr_name, etudiant['login'], password))
                         with open(sendpasspath, 'a+') as file:
-                            file.write("%s|%s\n" % (etudiant['login'], password))
+                            file.write("%s|%s\n" %
+                                       (etudiant['login'], password))
                             file.close()
-                        os.system('echo "%s" > %s/sftp/Projets/pass.txt' % (password, user_info.pw_dir))
+                        os.system('echo "%s" > %s/sftp/Projets/pass.txt' %
+                                  (password, user_info.pw_dir))
                     vhostFileEtud.write(cf_v_host)
                     vhostFileEtud.close()
                 vhostFileProto.close()
 
                 if os.path.exists("/etc/apache2/passwd/%s-groups" % group_info.gr_name):
                     with open("/etc/apache2/passwd/%s-groups" % group_info.gr_name, 'a') as file:
-                        file.write("%s : %s admin" % (etudiant['login'], etudiant['login']) + '\n')
+                        file.write("%s : %s admin" %
+                                   (etudiant['login'], etudiant['login']) + '\n')
                         file.close()
         except KeyError:
-            logger.error("Pas d'entrée dans passwd pour l'étudiant %s !", etudiant['login'])
+            logger.error(
+                "Pas d'entrée dans passwd pour l'étudiant %s !", etudiant['login'])
     logger.info("vhost created")
     logger.info("reload apache2")
     os.system('service apache2 reload')
@@ -215,14 +231,17 @@ def create_users(liste, group, skelpath=CONF_PATH+"/skel", shell="/bin/bash"):
     logger.info("start create users")
     for etudiant in liste:
         try:
-            data = pwd.getpwnam(etudiant['login'])  # si le login n'existe pas alors on crée dans le except
-            logging.error("L'étudiant %s existe déjà UID = %d ", etudiant['login'], data.pw_uid)
+            # si le login n'existe pas alors on crée dans le except
+            data = pwd.getpwnam(etudiant['login'])
+            logging.error("L'étudiant %s existe déjà UID = %d ",
+                          etudiant['login'], data.pw_uid)
             continue
         except KeyError:
             os.system("useradd -d /home/etudiants/%s -K UID_MIN=10002 -m --skel %s --shell %s -N -g %s %s" % (
                 etudiant['login'], skelpath, shell, group, etudiant['login']))
             # os.system("chown -R www-data:sftp /home/etudiants/%s/.ssh" % etudiant['login'])
-            os.system("usermod -p '*' %s" % etudiant['login'])  # met un pass pour activer le compte
+            # met un pass pour activer le compte
+            os.system("usermod -p '*' %s" % etudiant['login'])
             os.system("usermod -G %s %s" % (group, etudiant['login']))
             os.system("chown root:root /home/etudiants/%s" % etudiant['login'])
     logger.info("users created")
@@ -243,18 +262,26 @@ def create_sftp_users(liste, shell="/bin/bash"):
     for etudiant in liste:
         try:
             data = pwd.getpwnam("sftp.%s" % etudiant['login'])
-            logging.error("L'étudiant sftp.%s existe déjà UID = %d ", etudiant['login'], data.pw_uid)
+            logging.error("L'étudiant sftp.%s existe déjà UID = %d ",
+                          etudiant['login'], data.pw_uid)
             continue
         except KeyError:
             os.system("useradd -d /home/etudiants/%s/sftp -K UID_MIN=10002 --shell %s -N -g %s sftp.%s" % (
                 etudiant['login'], shell, 'sftp', etudiant['login']))
-            os.system("usermod -p '*' sftp.%s" % etudiant['login'])  # met un pass pour activer le compte
-            os.system("mkdir -p /home/etudiants/%s/sftp/Projets" % etudiant['login'])
-            os.system("mkdir -p /home/etudiants/%s/sftp/.ssh" % etudiant['login'])
-            os.system("chown root:root /home/etudiants/%s/sftp" % etudiant['login'])
-            os.system("chown sftp.%s:sftp /home/etudiants/%s/sftp/Projets" % (etudiant['login'], etudiant['login']))
-            os.system("chown sftp.%s:sftp /home/etudiants/%s/sftp/.ssh" % (etudiant['login'], etudiant['login']))
-            os.system("chmod 775 /home/etudiants/%s/sftp/Projets" % etudiant['login'])
+            # met un pass pour activer le compte
+            os.system("usermod -p '*' sftp.%s" % etudiant['login'])
+            os.system("mkdir -p /home/etudiants/%s/sftp/Projets" %
+                      etudiant['login'])
+            os.system("mkdir -p /home/etudiants/%s/sftp/.ssh" %
+                      etudiant['login'])
+            os.system("chown root:root /home/etudiants/%s/sftp" %
+                      etudiant['login'])
+            os.system("chown sftp.%s:sftp /home/etudiants/%s/sftp/Projets" %
+                      (etudiant['login'], etudiant['login']))
+            os.system("chown sftp.%s:sftp /home/etudiants/%s/sftp/.ssh" %
+                      (etudiant['login'], etudiant['login']))
+            os.system("chmod 775 /home/etudiants/%s/sftp/Projets" %
+                      etudiant['login'])
     logger.info("sftp accounts created")
     return
 
@@ -274,14 +301,16 @@ def create_group(group_name):
     logger.info("create group %s", group_name)
     try:
         data = grp.getgrnam(group_name)
-        logging.error("Le group_name %s existe déjà GID = %d ", group_name, data.gr_gid)
+        logging.error("Le group_name %s existe déjà GID = %d ",
+                      group_name, data.gr_gid)
     except KeyError:
         os.system('groupadd -K GID_MIN=10000 ' + group_name)
         if not os.path.exists('/etc/apache2/passwd/'):
             os.mkdir('/etc/apache2/passwd/')
         # variante de création avec l'instruction subprocess.run(...)
         # run(['htpasswd', '-c'], input="/etc/apache2/passwd/%s admin #admin#" % group_name , encoding='ascii')
-        os.system("htpasswd -bc /etc/apache2/passwd/%s admin admin.insset" % group_name)
+        os.system(
+            "htpasswd -bc /etc/apache2/passwd/%s admin admin.insset" % group_name)
         os.system("touch /etc/apache2/passwd/%s-groups" % group_name)
     logger.info("group %s created", group_name)
     return
@@ -318,20 +347,24 @@ def create_compose(liste, ipclass, protopath='../conf/docker-compose.yaml', comp
             with open(protopath, 'r') as dockerComposeFileProto:
                 compose_yaml = dockerComposeFileProto.read()
                 with open(user_info.pw_dir + '/' + composepath, 'w') as dockerComposeEtud:
-                    compose_yaml = compose_yaml.replace("{PORT}", str(user_info.pw_uid))
+                    compose_yaml = compose_yaml.replace(
+                        "{PORT}", str(user_info.pw_uid))
                     # compose_yaml = compose_yaml.replace("{GROUP}", grp.getgrgid( user_info.pw_gid ).gr_name)
                     # ___________________________________________________________
                     # !!!!!! gros problème d'affectation réseau à résoudre !!!!!
                     # ___________________________________________________________
                     compose_yaml = compose_yaml.replace("{GROUP}", 'l3-2020')
                     compose_yaml = compose_yaml.replace("{IP}", ip_container)
-                    compose_yaml = compose_yaml.replace("{PROJET_DIR}", user_info.pw_dir + '/sftp/Projets')
-                    compose_yaml = compose_yaml.replace("{LOGIN}", etudiant['login'])
+                    compose_yaml = compose_yaml.replace(
+                        "{PROJET_DIR}", user_info.pw_dir + '/sftp/Projets')
+                    compose_yaml = compose_yaml.replace(
+                        "{LOGIN}", etudiant['login'])
                     dockerComposeEtud.write(compose_yaml)
                     dockerComposeEtud.close()
                 dockerComposeFileProto.close()
         except KeyError:
-            logger.error("[Erreur] L'étudiant %s n'existe pas", etudiant['login'])
+            logger.error("[Erreur] L'étudiant %s n'existe pas",
+                         etudiant['login'])
     logger.info("docker comose installed")
     return
 
@@ -372,7 +405,8 @@ def sup_vhost(group):
         info_grp = grp.getgrnam(group)
         for user in pwd.getpwall():
             if user.pw_gid == info_grp.gr_gid:
-                os.system("rm /etc/apache2/sites-enabled/%s-%s.conf" % (user.pw_uid, user.pw_name.replace('.', '-')))
+                os.system("rm /etc/apache2/sites-enabled/%s-%s.conf" %
+                          (user.pw_uid, user.pw_name.replace('.', '-')))
 
         if os.path.exists('/etc/apache2/passwd/' + group):
             os.remove('/etc/apache2/passwd/' + group)
@@ -390,14 +424,17 @@ def sup_user(email):
     :return:
     """
     login = (email.split('@'))[0]
-    login = login[0:26]  # pour éviter de dépasser les 32 caractères du login quand on rajoute sftp. devant
+    # pour éviter de dépasser les 32 caractères du login quand on rajoute sftp. devant
+    login = login[0:26]
     try:
         user = pwd.getpwnam(login)
-        msg = subprocess.check_output(["userdel", "-f", "--remove", user.pw_name], stderr=subprocess.STDOUT, text=True)
+        msg = subprocess.check_output(
+            ["userdel", "-f", "--remove", user.pw_name], stderr=subprocess.STDOUT, text=True)
         if not msg.isspace():
             logger.info(msg)
         if os.path.exists("/etc/apache2/sites-enabled/%s-%s.conf" % (user.pw_uid, user.pw_name.replace('.', '-'))):
-            os.system("rm /etc/apache2/sites-enabled/%s-%s.conf" % (user.pw_uid, user.pw_name.replace('.', '-')))
+            os.system("rm /etc/apache2/sites-enabled/%s-%s.conf" %
+                      (user.pw_uid, user.pw_name.replace('.', '-')))
     except KeyError:
         logger.error("Compte étudiant inexistant %s ", login)
 
@@ -418,3 +455,65 @@ def sup_sftp_users(group):
 
     except KeyError:
         logger.error("Le group_name %s n'existe pas ", group)
+
+
+def create_containers(liste, grp_sftp):
+    for etud in liste:
+        os.chdir(etud['user'].pw_dir)
+        os.system('docker-compose up -d')
+        os.system("docker exec %s groupadd -f -g %s sftp" %
+                  (etud['user'].pw_name, grp_sftp.gr_gid))
+        os.system("docker exec %s useradd -d /opt/projet --shell /bin/bash -u %s -g sftp %s" % (
+            etud['user'].pw_name, etud['user'].pw_uid, etud['user'].pw_name))
+        os.system(
+            'docker exec %s bash -c \'echo "%s:dev" | chpasswd\'' % (etud['user'].pw_name, etud['user'].pw_name))
+        os.system("docker exec %s chown -R %s /opt/projet" %
+                  (etud['user'].pw_name, etud['user'].pw_name))
+        os.system("rm /home/etudiants/%s/.ssh/known_hosts" %
+                  etud['user'].pw_name)
+
+
+def create_domains(liste):
+    client = ovh.Client(config_file='ovh/ovh.conf')
+    for etudiant in liste:
+        un_domain = etudiant['login'].replace('.', '-')
+        result = client.post('/domain/zone/' + DOMAIN + '/record',
+                             fieldType='CNAME',
+                             subDomain=un_domain,
+                             target=DOMAIN + '.',
+                             ttl=None,
+                             )
+        #print(result['subDomain'] + '=' + str(result['id']))
+
+
+def create_sql(liste, ipclass):
+    with open("../data/createUserMySQL.sql", 'w') as sql_file:
+        for etud in liste:
+            with open("/home/etudiants/%s/sftp/Projets/pass.txt" % etud['user'].pw_name, "r") as pass_file:
+                password = pass_file.read().strip()
+                pass_file.close()
+                ip = build_ip(etud['user'].pw_uid, ipclass)
+                name = etud['user'].pw_name
+                sql = """
+                    CREATE USER '%s'@'10.5.10.2' IDENTIFIED WITH caching_sha2_password BY '%s';
+                    CREATE USER '%s'@'%s' IDENTIFIED WITH caching_sha2_password BY '%s';
+                    CREATE DATABASE IF NOT EXISTS `%s`;
+                    GRANT ALL ON `%s`.* TO '%s'@'10.5.10.2';
+                    GRANT ALL ON `%s`.* TO '%s'@'%s';
+                    """ % (name, password, name, ip, password, name, name, name, name, name, ip)
+                sql_file.write(sql)
+        sql_file.close()
+
+
+def delete_containers(liste):
+    for etud in liste:
+        os.chdir(etud['user'].pw_dir)
+        os.system('docker-compose down')
+        if os.path.exists("rm %s/.ssh/known_hosts" % etud['user'].pw_dir):
+            os.system("rm %s/.ssh/known_hosts" % etud['user'].pw_dir)
+
+
+def run_containers(liste):
+    for etud in liste:
+        os.chdir(etud['user'].pw_dir)
+        os.system('docker-compose up -d')
