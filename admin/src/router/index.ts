@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import GroupsView from "../views/GroupsView.vue";
-import GroupDetailView from "../views/GroupDetailView.vue";
 import AddGroupView from "../views/AddGroupView.vue";
 import GroupsEdit from "../views/GroupsEdit.vue";
 import GroupDetailView from "../views/GroupDetailView.vue";
