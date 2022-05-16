@@ -29,6 +29,11 @@ const router = createRouter({
       name: "groupDetail",
       component: GroupDetailView,
     },
+    {
+      path: "/groups/add",
+      name: "groupDetail",
+      component: GroupDetailView,
+    },
   ],
 });
 
