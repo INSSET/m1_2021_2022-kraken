@@ -94,3 +94,23 @@ Pour commencer la première itération qui se déroule du 11 avril 2022 au 16 ma
   - <em>Create/Refacto API endpoints</em> assignée à **Micke Niepceron**.
   - <em>Write API tests</em> assigné à **Micke Niepceron**.
   - <em>Create the components for the admin interface</em> assignée à **Thibaut Picart**.
+### Itération 3
+Pour commencer la troisière itération qui se déroule du 16 avril 2022 au 17 juin 2022, les éléments du backlog suivant ont été retenus :
+- ID 181854424, <em>As a developper I want to access API Documentation (auto generated swagger)</em> assignée à **Laurent Cusimano**.
+- ID 181264576, <em>Change SSH authentification</em> assignée à **Laurent Cusimano**.
+- ID 181263543, <em>Create the continuous deployment script</em> assignée à **Fragan Gourvil**.
+- ID 181253513, <em>As a student, i want to upload a public key</em> assignée à **Thibaut Picart**.
+  - <em>Create/Refacto API endpoints</em> assignée à **Micke Niepceron**.
+  - <em>Write API tests</em> assigné à **Micke Niepceron**.
+- ID 181253565, <em>As a student, I want to update my public key</em> assignée à **Thibaut Picart**.
+  - <em>Create/Refacto API endpoints</em> assignée à **Micke Niepceron**.
+  - <em>Write API tests</em> assigné à **Micke Niepceron**.
+- ID 181263528, <em>As a administrator I want to be able to modify the DNS</em> assignée à **Fragan Gourvil**.
+- ID 181263622, <em>As a administrator I want to update the students Dockerfile</em> assignée à **Jérémy Krzeczowski**.
+- ID 181263502, <em>As an administrator I want to be able to interact with the student spaces</em> assignée à **Jérémy Krzeczowski**.
+- ID 181263804, <em>As an administrator, I want to be able to add a late student</em> assignée à **Tanguy Paquet**.
+  - <em>Create/Refacto API endpoints</em> assignée à **Micke Niepceron**.
+  - <em>Write API tests</em> assigné à **Micke Niepceron**.
+- ID 181265034, <em>As an administrator, I want to be able to monitor every students' containers</em> assignée à **Micke Niepceron**.
+  - <em>Create the components for the admin interface</em> assignée à **Thibaut Picart**.
+  - <em>Create the components for the user interface</em> assignée à **Fragan Gourvil**.
