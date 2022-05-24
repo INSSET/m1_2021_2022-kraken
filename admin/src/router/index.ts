@@ -27,6 +27,11 @@ const router = createRouter({
       component: GroupsView,
     },
     {
+      path: "/groupsEdit/:id_group",
+      name: "groupsEdit",
+      component: GroupsEdit,
+    },
+    {
       path: "/groups/add",
       name: "addGroup",
       component: AddGroupView,
