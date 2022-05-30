@@ -94,6 +94,7 @@ Pour commencer la première itération qui se déroule du 11 avril 2022 au 16 ma
   - <em>Create/Refacto API endpoints</em> assignée à **Micke Niepceron**.
   - <em>Write API tests</em> assigné à **Micke Niepceron**.
   - <em>Create the components for the admin interface</em> assignée à **Thibaut Picart**.
+
 ### Itération 3
 Pour commencer la troisière itération qui se déroule du 16 avril 2022 au 17 juin 2022, les éléments du backlog suivant ont été retenus :
 - ID 181854424, <em>As a developper I want to access API Documentation (auto generated swagger)</em> assignée à **Laurent Cusimano**.
