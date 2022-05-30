@@ -1,0 +1,24 @@
+main {
+
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+
+  .wrapper {
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%
+
+  }
+
+  .wrapper-content {
+
+    padding: 45px;
+    width: 100%;
+
+  }
+
+}

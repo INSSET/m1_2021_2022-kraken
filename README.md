@@ -22,7 +22,7 @@ Gestoin du dépôt et test des projets étudiants
 Vous devez avoir `docker` et `docker-compose` d'installer sur votre machine. A la racine du dossier, lancez la commande suivante :  
 
 ```shell
-doco -f docker-compose.dev.yml -f docker-compose.override.yml up -d
+docker-compose -f docker-compose.dev.yml -f docker-compose.override.yml up -d --build
 ```
 
 Cette commande permet de de lancer l'ensemble des services décrits dans les fichiers `docker-compose.*.yml` en mode détaché (cf. [références docker-compose](https://docs.docker.com/compose/reference/)).
@@ -94,6 +94,7 @@ Pour commencer la première itération qui se déroule du 11 avril 2022 au 16 ma
   - <em>Create/Refacto API endpoints</em> assignée à **Micke Niepceron**.
   - <em>Write API tests</em> assigné à **Micke Niepceron**.
   - <em>Create the components for the admin interface</em> assignée à **Thibaut Picart**.
+
 ### Itération 3
 Pour commencer la troisière itération qui se déroule du 16 avril 2022 au 17 juin 2022, les éléments du backlog suivant ont été retenus :
 - ID 181854424, <em>As a developper I want to access API Documentation (auto generated swagger)</em> assignée à **Laurent Cusimano**.

@@ -32,6 +32,3 @@ jobs:
 
       - name: Lint source code
         run: cd ${{ inputs.workdir }} && npm run lint
-
-      - name: Unit tests
-        run: cd ${{ inputs.workdir }} && npm run test:unit
