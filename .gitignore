@@ -18,3 +18,5 @@ src/ovh/ovh.conf
 ./ui/.idea
 ./ui/node_modules
 node_modules
+letsencrypt
+home
