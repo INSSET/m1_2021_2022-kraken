@@ -215,6 +215,16 @@ def create_vhost(liste, default=CONF_PATH+"/sites-available/virtualhost.conf", d
     os.system('service apache2 reload')
     return
 
+"""
+
+Création User :
+
+    - Créer l'utilisateur via le skell
+    - Chown du home
+    - Copier le docker-skell pour l'utilisateur dans le .docker du /home/gestproj (ex: [fragan-gourvil-symfony])
+    - Modifier les .env des dossier copier avec les informations du l'utilisateur
+
+"""
 
 def create_users(liste, group, skelpath=CONF_PATH+"/skel", shell="/bin/bash"):
     """
@@ -237,15 +247,19 @@ def create_users(liste, group, skelpath=CONF_PATH+"/skel", shell="/bin/bash"):
                           etudiant['login'], data.pw_uid)
             continue
         except KeyError:
-            os.system("useradd -d /home/etudiants/%s -K UID_MIN=10002 -m --skel %s --shell %s -N -g %s %s" % (
-                etudiant['login'], skelpath, shell, group, etudiant['login']))
+            os.system("useradd -d /home/etudiants/%s -K UID_MIN=10002 -m --skel %s --shell %s -N -g %s %s" % (etudiant['login'], skelpath, shell, group, etudiant['login']))
             # os.system("chown -R www-data:sftp /home/etudiants/%s/.ssh" % etudiant['login'])
             # met un pass pour activer le compte
             os.system("usermod -p '*' %s" % etudiant['login'])
             os.system("usermod -G %s %s" % (group, etudiant['login']))
-            os.system("chown root:root /home/etudiants/%s" % etudiant['login'])
+            os.system("groupadd %s" % etudiant['login'])
+            os.system("usermod -G %s %s" % (etudiant['login'], etudiant['login']))
+            os.system("chown -R %s:%s /home/etudiants/%s" % (etudiant['login'], etudiant['login']))
+            os.system("cp -r /home/gestproj/docker-skell/symfony /home/gestproj/.docker/%s-symfony" % etudiant['login'])
+
     logger.info("users created")
     return
+
 
 
 def create_sftp_users(liste, shell="/bin/bash"):
@@ -305,15 +319,10 @@ def create_group(group_name):
                       group_name, data.gr_gid)
     except KeyError:
         os.system('groupadd -K GID_MIN=10000 ' + group_name)
-        if not os.path.exists('/etc/apache2/passwd/'):
-            os.mkdir('/etc/apache2/passwd/')
-        # variante de création avec l'instruction subprocess.run(...)
-        # run(['htpasswd', '-c'], input="/etc/apache2/passwd/%s admin #admin#" % group_name , encoding='ascii')
-        os.system(
-            "htpasswd -bc /etc/apache2/passwd/%s admin admin.insset" % group_name)
-        os.system("touch /etc/apache2/passwd/%s-groups" % group_name)
     logger.info("group %s created", group_name)
     return
+
+
 
 
 def create_compose(liste, ipclass, protopath='../conf/docker-compose.yaml', composepath='docker-compose.yaml'):

@@ -1,6 +1,7 @@
 FROM ubuntu:20.04@sha256:9101220a875cee98b016668342c489ff0674f247f6ca20dfc91b91c0f28581ae
 
 # Arguments pour le build
+
 ARG TIMEZONE=Europe/Paris
 ARG USER=gestproj
 ARG UID=1000
@@ -15,42 +16,23 @@ RUN set -eux; \
 # Installation des packages
 
 RUN apt update && apt install -y \
-    apache2 \
-    openssl \
     openssh-server \
+    nano \
     curl \
     $PYTHON_VERSION \
     python3-pip \
     python-dev \
     git
 
+RUN curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+RUN chmod +x /usr/local/bin/docker-compose
+
 # Création des dossiers néscessaires
+
 RUN set -eux; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/*; \
-    mkdir /etc/apache2/ssl-certificat; \
     mkdir -p /home/etudiants
-
-WORKDIR /etc/apache2/ssl-certificat
-
-# OpenSSL certification
-RUN set -eux; \
-    openssl genrsa 2048 > server.key; \
-    openssl req -new  \
-	-subj "/C=FR/ST=Aisne/L=Saint-quentin/O=INSSET/OU=IT Department/CN=licence-st.u-picardie.fr" \
-	-key server.key > server.csr
-
-RUN set -eux; \
-    openssl genrsa 2048 > ca.key; \
-    openssl req -new -x509 -days 365 \
-	-subj "/C=FR/ST=Somme/L=Amiens/O=UPJV/OU=IT Department/CN=licence-st.u-picardie.fr" \
-	-key ca.key > ca.crt
-
-RUN set -eux; \
-    openssl x509 -req -in server.csr -out server.crt -CA ca.crt -CAkey ca.key -CAcreateserial -CAserial ca.srl; \
-    echo "export APACHE_CRT_DIR=\$APACHE_CONFDIR/ssl-certificate" >> /etc/apache2/envvars
-
-RUN a2enmod dav_fs proxy authz_groupfile
 
 # Config SSH pour le sftp
 
@@ -84,18 +66,20 @@ WORKDIR /home/$USER
 COPY --chown=$USER:$USER gplib gplib/
 COPY --chown=$USER:$USER api api/
 COPY --chown=$USER:$USER cli cli/
+COPY --chown=$USER:$USER data data/
 COPY --chown=$USER:$USER ovh ovh/
+COPY --chown=$USER:$USER docker-skell docker-skell/
 
 RUN set -eux; \
     pip install -r api/requirements.txt --no-cache-dir; \
     pip install -r cli/requirements.txt --no-cache-dir; \
-    pip install -r ovh/requirements.txt --no-cache-dir
+    pip install -r ovh/requirements.txt --no-cache-dir; \
+    mkdir .docker
 
 # Préparation du volume data dans lequel sera stocké les données
 
 RUN set -eux; \
-    ln -s /home/test/lib/gestprojlib.py /usr/lib/$PYTHON_VERSION/gestprojlib.py; \
-    mkdir data
+    ln -s /home/test/lib/gestprojlib.py /usr/lib/$PYTHON_VERSION/gestprojlib.py
 
 # On "expose" le dossier data comme volume pour permettre une persistance des données hors conteneur
 VOLUME data
@@ -104,8 +88,11 @@ ENV CONF_OVH_PATH=/home/$USER/ovh/conf
 ENV CONF_OVH_FILE="Gestproj_12_2021_ovh.conf"
 ENV PYTHONPATH=/home/$USER/gplib
 
+COPY docker-entrypoint.sh /usr/local/bin
+RUN chmod u+x /usr/local/bin/docker-entrypoint.sh
+
 EXPOSE 5000
 
-WORKDIR /home/$USER/api
+WORKDIR /home/$USER/cli
 
-CMD ["python3", "-m" , "flask", "run", "--host=0.0.0.0"]
+CMD ["/usr/local/bin/docker-entrypoint.sh"]

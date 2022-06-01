@@ -13,6 +13,8 @@
   "dependencies": {
     "@mdi/font": "5.9.55",
     "@vue/cli": "^5.0.1",
+    "axios": "^0.27.2",
+    "dotenv": "^16.0.1",
     "roboto-fontface": "*",
     "vue": "^3.2.31",
     "vue-router": "^4.0.12",

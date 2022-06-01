@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+
+  app:
+    build:
+      context: php
+    volumes:
+      - ${LOCAL_VOLUME}:/var/www/html
+    networks:
+      - traefik
+
+  nginx:
+    build:
+      context: nginx
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.$TRAEFIK_KEY-symfony-web.rule=host(`$HOST`)"
+    volumes:
+      - ${LOCAL_VOLUME}:/var/www/html
+    networks:
+      - traefik
+
+networks:
+  traefik:
+    name: traefik-gateway

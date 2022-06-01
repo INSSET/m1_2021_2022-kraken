@@ -4,39 +4,46 @@ services:
 
   admin:
     container_name: ${APP_NAME}-admin
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.$TRAEFIK_KEY-admin-web.rule=host(`admin.insset.localhost`)"
     build:
       context: ./admin
-    ports:
-      - "4500:80"
     networks:
-      - gestproj
+      traefik:
+        ipv4_address: 172.10.0.3
 
   students:
     container_name: ${APP_NAME}-students
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.$TRAEFIK_KEY-students-web.rule=host(`students.insset.localhost`)"
     build:
       context: ./students
-    ports:
-      - "4000:80"
     networks:
-      - gestproj
+      traefik:
+        ipv4_address: 172.10.0.4
 
   backend:
     container_name: ${APP_NAME}-backend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.$TRAEFIK_KEY-backend-web.rule=host(`backend.insset.localhost`)"
+      - "traefik.http.services.$TRAEFIK_KEY-backend-service.loadbalancer.server.port=5000"
     build:
       context: ./backend
       args:
         - USER=gestproj
         - UID=1000
     ports:
-      - "5000:5000"
+      - "2222:22"
     volumes:
-      - data:/home/gestproj/data
+      - ./work:/home/gestproj/data
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./home:/home/etudiants
     networks:
-      - gestproj
+      traefik:
+        ipv4_address: 172.10.0.5
 
 volumes:
-  data: {}
-
-networks:
-  gestproj:
+  backendData: {}

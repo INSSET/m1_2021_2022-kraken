@@ -1,4 +1,4 @@
-const BASE_URL = "http://0.0.0.0:5000/api/v1/";
+const BASE_URL = "http://backend.insset.localhost/api/v1/";
 
 function fetchAPI<T>(sub_URL: string, method: string, body : object): Promise<T> {
     return fetch(BASE_URL + sub_URL, {

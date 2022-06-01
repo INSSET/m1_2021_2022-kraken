@@ -1,22 +1,6 @@
-FROM node:16-slim as development
-
-WORKDIR /usr/src/app/studentsapp
-
-COPY package*.json ./
-
-RUN set -eux; \
-    npm install; \
-    npm cache clean --force;
-
-RUN mkdir node_modules/.vite && chmod -R 777 node_modules/.vite
-
-EXPOSE 3000
-
-CMD ["npm", "run", "dev"]
-
 FROM node:16-slim@sha256:9b43cdacd070d1b38976a804aec78f03139c600865a3c72501af3bbec8d4bdee as build_vendor
 
-ARG USER=students
+ARG USER=admin
 ARG UID=1005
 
 RUN set -eux; \
@@ -29,14 +13,14 @@ WORKDIR /usr/src/app/
 COPY --chown=$USER:www-data package*.json ./
 
 RUN set -eux; \
-    npm install; \
-    npm cache clean --force;
+    yarn install; \
+    yarn cache clean
 
 FROM node:16-slim@sha256:9b43cdacd070d1b38976a804aec78f03139c600865a3c72501af3bbec8d4bdee as builder_production
 
 WORKDIR /usr/src/app/
 
-ARG USER=students
+ARG USER=admin
 ARG UID=1005
 
 RUN set -eux; \
@@ -52,7 +36,7 @@ COPY --chown=$USER:www-data . .
 USER $USER
 
 RUN set -eux; \
-    npm run build
+    yarn run build
 
 FROM nginx:stable-alpine@sha256:26716e37188bd01374360199773bc8ad8736edb7e234a2a1956a13b9800fccc4 as production
 
