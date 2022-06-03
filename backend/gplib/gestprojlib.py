@@ -6,10 +6,10 @@ import logging
 import logging.handlers
 import subprocess
 import ovh
+import time
 
 CONF_PATH = os.path.dirname(__file__)+"/conf"
 SENDMAIL = False
-DOMAIN = 'insset.ovh'
 
 
 """
@@ -40,12 +40,15 @@ if os.path.exists('/dev/log'):
 
 """
 =================================================
-Ensemble de fonctions de type utilitaire
+Ensemble de fonctions utilitaire
 =================================================
 """
 
+def silentCommand(command):
+    os.system(command + "> /dev/null 2>&1")
 
-def init_liste(path):
+
+def initStudentListFromFile(path):
     """
     Sélectionne le reader en fonction de l'extension
     :param path:
@@ -57,6 +60,27 @@ def init_liste(path):
     elif file_extension == '.txt':
         return init_liste_etudiant_txt(path)
 
+def getSshPortFromPool():
+
+    sshPoolFilePath = "/home/gestproj/ssh-ports-pool.dat"
+    sshPoolFile = open(sshPoolFilePath, "r")
+
+    pool = dict()
+
+    for line in sshPoolFile:
+        line = line.split("=")
+        pool[line[0]] = line[1].replace("\n", "")
+
+    tempPort = int(pool["IND"]) + 1
+
+    if tempPort > int(pool["MAX"]):
+        raise Exception("Limite des ports SSH atteinte")
+
+    os.system("rm -f %s && touch %s" % (sshPoolFilePath, sshPoolFilePath))
+    sshPoolFile = open(sshPoolFilePath, "w")
+    sshPoolFile.write("MIN=%s\nMAX=%s\nIND=%s" % (pool["MIN"], pool["MAX"], tempPort))
+
+    return tempPort
 
 def init_liste_etudiant_csv(nom_fichier_csv):
     """
@@ -107,6 +131,114 @@ def init_liste_etudiant_txt(nom_fichier_txt):
     return liste
 
 
+"""
+=================================================
+Ensemble de fonctions de gestion de Docker
+=================================================
+"""
+
+def executeContainerActionForTheGroup(action, group, type):
+
+    if getDockerComposeCommandByAction(action) == None:
+        raise Exception("L'action %s n'existe pas" % action)
+
+    containerBaseDirectory = "/home/gestproj/.docker/"
+    groupDirectory = containerBaseDirectory + group + "/"
+
+    if os.path.exists(groupDirectory) == False:
+        raise Exception("Le dossier du groupe %s n'existe pas" % group)
+
+    for studentDirectory in os.listdir(groupDirectory):
+        studentDirectoryPath = groupDirectory + studentDirectory
+        containerCommandExecutor(studentDirectoryPath, studentDirectory, action, type)
+
+
+
+def executeContainerActionForAStudent(action, student, group, type):
+
+    if getDockerComposeCommandByAction(action) is None:
+        raise Exception("L'action %s n'existe pas" % action)
+
+    containerBaseDirectory = "/home/gestproj/.docker/"
+    groupDirectory = containerBaseDirectory + group + "/"
+
+    if os.path.exists(groupDirectory) == False:
+        raise Exception("Le dossier du groupe %s n'existe pas" % group)
+
+    studentDirectoryPath = groupDirectory + student
+    containerCommandExecutor(studentDirectoryPath, student, action, type)
+
+
+
+def containerCommandExecutor(studentDirectoryPath, studentDirectory, action, type):
+
+    if type is None:
+        for studentDirectoryContainerPath in os.listdir(studentDirectoryPath):
+            os.chdir(studentDirectoryPath + "/" + studentDirectoryContainerPath)
+            silentCommand(getDockerComposeCommandByAction(action) % studentDirectory)
+            print("%s > Containers %s" % (studentDirectory, action))
+    else:
+        if type is not None and os.path.exists(studentDirectoryPath + "/" + type):
+            studentContainerPath = studentDirectoryPath + "/" + type
+            os.chdir(studentContainerPath)
+            silentCommand(getDockerComposeCommandByAction(action) % studentDirectory)
+            print("%s > Containers %s" % (studentDirectory, action))
+        else:
+            raise Exception(
+                "Le type de container [%s] n'est pas disponible pour l'utilisateur %s (DirectoryNotFound)" % (
+                type, studentDirectory))
+    return
+
+def getStudentContainerInformations(group, student, container):
+
+    prefix = group + "-" + student.replace(".", "-") + "-" + container
+    proc = subprocess.Popen(["docker ps -af \"name=^%s\" --format \"table {{.ID}}|{{.Names}}|{{.Image}}|{{.Ports}}|{{.State}}\"" % prefix], shell=True, stdout=subprocess.PIPE).stdout
+    output = proc.read()
+    s = output.decode()
+    s = s[:s.rfind('\n')]
+    info = ''.join(s.splitlines(keepends=True)[1:])
+    splitedInformations = list(filter(None, info.split("|")))
+
+    result = dict()
+    result['id'] = splitedInformations[0]
+    result['image'] = splitedInformations[2]
+    result['ports'] = splitedInformations[3]
+    result['status'] = splitedInformations[4]
+    result['containerName'] = splitedInformations[1]
+
+    return result
+
+def getContainerLogs(containerId):
+
+    proc = subprocess.Popen(["docker logs %s" % containerId], shell=True, stdout=subprocess.PIPE).stdout
+    output = proc.read()
+    s = output.decode()
+    s = s[:s.rfind('\n')]
+    return s
+
+
+def getDockerComposeCommandByAction(action):
+    switch = {
+        "up": "docker-compose -p %s up -d",
+        "down": "docker-compose -p %s down",
+        "restart": "docker-compose -p %s restart",
+        "rebuild": "docker-compose -p %s up -d --build",
+        "nuke": "docker-compose -p %s down -v"
+    }
+
+    return switch.get(action, None)
+
+
+def pushFileOntoAContainer(containerId, source, mode, target):
+
+    if mode != 1 and mode != 0:
+        raise Exception("Le mode de push n'est pas connu. Options : 1 ou 0")
+
+    try:
+        os.system("docker exec %s su -c \"cat %s %s %s\"" % (containerId, source, mode, target))
+    except Exception as exception:
+        logger.error(exception)
+
 def liste_etudiant_group(group):
     """
     Parcours tous les users de /etc/passwd est construit le tableau liste avec ceux qui appartienne au group_name
@@ -143,78 +275,6 @@ def build_ip(uid, ipclass):
     ip = "%s.%s.%s" % (ipclass, ip_class_b, ip_class_c)
     return ip
 
-
-""" 
-=================================================
-Ensemble de fonctions de création
-    - site virtuel
-    - compte utilisateur
-    - accès sftp utilisateur
-    - group
-    - le docker-compose associé à chaque compte
-=================================================
-"""
-
-
-def create_vhost(liste, default=CONF_PATH+"/sites-available/virtualhost.conf", dirpath="/etc/apache2/sites-enabled",
-                 sendpasspath="../data/sendPassword.txt"):
-    """
-    A partir d'une liste de user et d'un template de virtual host génére les Virualhost
-    :param liste:
-    :param default:
-    :param dirpath:
-    :param sendpasspath:
-    :return:
-    """
-    logger.info("start create vhost")
-    for etudiant in liste:
-        try:
-            user_info = pwd.getpwnam(etudiant['login'])
-            with open(default, "r") as vhostFileProto:
-                cf_v_host = vhostFileProto.read()
-                with open("%s/%s-%s.conf" % (dirpath, user_info.pw_uid, etudiant['login'].replace('.', '-')),
-                          'w') as vhostFileEtud:
-                    cf_v_host = cf_v_host.replace(
-                        "{SUBDOMAIN}", etudiant['domain'])
-                    cf_v_host = cf_v_host.replace("{LOGIN}", etudiant['login'])
-                    cf_v_host = cf_v_host.replace(
-                        "{PORT}", str(user_info.pw_uid))
-                    cf_v_host = cf_v_host.replace(
-                        "{PROJET_DIR}", user_info.pw_dir + '/sftp/Projets')
-                    group_info = grp.getgrgid(user_info.pw_gid)
-                    cf_v_host = cf_v_host.replace(
-                        "{GROUP}", group_info.gr_name)
-                    if os.path.exists('/etc/apache2/passwd/' + group_info.gr_name):
-                        import secrets
-                        import string
-                        alphabet = string.ascii_letters + string.digits
-                        password = ''.join(secrets.choice(alphabet)
-                                           for i in range(8))
-                        os.system("htpasswd -b /etc/apache2/passwd/%s %s %s" % (
-                            group_info.gr_name, etudiant['login'], password))
-                        with open(sendpasspath, 'a+') as file:
-                            file.write("%s|%s\n" %
-                                       (etudiant['login'], password))
-                            file.close()
-                        os.system('echo "%s" > %s/sftp/Projets/pass.txt' %
-                                  (password, user_info.pw_dir))
-                    vhostFileEtud.write(cf_v_host)
-                    vhostFileEtud.close()
-                vhostFileProto.close()
-
-                if os.path.exists("/etc/apache2/passwd/%s-groups" % group_info.gr_name):
-                    with open("/etc/apache2/passwd/%s-groups" % group_info.gr_name, 'a') as file:
-                        file.write("%s : %s admin" %
-                                   (etudiant['login'], etudiant['login']) + '\n')
-                        file.close()
-        except KeyError:
-            logger.error(
-                "Pas d'entrée dans passwd pour l'étudiant %s !", etudiant['login'])
-    logger.info("vhost created")
-    logger.info("reload apache2")
-    os.system('service apache2 reload')
-    return
-
 """
 
 Création User :
@@ -226,7 +286,7 @@ Création User :
 
 """
 
-def create_users(liste, group, skelpath=CONF_PATH+"/skel", shell="/bin/bash"):
+def createUsers(list, group):
     """
     A partir d'une liste d'identifiant utilisateur on ajoute un compte user
     Ce user sera celui de l'étudiant sur le serveur pour accéder à son container
@@ -238,27 +298,68 @@ def create_users(liste, group, skelpath=CONF_PATH+"/skel", shell="/bin/bash"):
     :return:
     """
 
+    userSkellPath = "/home/gestproj/user-skell"
+
     logger.info("start create users")
-    for etudiant in liste:
+    for student in list:
         try:
             # si le login n'existe pas alors on crée dans le except
-            data = pwd.getpwnam(etudiant['login'])
+            data = pwd.getpwnam(student['login'])
             logging.error("L'étudiant %s existe déjà UID = %d ",
-                          etudiant['login'], data.pw_uid)
+                          student['login'], data.pw_uid)
             continue
         except KeyError:
-            os.system("useradd -d /home/etudiants/%s -K UID_MIN=10002 -m --skel %s --shell %s -N -g %s %s" % (etudiant['login'], skelpath, shell, group, etudiant['login']))
+
+            # Création de l'utilisateur
+            os.system("useradd -d /home/etudiants/%s -K UID_MIN=10002 -m --skel %s --shell %s -N -g %s %s" % (student['login'], userSkellPath, "/bin/bash", group, student['login']))
+            os.system("groupadd %s" % student['login'])
+
             # os.system("chown -R www-data:sftp /home/etudiants/%s/.ssh" % etudiant['login'])
             # met un pass pour activer le compte
-            os.system("usermod -p '*' %s" % etudiant['login'])
-            os.system("usermod -G %s %s" % (group, etudiant['login']))
-            os.system("groupadd %s" % etudiant['login'])
-            os.system("usermod -G %s %s" % (etudiant['login'], etudiant['login']))
-            os.system("chown -R %s:%s /home/etudiants/%s" % (etudiant['login'], etudiant['login']))
-            os.system("cp -r /home/gestproj/docker-skell/symfony /home/gestproj/.docker/%s-symfony" % etudiant['login'])
+
+            # On set les group à l'utilisateur
+
+            os.system("usermod -p '*' %s" % student['login'])
+            os.system("usermod -G %s %s" % (group, student['login']))
+            os.system("usermod -G %s %s" % (student['login'], student['login']))
+            os.system("mkdir -p /home/gestproj/.docker/%s/%s" % (group, student['login']))
+
+            # On prépare les docker-skell de l'étudiant
+            os.system("cd /home/gestproj/docker-skell/ && for file in *; do cp -r $file /home/gestproj/.docker/%s/%s/$file; done" % (group, student['login']))
+
+            sshPort = getSshPortFromPool()
+            # On vient remplir les .env avec les variables attendus en fonction du login
+            os.system("for file in /home/gestproj/.docker/%s/%s/*; do [ -d \"$file\" ] && find $file -name '.env.example' | xargs -I{} cat {} | sed -e 's/{STUDENT_NAME}/%s/g' -e 's/{STUDENT_NAME_WITH_DASH}/%s/g' -e 's/#//g' -e 's/{STUDENT_GROUP}/%s/g' -e 's/{STUDENT_SSH_PORT}/%s/g' > $file/.env; done" % (group, student['login'], student['login'], student['login'].replace(".", "-"), group, sshPort))
 
     logger.info("users created")
     return
+
+
+def updateAndPropagateSshKeys(student, sshKeyFile, isFile = False):
+
+    try:
+
+        userExist = pwd.getpwnam(student)
+
+    except KeyError as exception:
+        raise Exception("L'utilisateur %s n'existe pas" % student)
+
+
+    userBaseHomePath = "/home/etudiants/" + student
+
+    if os.path.exists(userBaseHomePath):
+
+        userAuthorizedKeys = "/home/etudiants/" + student + "/.ssh/authorized_keys"
+
+        if isFile:
+            os.system("cat %s >> %s" % (sshKeyFile, userAuthorizedKeys))
+        else:
+            os.system("echo %s >> %s" % (sshKeyFile, userAuthorizedKeys))
+
+        os.system("chown root:root %s" % userAuthorizedKeys)
+
+    else:
+        raise Exception("Le dossier home de l'utilisateur % n'existe pas" % student)
 
 
 
@@ -300,7 +401,7 @@ def create_sftp_users(liste, shell="/bin/bash"):
     return
 
 
-def create_group(group_name):
+def createGroup(group_name):
     """
     Création du group portant le nom (group_name), c'est la première fonction exécutée généralement
     Ensuite, il y a création de deux fichiers :
@@ -322,63 +423,7 @@ def create_group(group_name):
     logger.info("group %s created", group_name)
     return
 
-
-
-
-def create_compose(liste, ipclass, protopath='../conf/docker-compose.yaml', composepath='docker-compose.yaml'):
-    """
-
-    :param liste:
-    :param ipclass:
-    :param protopath:
-    :param composepath:
-    :return:
-    """
-    logger.info("Install Docker Compose")
-    for etudiant in liste:
-        try:
-            user_info = pwd.getpwnam(etudiant['login'])
-
-            ip_container = build_ip(user_info.pw_uid, ipclass)
-            # personalisation du fichier .bashrc
-            with open(user_info.pw_dir + '/.bash_profile', 'r+') as rc:
-                content = rc.read()
-                content = content.replace("{IP}", ip_container)
-                content = content.replace("{USER}", user_info.pw_name)
-
-                rc.seek(0, 0)
-                rc.write(content)
-                rc.close()
-
-            # os.system('cp ' + user_info.pw_dir + '/.bashrc ' + user_info.pw_dir + '/.bash_profile')
-            os.system("chown root:root %s/.bash_profile" % user_info.pw_dir)
-
-            with open(protopath, 'r') as dockerComposeFileProto:
-                compose_yaml = dockerComposeFileProto.read()
-                with open(user_info.pw_dir + '/' + composepath, 'w') as dockerComposeEtud:
-                    compose_yaml = compose_yaml.replace(
-                        "{PORT}", str(user_info.pw_uid))
-                    # compose_yaml = compose_yaml.replace("{GROUP}", grp.getgrgid( user_info.pw_gid ).gr_name)
-                    # ___________________________________________________________
-                    # !!!!!! gros problème d'affectation réseau à résoudre !!!!!
-                    # ___________________________________________________________
-                    compose_yaml = compose_yaml.replace("{GROUP}", 'l3-2020')
-                    compose_yaml = compose_yaml.replace("{IP}", ip_container)
-                    compose_yaml = compose_yaml.replace(
-                        "{PROJET_DIR}", user_info.pw_dir + '/sftp/Projets')
-                    compose_yaml = compose_yaml.replace(
-                        "{LOGIN}", etudiant['login'])
-                    dockerComposeEtud.write(compose_yaml)
-                    dockerComposeEtud.close()
-                dockerComposeFileProto.close()
-        except KeyError:
-            logger.error("[Erreur] L'étudiant %s n'existe pas",
-                         etudiant['login'])
-    logger.info("docker comose installed")
-    return
-
-
-def sup_group(group):
+def deleteGroup(group):
     """
     Suprime tous les utilisateurs appartenant à se groupe, en comparant
     le n° du groupe de tous les utilisateurs et on supprime quand il y a
@@ -392,39 +437,22 @@ def sup_group(group):
         info_grp = grp.getgrnam(group)
         for user in pwd.getpwall():
             if user.pw_gid == info_grp.gr_gid:
+
                 msg = subprocess.check_output(["userdel", "-f", "--remove", user.pw_name],
                                               stderr=subprocess.STDOUT,
                                               text=True)
                 if not msg.isspace():
                     logger.info(msg.strip())
+
+                os.system('groupdel ' + user.pw_name)
+                os.system("rm -rf /home/etudiants/%s-*" % user.pw_name)
+                os.system("rm -rf /home/gestproj/.docker/%s-*" % user.pw_name)
+
         os.system('groupdel ' + group)
     except KeyError:
         logger.error("Le group_name %s n'existe pas ", group)
     logger.info("group %s deleted ", group)
     return
-
-
-def sup_vhost(group):
-    """
-
-    :param group:
-    :return:
-    """
-    try:
-        info_grp = grp.getgrnam(group)
-        for user in pwd.getpwall():
-            if user.pw_gid == info_grp.gr_gid:
-                os.system("rm /etc/apache2/sites-enabled/%s-%s.conf" %
-                          (user.pw_uid, user.pw_name.replace('.', '-')))
-
-        if os.path.exists('/etc/apache2/passwd/' + group):
-            os.remove('/etc/apache2/passwd/' + group)
-
-        if os.path.exists("/etc/apache2/passwd/%s-groups" % group):
-            os.remove("/etc/apache2/passwd/%s-groups" % group)
-    except KeyError:
-        logger.error("Le group_name %s n'existe pas ", group)
-
 
 def sup_user(email):
     """
@@ -465,36 +493,6 @@ def sup_sftp_users(group):
     except KeyError:
         logger.error("Le group_name %s n'existe pas ", group)
 
-
-def create_containers(liste, grp_sftp):
-    for etud in liste:
-        os.chdir(etud['user'].pw_dir)
-        os.system('docker-compose up -d')
-        os.system("docker exec %s groupadd -f -g %s sftp" %
-                  (etud['user'].pw_name, grp_sftp.gr_gid))
-        os.system("docker exec %s useradd -d /opt/projet --shell /bin/bash -u %s -g sftp %s" % (
-            etud['user'].pw_name, etud['user'].pw_uid, etud['user'].pw_name))
-        os.system(
-            'docker exec %s bash -c \'echo "%s:dev" | chpasswd\'' % (etud['user'].pw_name, etud['user'].pw_name))
-        os.system("docker exec %s chown -R %s /opt/projet" %
-                  (etud['user'].pw_name, etud['user'].pw_name))
-        os.system("rm /home/etudiants/%s/.ssh/known_hosts" %
-                  etud['user'].pw_name)
-
-
-def create_domains(liste):
-    client = ovh.Client(config_file='ovh/ovh.conf')
-    for etudiant in liste:
-        un_domain = etudiant['login'].replace('.', '-')
-        result = client.post('/domain/zone/' + DOMAIN + '/record',
-                             fieldType='CNAME',
-                             subDomain=un_domain,
-                             target=DOMAIN + '.',
-                             ttl=None,
-                             )
-        #print(result['subDomain'] + '=' + str(result['id']))
-
-
 def create_sql(liste, ipclass):
     with open("../data/createUserMySQL.sql", 'w') as sql_file:
         for etud in liste:
@@ -512,17 +510,3 @@ def create_sql(liste, ipclass):
                     """ % (name, password, name, ip, password, name, name, name, name, name, ip)
                 sql_file.write(sql)
         sql_file.close()
-
-
-def delete_containers(liste):
-    for etud in liste:
-        os.chdir(etud['user'].pw_dir)
-        os.system('docker-compose down')
-        if os.path.exists("rm %s/.ssh/known_hosts" % etud['user'].pw_dir):
-            os.system("rm %s/.ssh/known_hosts" % etud['user'].pw_dir)
-
-
-def run_containers(liste):
-    for etud in liste:
-        os.chdir(etud['user'].pw_dir)
-        os.system('docker-compose up -d')

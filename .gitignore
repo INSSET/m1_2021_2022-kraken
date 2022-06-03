@@ -20,3 +20,4 @@ src/ovh/ovh.conf
 node_modules
 letsencrypt
 home
+work/sshkey.pub

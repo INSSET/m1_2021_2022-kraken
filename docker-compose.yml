@@ -32,15 +32,15 @@ services:
       - "traefik.http.services.$TRAEFIK_KEY-backend-service.loadbalancer.server.port=5000"
     build:
       context: ./backend
-      args:
-        - USER=gestproj
-        - UID=1000
     ports:
       - "2222:22"
     volumes:
       - ./work:/home/gestproj/data
       - /var/run/docker.sock:/var/run/docker.sock
       - ./home:/home/etudiants
+      - ./backend/cli:/home/gestproj/cli
+      - ./backend/gplib:/home/gestproj/gplib
+      - ./backend/config/docker-skell:/home/gestproj/docker-skell
     networks:
       traefik:
         ipv4_address: 172.10.0.5

@@ -13,6 +13,7 @@ services:
       - --providers.docker.exposedbydefault=false
       - --entrypoints.web.address=:80
       - --entrypoints.websecure.address=:443
+      - --entrypoints.ssh.address=:22
 #      - --entrypoints.websecure.http.tls.domains[0].main=$DOMAIN
 #      - --entrypoints.websecure.http.tls.domains[0].sans=*.$DOMAIN
 #      - --entrypoints.websecure.http.tls.certresolver=letsencrypt
@@ -28,6 +29,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
+      - "2223:22"
       - "8090:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock

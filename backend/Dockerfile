@@ -68,21 +68,21 @@ COPY --chown=$USER:$USER api api/
 COPY --chown=$USER:$USER cli cli/
 COPY --chown=$USER:$USER data data/
 COPY --chown=$USER:$USER ovh ovh/
-COPY --chown=$USER:$USER docker-skell docker-skell/
+COPY --chown=$USER:$USER config/docker-skell docker-skell/
+COPY --chown=$USER:$USER config/user-skell user-skell/
+COPY --chown=$USER:$USER config/ssh-ports-pool.dat ssh-ports-pool.dat
 
 RUN set -eux; \
     pip install -r api/requirements.txt --no-cache-dir; \
     pip install -r cli/requirements.txt --no-cache-dir; \
     pip install -r ovh/requirements.txt --no-cache-dir; \
-    mkdir .docker
+    mkdir .docker; \
+    echo alias gp=\'python3 /home/$USER/cli/cli.py \' >> /root/.bashrc
 
 # Préparation du volume data dans lequel sera stocké les données
 
 RUN set -eux; \
     ln -s /home/test/lib/gestprojlib.py /usr/lib/$PYTHON_VERSION/gestprojlib.py
-
-# On "expose" le dossier data comme volume pour permettre une persistance des données hors conteneur
-VOLUME data
 
 ENV CONF_OVH_PATH=/home/$USER/ovh/conf
 ENV CONF_OVH_FILE="Gestproj_12_2021_ovh.conf"
