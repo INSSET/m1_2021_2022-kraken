@@ -198,7 +198,6 @@ def getStudentContainerInformations(group, student, container):
     s = s[:s.rfind('\n')]
     info = ''.join(s.splitlines(keepends=True)[1:])
     splitedInformations = list(filter(None, info.split("|")))
-
     result = dict()
     result['id'] = splitedInformations[0]
     result['image'] = splitedInformations[2]

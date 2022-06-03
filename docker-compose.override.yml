@@ -35,16 +35,75 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./letsencrypt:/letsencrypt
     networks:
-      traefik:
-        ipv4_address: 172.10.0.2
+      - traefik
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: ${APP_NAME}-prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=5d
+      - --storage.tsdb.retention.size=21474836480B
+      - --web.enable-lifecycle
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/prometheus.rules.yml:/etc/prometheus/prometheus.rules.yml:ro
+      - prometheus-data:/prometheus
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.$TRAEFIK_KEY-prometheus.rule=Host(`$HOST`)"
+#      - "traefik.http.routers.$TRAEFIK_KEY-prometheus.tls=true"
+#      - "traefik.http.routers.$TRAEFIK_KEY-prometheus.tls.certresolver=letsencrypt"
+      - "traefik.http.services.$TRAEFIK_KEY-prometheus-service.loadbalancer.server.port=9090"
+    depends_on:
+      - traefik
+    networks:
+      - traefik
+
+  backend-cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: ${APP_NAME}-cadvisor
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    networks:
+      - traefik
+
+  grafana:
+    image: grafana/grafana
+    container_name: ${APP_NAME}-grafana
+    labels:
+      - "traefik.enable=true"
+#      - "traefik.http.routers.$TRAEFIK_KEY-grafana.tls=true"
+#      - "traefik.http.routers.$TRAEFIK_KEY-grafana.tls.certresolver=letsencrypt"
+#      - "traefik.http.routers.$TRAEFIK_KEY-grafana.rule=Host(`$GRAFANA_HOST`)"
+#      - "traefik.http.routers.$TRAEFIK_KEY-grafana-web.middlewares=redirect-to-https"
+      - "traefik.http.routers.$TRAEFIK_KEY-grafana-web.rule=host(`$GRAFANA_HOST`)"
+      - "traefik.http.routers.$TRAEFIK_KEY-grafana-web.entrypoints=web"
+#      - "traefik.http.routers.$TRAEFIK_KEY-grafana.entrypoints=websecure"
+      - "traefik.http.services.$TRAEFIK_KEY-grafana-service.loadbalancer.server.port=3000"
+    volumes:
+      - ./grafana/dashboards.yaml:/etc/grafana/provisioning/dashboards/all.yaml
+      - ./grafana/datasources.yaml:/etc/grafana/provisioning/datasources/all.yaml
+      - ./grafana/core-metrics.json:/var/lib/grafana/dashboards/core-metrics.json
+    environment:
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/var/lib/grafana/dashboards/core-metrics.json
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
+    depends_on:
+      - prometheus
+    networks:
+      - traefik
 
 networks:
   traefik:
     name: traefik-gateway
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.10.0.0/16
+#    ipam:
+#      driver: default
+#      config:
+#        - subnet: 172.10.0.0/16
 
 volumes:
   prometheus-data: {}

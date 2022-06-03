@@ -10,8 +10,7 @@ services:
     build:
       context: ./admin
     networks:
-      traefik:
-        ipv4_address: 172.10.0.3
+      - traefik
 
   students:
     container_name: ${APP_NAME}-students
@@ -21,8 +20,7 @@ services:
     build:
       context: ./students
     networks:
-      traefik:
-        ipv4_address: 172.10.0.4
+      - traefik
 
   backend:
     container_name: ${APP_NAME}-backend
@@ -32,8 +30,6 @@ services:
       - "traefik.http.services.$TRAEFIK_KEY-backend-service.loadbalancer.server.port=5000"
     build:
       context: ./backend
-    ports:
-      - "2222:22"
     volumes:
       - ./work:/home/gestproj/data
       - /var/run/docker.sock:/var/run/docker.sock
@@ -42,8 +38,7 @@ services:
       - ./backend/gplib:/home/gestproj/gplib
       - ./backend/config/docker-skell:/home/gestproj/docker-skell
     networks:
-      traefik:
-        ipv4_address: 172.10.0.5
+      - traefik
 
 volumes:
   backendData: {}
