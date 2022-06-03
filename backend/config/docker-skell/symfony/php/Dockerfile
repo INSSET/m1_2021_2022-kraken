@@ -9,8 +9,10 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
+    openssh-server \
     zip \
-    unzip
+    unzip \
+    nano
 
 # Clear cache
 RUN set -eux; \
@@ -21,14 +23,11 @@ RUN set -eux; \
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-WORKDIR /var/www
-
 RUN set -eux; \
-    composer create-project symfony/skeleton:"^6.1" html; \
-    cd html; \
-    composer require webapp
+    echo "PasswordAuthentication no" >> /etc/ssh/sshd_config; \
+    echo "PermitRootLogin without-password" >> /etc/ssh/sshd_config
 
-VOLUME /var/www/html
+WORKDIR /var/www
 
 COPY bin/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod u+x /usr/local/bin/docker-entrypoint.sh
