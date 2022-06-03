@@ -1,0 +1,6 @@
+groups:
+  - name: docker
+    interval: 5s
+    rules:
+      - record: container_cpu
+        expr: sum by (container_label_serviceName, instance, name) (rate(container_cpu_usage_seconds_total{container_label_com_docker_compose_container_number="1"}[60s]) * 1024 * 60) / on (container_label_serviceName, instance, name) (container_spec_cpu_shares{container_label_com_docker_compose_container_number="1"}) / 60 * 100
