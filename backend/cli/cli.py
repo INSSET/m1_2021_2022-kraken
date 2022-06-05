@@ -1,6 +1,7 @@
 import click
 import gestprojmail
 import grp
+import pwd
 import os
 import getopt
 import gestprojlib as gp
@@ -48,6 +49,35 @@ def createGroup(group, file):
 def deleteGroup(group):
     gp.deleteGroup(group)
     success("Le groupe %s a été supprimé avec succès." % group)
+    return
+
+@click.command(name='users')
+@click.argument('group')
+@click.argument('file')
+def createUsers(group, file):
+    try:
+        info_grp = grp.getgrnam(group)
+        initializedList = gp.initStudentListFromFile(file)
+        gp.createUsers(initializedList, group)
+        success("Les utilisateurs ont été créés et ajoutés au groupe %s avec succès." % group)
+    except KeyError:
+        error("Le Groupe %s n'existe pas " % group)
+        sys.exit()
+    return
+
+@click.command(name='user')
+@click.argument('email')
+def deleteUser(email):
+    try:
+        login = (email.split('@'))[0]
+        # pour éviter de dépasser les 32 caractères du login quand on rajoute sftp. devant
+        login = login[0:26]
+        user = pwd.getpwnam(login)
+        gp.deleteUser(email)
+        success("Utilisateur %s supprimé avec succes." % email)
+    except KeyError:
+        error("Cette adresse mail ne correspond à aucun utilisateur")
+        sys.exit()
     return
 
 @click.command(name='container')
@@ -125,8 +155,10 @@ main.add_command(student)
 
 # Add
 add.add_command(createGroup)
+add.add_command(createUsers)
 
 # Remove
 rm.add_command(deleteGroup)
+rm.add_command(deleteUser)
 
 main()

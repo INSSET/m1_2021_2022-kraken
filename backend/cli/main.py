@@ -215,8 +215,7 @@ def delete_user(email_etudiant):
     email_etudiant: adresse mail de l'etudiant
     """
     try:
-
-        gp.sup_user(email_etudiant)
+        gp.deleteUser(email_etudiant)
     except KeyError:
         print("indiquez l'email de l'etudiant que vous voulez supprimer"
               "prenom.nom@etud.u-picardie.fr )")
