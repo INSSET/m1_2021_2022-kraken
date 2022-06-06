@@ -27,6 +27,11 @@ components:
           type: string
         groupName:
           type: string
+    PostSshKeyDto:
+      type: object
+      properties:
+        key:
+          type: string
   parameters:
     group_id:
       in: path
@@ -207,6 +212,7 @@ paths:
                     type: string
                 example:
                   message: "L'étudiant·e existe déjà !"
+  /api/v1/students/{user_id}:
     delete:
       tags:
         - "users"
@@ -219,3 +225,25 @@ paths:
           description: OK
         404:
           description: "Not found - Could not find user with ID {userId}"
+
+  /api/v1/students/{user_id}/ssh/upload:
+      post:
+        tags:
+          - "users"
+        summary: "Upload SSH Key"
+        operationId: "postSshKey"
+        parameters:
+          - $ref: "#/components/parameters/user_id"
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostSshKeyDto"
+        responses:
+          200:
+            description: OK - Key has been successfully uploaded
+          404:
+            description: "Not found - Could not find user with ID {userId}"
+          500:
+            description: "Internal server error - Something went wrong when writing ssh keys"
