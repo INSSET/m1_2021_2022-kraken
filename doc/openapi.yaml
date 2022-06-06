@@ -18,6 +18,15 @@ components:
           type: array
           items:
             type: string
+    User:
+      type: object
+      properties:
+        user_id:
+          type: string
+        user_name:
+          type: string
+        group_id:
+          type: string
     PostUserRequestDto:
       type: object
       properties:
@@ -64,17 +73,32 @@ components:
           examples:
             200 - OK:
               $ref: "#/components/examples/get-groups-200"
+    get-user-by-id-200:
+      description: GET user by ID OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/User"
+          examples:
+            200 - OK:
+              $ref: "#/components/examples/get-user-by-id-200"
   examples:
     get-groups-200:
       value:
-        - group_id: 10001
-          group_name: ccm1
+        - group_id: "10001"
+          group_name: "ccm1"
           users_names:
             - "toto@toto.com, tata@tata.com"
-        - group_id: 10002
-          group_name: ccm2
+        - group_id: "10002"
+          group_name: "ccm2"
           users_names:
             - "toto.toto, tata.tata"
+    get-user-by-id-200:
+      value:
+        user_id: "10001"
+        user_name: "harold.trannois"
+        group_id: "10000"
+
 paths:
   /api/v1/groups:
     get:
@@ -106,6 +130,7 @@ paths:
           description: CREATED
         500:
           description: Internal server error
+
   /api/v1/groups/{group_id}:
     get:
       tags:
@@ -124,8 +149,8 @@ paths:
               examples:
                 200:
                   value:
-                    group_id: 10001
-                    group_name: ccm1
+                    group_id: "10001"
+                    group_name: "ccm1"
                     users_names:
                       - "toto.toto, tata.tata"
         404:
@@ -165,6 +190,7 @@ paths:
           description: OK
         404:
           description: "Not found - Could not find group with ID {groupId}"
+
   /api/v1/groups/{group_name}/upload:
     post:
       tags:
@@ -186,6 +212,7 @@ paths:
       responses:
         201:
           description: CREATED
+
   /api/v1/students/:
     post:
       tags:
@@ -212,7 +239,20 @@ paths:
                     type: string
                 example:
                   message: "L'étudiant·e existe déjà !"
+
   /api/v1/students/{user_id}:
+    get:
+      tags:
+        - "users"
+      summary: "Get user by UID"
+      operationId: "getUserById"
+      parameters:
+        - $ref: "#/components/parameters/user_id"
+      responses:
+        200:
+          $ref: "#/components/responses/get-user-by-id-200"
+        404:
+          description: "Not found - Could not find user with ID {userId}"
     delete:
       tags:
         - "users"
