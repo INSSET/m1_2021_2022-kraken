@@ -2,6 +2,8 @@ import store from "@/plugins/vuex";
 import fetchAPI from "./callAPI";
 import axios from "axios";
 
+const BASE_URL = "http://backend.insset.localhost/api/v1/";
+
 enum Method {
     GET = "GET",
     POST = "POST",
@@ -24,6 +26,11 @@ export function getGroups() {
             groups: [],
         })
     })
+    axios.get(`${BASE_URL}/${APIRoutes.getGroups}`)
+        .then(res => {
+            console.log(`retour axios :`)
+            console.log(res)
+        })
 }
 
 export function createGroupsWithCSV(group_name : string, file : object) {
