@@ -62,7 +62,7 @@ def create_group():
         return Response('Bad request - Missing mandatory input value', mimetype='application/json', status=400)
 
     try:
-        gestprojlib.create_group(group_name)
+        gestprojlib.createGroup(group_name)
         return Response(mimetype='application/json', status=201)
     except KeyError:
         abort(500, description='Internal server error')
@@ -94,7 +94,7 @@ def upload_group(group_name):
         f = request.files['file']
         f.save('/tmp/' + f.filename)
 
-        student_list = gestprojlib.init_liste('/tmp/' + f.filename)
+        student_list = gestprojlib.initStudentListFromFile('/tmp/' + f.filename)
 
         stored_users = gestprojlib.liste_etudiant_group(group_name)
 
@@ -112,28 +112,24 @@ def upload_group(group_name):
                 os.system('userdel -f --remove %s' % u)
                 os.system("userdel -f --remove sftp.%s" % u)
 
-        gestprojlib.create_users(student_list, group_name)
+        gestprojlib.createUsers(student_list, group_name)
 
         gestprojlib.create_sftp_users(student_list)
-
-        gestprojlib.create_vhost(student_list)
 
         f.close()
         os.remove('/tmp/' + f.filename)
 
         return Response(mimetype='application/json', status=201)
     except KeyError:
-        gestprojlib.create_group(group_name)
+        gestprojlib.createGroup(group_name)
 
         f = request.files['file']
         f.save('/tmp/' + f.filename)
-        student_list = gestprojlib.init_liste('/tmp/' + f.filename)
+        student_list = gestprojlib.initStudentListFromFile('/tmp/' + f.filename)
 
-        gestprojlib.create_users(student_list, group_name)
+        gestprojlib.createUsers(student_list, group_name)
 
         gestprojlib.create_sftp_users(student_list)
-
-        gestprojlib.create_vhost(student_list)
 
         f.close()
         os.remove('/tmp/' + f.filename)
@@ -147,7 +143,7 @@ def delete_group(group_id):
         group = grp.getgrgid(group_id)
 
         gestprojlib.sup_sftp_users(group.gr_name)
-        gestprojlib.sup_group(group.gr_name)
+        gestprojlib.deleteGroup(group.gr_name)
 
         return Response('Group ' + group.gr_name + ' has been deleted', mimetype='application/json', status=200)
     except KeyError:

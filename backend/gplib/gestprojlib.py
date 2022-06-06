@@ -311,7 +311,6 @@ def createUsers(list, group):
 
             # Création de l'utilisateur
             os.system("useradd -d /home/etudiants/%s -K UID_MIN=10002 -m --skel %s --shell %s -N -g %s %s" % (student['login'], userSkellPath, "/bin/bash", group, student['login']))
-            os.system("groupadd %s" % student['login'])
 
             # os.system("chown -R www-data:sftp /home/etudiants/%s/.ssh" % etudiant['login'])
             # met un pass pour activer le compte
@@ -320,7 +319,6 @@ def createUsers(list, group):
 
             os.system("usermod -p '*' %s" % student['login'])
             os.system("usermod -G %s %s" % (group, student['login']))
-            os.system("usermod -G %s %s" % (student['login'], student['login']))
             os.system("mkdir -p /home/gestproj/.docker/%s/%s" % (group, student['login']))
 
             # On prépare les docker-skell de l'étudiant
