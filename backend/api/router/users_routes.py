@@ -1,9 +1,12 @@
 import json
 import os
+import pathlib
 import pwd
 import sys
+import tarfile
 
 from flask import Blueprint, Response, abort, request
+from os.path import exists
 
 import gestprojlib as GP
 from api.model.user import User
@@ -56,7 +59,7 @@ def get_user_by_id(user_id):
 
         return Response(encoded_user, mimetype="application/json", status=200)
     except KeyError:
-        abort(404, description="Resources not found")
+        abort(404, description='Not found - Could not find user with ID ' + user_id)
 
 
 @users_routes.route("/api/v1/students/", methods=["POST"])
@@ -122,3 +125,63 @@ def delete_user(user_id):
     except KeyError:
         abort(404, description='Not found - Could not find user with ID ' + user_id)
 
+
+@users_routes.route('/api/v1/students/<int:user_id>/ssh/upload/', methods=['POST'])
+def upload(user_id):
+    global response
+    path = pathlib.Path().absolute()
+    request_data = request.get_json()
+
+    ssh_key = request_data["key"]
+
+    try:
+        user = pwd.getpwuid(user_id)
+        student_path = str(path) + '/../../etudiants/' + user.pw_name + '/.ssh'
+        sftp_path = str(path) + '/../../etudiants/' + user.pw_name + '/sftp/.ssh'
+
+        # Check if authorized_keys file exists
+        sftp_auth_file = exists(sftp_path + '/authorized_keys')
+        if not sftp_auth_file:
+            sftp_keys_file = open(sftp_path + '/authorized_keys', "x")
+            sftp_keys_file.close()
+
+        ssh_auth_file = exists(student_path + '/authorized_keys')
+        if not ssh_auth_file:
+            keys_file = open(student_path + '/authorized_keys', "x")
+            keys_file.close()
+
+        keyList = []
+        # Check if the key is already stored in authorized_keys file
+        with open(os.path.join(student_path + '/authorized_keys'), 'r') as ssh_file:
+            for line in ssh_file.readlines():
+                keyList.append(line.rstrip("\n"))
+
+        # Check if the key is already stored in sftp authorized_keys file'
+        sftpList = []
+        with open(os.path.join(sftp_path + '/authorized_keys'), 'r') as sftp_file:
+            for line in sftp_file.readlines():
+                sftpList.append(line.rstrip("\n"))
+
+        if ssh_key not in keyList and ssh_key not in sftpList:
+
+            with open(os.path.join(student_path + '/authorized_keys'), 'a', newline="") as key_file:
+                key_file.write(ssh_key + '\n')
+                os.chown(os.path.join(student_path + '/authorized_keys'), user_id, os.getuid())
+
+            print('ssh key added')
+
+            with open(os.path.join(sftp_path + '/authorized_keys'), 'a', newline="") as key_file:
+                key_file.write(ssh_key + '\n')
+                os.chown(os.path.join(student_path + '/authorized_keys'), user_id, os.getuid())
+
+            print('ssh key added to sftp')
+
+            return Response('Key has been successfully uploaded', status=200)
+        else:
+            return Response('Key has already been uploaded', status=409)
+
+    except KeyError:
+        if not pwd.getpwuid(user_id):
+            abort(404, description='Not found - Could not find user ID ' + user_id)
+        else:
+            abort(500, description='Internal server error - Something went wrong when writing ssh keys')
