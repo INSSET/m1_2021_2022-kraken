@@ -30,6 +30,12 @@ export function getGroups() {
             })
 
         })
+        .catch(() => {
+            store.commit({
+                type: "setMsgErrorGetGroups",
+                msgErrorGetGroups: "Une erreur est survenue lors de la récupération des groupes",
+            })
+        })
 }
 
 export function createGroupsWithCSV(group_name : string, file : object) {

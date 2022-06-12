@@ -1,11 +1,21 @@
 <template>
   <v-container>
-    <v-btn class="bg-deep-purple" :to="'/groups/add'">
-      <v-icon large class="mr-1">
-        mdi-plus
+    <div>
+      <v-btn class="bg-deep-purple" :to="'/groups/add'">
+        <v-icon large class="mr-1">
+          mdi-plus
+        </v-icon>
+        Ajouter un groupe
+      </v-btn>
+    </div>
+    <div class="ma-2" v-if="msgError != ''" >
+      <v-icon
+        color="red"
+      >
+        mdi-alert-circle-outline
       </v-icon>
-      Ajouter un groupe
-    </v-btn>
+        {{ msgError }}
+    </div>
     <v-table>
       <thead>
       <tr>
@@ -45,6 +55,7 @@ export default {
   provide: { GroupService },
   computed: mapState({
     groups: 'groups',
+    msgError: 'msgErrorGetGroups',
   }),
   mounted() {
     //GroupService.findAll()

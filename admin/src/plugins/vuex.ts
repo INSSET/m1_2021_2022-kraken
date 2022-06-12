@@ -23,10 +23,14 @@ const store = createStore({
                 ]
             ),
         ],
+        msgErrorGetGroups: "",
     },
     mutations: {
         setGroups (state, payload) {
             state.groups = payload.groups;
+        },
+        setMsgErrorGetGroups (state, payload) {
+            state.msgErrorGetGroups = payload.msgErrorGetGroups
         }
     }
 })
