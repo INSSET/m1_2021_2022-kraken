@@ -331,6 +331,32 @@ def createUsers(list, group):
     logger.info("users created")
     return
 
+def deleteUser(email):
+    """
+    Supprime un utilisateur à partir de son email
+    :param email:
+    :return:
+    """
+    login = (email.split('@'))[0]
+    # pour éviter de dépasser les 32 caractères du login quand on rajoute sftp. devant
+    login = login[0:26]
+    try:
+        user = pwd.getpwnam(login)
+        msg = subprocess.check_output(
+            ["userdel", "-f", "--remove", user.pw_name], stderr=subprocess.STDOUT, text=True)
+        if not msg.isspace():
+            logger.info(msg)
+
+        os.system('groupdel ' + user.pw_name)
+        os.system("rm -rf /home/etudiants/%s-*" % user.pw_name)
+        os.system("rm -rf /home/gestproj/.docker/%s-*" % user.pw_name)
+
+        logger.info("Utilisateur %s supprimé" % user.pw_name)
+    except KeyError:
+        logger.error("Compte étudiant inexistant %s ", login)
+
+    return
+
 
 def updateAndPropagateSshKeys(student, sshKeyFile, isFile = False):
 
@@ -449,29 +475,6 @@ def deleteGroup(group):
     except KeyError:
         logger.error("Le group_name %s n'existe pas ", group)
     logger.info("group %s deleted ", group)
-    return
-
-def sup_user(email):
-    """
-    Supprime un utilisateur à partir de son email
-    :param email:
-    :return:
-    """
-    login = (email.split('@'))[0]
-    # pour éviter de dépasser les 32 caractères du login quand on rajoute sftp. devant
-    login = login[0:26]
-    try:
-        user = pwd.getpwnam(login)
-        msg = subprocess.check_output(
-            ["userdel", "-f", "--remove", user.pw_name], stderr=subprocess.STDOUT, text=True)
-        if not msg.isspace():
-            logger.info(msg)
-        if os.path.exists("/etc/apache2/sites-enabled/%s-%s.conf" % (user.pw_uid, user.pw_name.replace('.', '-'))):
-            os.system("rm /etc/apache2/sites-enabled/%s-%s.conf" %
-                      (user.pw_uid, user.pw_name.replace('.', '-')))
-    except KeyError:
-        logger.error("Compte étudiant inexistant %s ", login)
-
     return
 
 
