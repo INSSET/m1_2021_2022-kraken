@@ -1,20 +1,23 @@
+import grp
 import json
 import os
 import pathlib
 import pwd
 import sys
-import tarfile
-
-from flask import Blueprint, Response, abort, request
 from os.path import exists
 
-import gestprojlib as GP
+from flask import Blueprint, Response, abort, request
+
+import gestprojlib
 from api.model.user import User
 from api.utils.json_encoder import Encoder
 
 sys.path.append("/usr/src/app/gplib")
 
 users_routes = Blueprint("users_routes", __name__)
+
+containerType = 'symfony'
+containerName = 'symfony-app'
 
 
 @users_routes.route("/api/v1/students", methods=["OPTIONS"])
@@ -60,6 +63,33 @@ def get_user_by_id(user_id):
         return Response(encoded_user, mimetype="application/json", status=200)
     except KeyError:
         abort(404, description='Not found - Could not find user with ID ' + user_id)
+
+
+@users_routes.route('/api/v1/students/<int:user_id>/keys/', methods=['GET'])
+def get_keys(user_id):
+    dir_path = pathlib.Path().absolute()
+    try:
+        user = pwd.getpwuid(user_id)
+        user_name = user.pw_name
+        key_file_path = str(dir_path) + '/../../etudiants/' + user_name + '/.ssh/'
+        if not os.path.isfile(os.path.join(key_file_path + '/authorized_keys')):
+            return Response('Resource not found', mimetype='application/json', status=404)
+        key_file = open(os.path.join(key_file_path + '/authorized_keys'), 'r')
+        keys = key_file.readlines()
+        key_part = []
+        for key in keys:
+            k = key.rstrip("\n")
+            key_part.append(k)
+
+        key_dict = {
+            'keys': key_part
+        }
+        return Response(json.dumps(key_dict), mimetype='application/json', status=200)
+    except KeyError:
+        if not pwd.getpwuid(user_id):
+            abort(404, description='Not found - Could not find user ID ' + user_id)
+        else:
+            abort(500, description='Internal server error - Something went wrong when retrieving ssh keys')
 
 
 @users_routes.route("/api/v1/students/", methods=["POST"])
@@ -109,7 +139,7 @@ def get_users_by_group(group_name):
     """
     Renvoie la liste de tous les utilisateurs appartenant au group "group_name"
     """
-    liste = GP.liste_etudiant_group(group_name)
+    liste = gestprojlib.liste_etudiant_group(group_name)
     return Response(json.dumps(liste, cls=Encoder), mimetype="application/json", status=200)
 
 
@@ -176,12 +206,42 @@ def upload(user_id):
 
             print('ssh key added to sftp')
 
-            return Response('Key has been successfully uploaded', status=200)
+            return Response('Key has been successfully uploaded', mimetype='application/json', status=200)
         else:
-            return Response('Key has already been uploaded', status=409)
+            return Response('Key has already been uploaded', mimetype='application/json', status=409)
 
     except KeyError:
         if not pwd.getpwuid(user_id):
             abort(404, description='Not found - Could not find user ID ' + user_id)
         else:
             abort(500, description='Internal server error - Something went wrong when writing ssh keys')
+
+
+@users_routes.route('/api/v1/students/<int:user_id>/container/command/<string:action>', methods=['POST'])
+def post_container_action(user_id, action):
+    try:
+        user = pwd.getpwuid(user_id)
+        group = grp.getgrgid(user.pw_gid)
+        gestprojlib.executeContainerActionForAStudent(action, user.pw_name, group.gr_name, containerType)
+
+        return Response('Container command: ' + action + ', for ' + user.pw_name + ' has been executed',
+                        mimetype='application/json', status=200)
+    except KeyError:
+        if not pwd.getpwuid(user_id):
+            abort(404, description='Not found - Could not find user ID ' + user_id)
+        else:
+            abort(500, description='Internal server error - Something went wrong when executing container action')
+
+
+@users_routes.route('/api/v1/students/<int:user_id>/container/info', methods=['GET'])
+def get_student_container_info(user_id):
+    try:
+        user = pwd.getpwuid(user_id)
+        group = grp.getgrgid(user.pw_gid)
+        return Response(json.dumps(gestprojlib.getStudentContainerInformations(group.gr_name, user.pw_name, containerName)),
+                        mimetype='application/json', status=200)
+    except KeyError:
+        if not pwd.getpwuid(user_id):
+            abort(404, description='Not found - Could not find user ID ' + user_id)
+        else:
+            abort(500, description='Internal server error - Something went wrong when fetching container info')
