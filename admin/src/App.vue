@@ -4,8 +4,8 @@
       <v-card>
         <v-layout>
           <v-navigation-drawer
-            class="bg-deep-purple"
             theme="dark"
+            class="bg-purple-darken-4"
             permanent
           >
             <v-list color="transparent">
