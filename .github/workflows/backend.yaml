@@ -11,10 +11,21 @@ on:
 jobs:
 
   # Run every required checking (lint, build, sonar, etc...)
-  flask:
+
+  flask-cli:
     uses: ./.github/workflows/FLASK.yaml
     with:
-      workdir: './backend'
+      workdir: './backend/cli'
+
+  flask-backend:
+    uses: ./.github/workflows/FLASK.yaml
+    with:
+      workdir: './backend/backend'
+
+  flask-api:
+    uses: ./.github/workflows/FLASK.yaml
+    with:
+      workdir: './backend/api'
 
   # Build & Push the Docker image from the admin panel
   docker:
