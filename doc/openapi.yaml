@@ -128,6 +128,7 @@ components:
           examples:
             200 - OK:
               $ref: "#/components/examples/get-user-container-info-200"
+
   examples:
     get-groups-200:
       value:
@@ -211,8 +212,7 @@ paths:
                     group_id: "10001"
                     group_name: "ccm1"
                     users_names:
-                      - "toto.toto"
-                      - "tata.tata"
+                      - "toto.toto, tata.tata"
         404:
           description: "Not found - Could not find group with ID {groupId}"
     patch:
