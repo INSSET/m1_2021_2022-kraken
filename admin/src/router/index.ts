@@ -3,6 +3,7 @@ import GroupsView from "../views/GroupsView.vue";
 import GroupDetailView from "../views/GroupDetailView.vue";
 import AddGroupView from "../views/AddGroupView.vue";
 import GroupsEdit from "../views/GroupsEdit.vue";
+import StudentDetailView from "../views/StudentDetailView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,6 +28,11 @@ const router = createRouter({
       name: "groupsEdit",
       component: GroupsEdit,
     },
+    {
+      path: "/student/:student_id",
+      name: "studentDetail",
+      component: StudentDetailView
+    }
   ],
 });
 
