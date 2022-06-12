@@ -11,7 +11,18 @@ on:
 jobs:
 
   # Run every required checking (lint, build, sonar, etc...)
-  flask:
+
+  flask-cli:
+    uses: ./.github/workflows/FLASK.yaml
+    with:
+      workdir: './backend/cli'
+
+  flask-backend:
+    uses: ./.github/workflows/FLASK.yaml
+    with:
+      workdir: './backend/backend'
+
+  flask-api:
     uses: ./.github/workflows/FLASK.yaml
     with:
       workdir: './backend/api'
@@ -25,4 +36,4 @@ jobs:
       context: './backend'
       # Dockerfile build target (see. https://docs.docker.com/develop/develop-images/multistage-build/)
       registry: ghcr.io
-      image_name: ${{ github.repository }}-backend
+      image_name: kraken-backend
