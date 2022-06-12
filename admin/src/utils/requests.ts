@@ -1,5 +1,4 @@
 import store from "@/plugins/vuex";
-import fetchAPI from "./callAPI";
 import axios from "axios";
 import Group from "@/models/group";
 import Student from "@/models/student";
