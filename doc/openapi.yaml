@@ -311,6 +311,10 @@ paths:
       responses:
         200:
           description: OK
+        404:
+          description: "Not found - Could not find group with ID {groupName}"
+        500:
+          description: "Internal server error - Something went wrong when executing container action"
 
   /api/v1/students/:
     post:
