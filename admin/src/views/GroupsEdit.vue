@@ -17,12 +17,12 @@
       </thead>
       <tbody>
       <tr
-          v-for="(user,i) in group.users_names"
+          v-for="(user,i) in group.users"
           :key="i"
       >
-        <td>{{ user }}</td>
+        <td>{{ user.name }}</td>
         <td>
-          <v-btn size="small" class="float-right" flat icon=mdi-minus @click="deleteUser(user.users_names)"></v-btn>
+          <v-btn size="small" class="float-right" flat icon=mdi-minus @click="deleteUser(user.name)"></v-btn>
         </td>
       </tr>
       </tbody>
@@ -34,7 +34,7 @@
 export default {
   computed: {
     group() {
-      return this.$store.state.groups.find(group => group.group_id == this.$route.params.group_id)
+      return this.$store.state.groups.find(group => group.id == this.$route.params.group_id)
     },
   },
   data() {

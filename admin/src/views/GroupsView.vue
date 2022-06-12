@@ -20,12 +20,12 @@
       <tbody>
       <tr
           v-for="group in groups"
-          :key="group.group_id"
+          :key="group.id"
       >
-        <td>{{ group.group_name }}</td>
+        <td>{{ group.name }}</td>
         <td class="text-right">
-          <v-btn class="mx-4" size="small" :to="'/groups/'+group.group_id" icon="mdi-magnify"></v-btn>
-          <v-btn size="small" :to="'/groupsEdit/'+group.group_id" icon="mdi-pencil"></v-btn>
+          <v-btn class="mx-4" size="small" :to="'/groups/'+group.id" icon="mdi-magnify"></v-btn>
+          <v-btn size="small" :to="'/groupsEdit/'+group.id" icon="mdi-pencil"></v-btn>
         </td>
       </tr>
       </tbody>
@@ -36,6 +36,7 @@
 <script>
 import {mapState} from 'vuex';
 import GroupService from "@/services/group-service";
+import { getGroups } from '../utils/requests';
 
 export default {
   data() {
@@ -46,7 +47,8 @@ export default {
     groups: 'groups',
   }),
   mounted() {
-    GroupService.findAll()
+    //GroupService.findAll()
+    getGroups()
   }
 }
 </script>

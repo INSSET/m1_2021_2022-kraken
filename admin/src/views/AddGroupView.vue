@@ -54,7 +54,6 @@
 
 <script>
 import { createGroupsWithCSV } from '../utils/requests';
-import axios from "axios";
 export default {
     data() {
         return {
