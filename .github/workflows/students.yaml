@@ -26,4 +26,4 @@ jobs:
       # Dockerfile build target (see. https://docs.docker.com/develop/develop-images/multistage-build/)
       target: 'production'
       registry: ghcr.io
-      image_name: ${{ github.repository }}-students
+      image_name: kraken-students
