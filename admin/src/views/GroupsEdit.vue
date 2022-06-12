@@ -2,8 +2,8 @@
   <v-container>
     <h1 class="d-flex">
       <span>Groupe :</span>
-      <v-form class="pl-3" @submit="renameGroup(group.group_id)">
-        <v-text-field v-model="group.group_name" :disabled="disabled == 1"></v-text-field>
+      <v-form class="pl-3" @submit="renameGroup(group.id, group.name)">
+        <v-text-field v-model="group.name" :disabled="disabled == 1"></v-text-field>
       </v-form>
       <v-btn class="ml-4" icon="mdi-pencil" @click="disabled = (disabled + 1) % 2"></v-btn>
     </h1>
@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import { updateGroupName } from '../utils/requests'
 export default {
   computed: {
     group() {
@@ -48,10 +49,8 @@ export default {
         "method": "DELETE"
       })
     },
-    renameGroup: function (group_id) {
-      fetch("0.0.0.0:5000/api/v1/students/" + group_id, {
-        "method": "PATCH"
-      })
+    renameGroup: function (group_id, group_name) {
+      updateGroupName(group_id, group_name)
       this.disabled = 1
     }
   }

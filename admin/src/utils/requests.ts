@@ -43,3 +43,16 @@ export function createGroupsWithCSV(group_name : string, file : object) {
     })
 
 }
+
+export function updateGroupName(group_id: number, group_name: string) {
+
+    axios.post(`${BASE_URL}${APIRoutes.groups}/${group_id}`, {
+        groupName: group_name
+    }).then(res => {
+        // Si update Ok, maj des groups
+        if (res.status == 200) {
+            getGroups()
+        }
+    })
+
+}
