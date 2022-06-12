@@ -52,16 +52,14 @@ jobs:
         with:
           images: ${{ inputs.registry }}/${{ inputs.image_name }}
 
-      - name: Build Image
-        uses: int128/kaniko-action@v1
+      - name: Build Docker
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: ${{ inputs.context }}
           target: ${{ inputs.target }}
           push: false
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache: false
-          cache-repository: ghcr.io/${{ github.repository }}/cache
 
   build-and-push-image:
     if: contains(github.ref_name, 'develop')
@@ -88,13 +86,11 @@ jobs:
         with:
           images: ${{ inputs.registry }}/${{ inputs.image_name }}
 
-      - name: Build and Push
-        uses: int128/kaniko-action@v1
+      - name: Build & Push Docker
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: ${{ inputs.context }}
           target: ${{ inputs.target }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache: true
-          cache-repository: ghcr.io/${{ github.repository }}/cache
