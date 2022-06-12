@@ -237,10 +237,59 @@ def get_student_container_info(user_id):
     try:
         user = pwd.getpwuid(user_id)
         group = grp.getgrgid(user.pw_gid)
-        return Response(json.dumps(gestprojlib.getStudentContainerInformations(group.gr_name, user.pw_name, containerName)),
-                        mimetype='application/json', status=200)
+        return Response(
+            json.dumps(gestprojlib.getStudentContainerInformations(group.gr_name, user.pw_name, containerName)),
+            mimetype='application/json', status=200)
     except KeyError:
         if not pwd.getpwuid(user_id):
             abort(404, description='Not found - Could not find user ID ' + user_id)
         else:
             abort(500, description='Internal server error - Something went wrong when fetching container info')
+
+
+@users_routes.route('/api/v1/students/<int:user_id>/dockerfile', methods=['GET'])
+def get_student_dockerfile(user_id):
+    try:
+        user = pwd.getpwuid(user_id)
+        group = grp.getgrgid(user.pw_gid)
+        path = pathlib.Path().absolute()
+        docker_file_lines = []
+        f = open(
+            str(path) + '/../.docker/' + group.gr_name + '/' + user.pw_name + '/' + containerType + '/php/Dockerfile',
+            'r')
+        for line in f.readlines():
+            docker_file_lines.append(line)
+
+        file = {
+            'dockerFile': docker_file_lines
+        }
+        return Response(json.dumps(file), mimetype='application/json', status=200)
+    except KeyError:
+        if not pwd.getpwuid(user_id):
+            abort(404, description='Not found - Could not find user ID ' + user_id)
+        else:
+            abort(500, description='Internal server error - Something went wrong when fetching Dockerfile')
+
+
+@users_routes.route('/api/v1/students/<int:user_id>/dockerfile', methods=['POST'])
+def update_student_dockerfile(user_id):
+    try:
+        user = pwd.getpwuid(user_id)
+        group = grp.getgrgid(user.pw_gid)
+        path = pathlib.Path().absolute()
+
+        request_data = request.get_json()
+        dockerFile = request_data["dockerFile"]
+
+        f = open(
+            str(path) + '/../.docker/' + group.gr_name + '/' + user.pw_name + '/' + containerType + '/php/Dockerfile',
+            'w')
+        for line in dockerFile:
+            f.write(line)
+
+        return Response(user.pw_name + ' Dockerfile has been updated', mimetype='application/json', status=200)
+    except KeyError:
+        if not pwd.getpwuid(user_id):
+            abort(404, description='Not found - Could not find user ID ' + user_id)
+        else:
+            abort(500, description='Internal server error - Something went wrong when updating Dockerfile')
