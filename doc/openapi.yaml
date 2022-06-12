@@ -48,6 +48,19 @@ components:
           type: array
           items:
             type: string
+    ContainerInfo:
+      type: object
+      properties:
+        id:
+          type: string
+        image:
+          type: string
+        ports:
+          type: string
+        status:
+          type: string
+        containerName:
+          type: string
   parameters:
     group_id:
       in: path
@@ -106,6 +119,15 @@ components:
           examples:
             200 - OK:
               $ref: "#/components/examples/get-user-ssh-keys-by-id-200"
+    get-user-container-info-200:
+      description: GET user container info OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ContainerInfo"
+          examples:
+            200 - OK:
+              $ref: "#/components/examples/get-user-container-info-200"
   examples:
     get-groups-200:
       value:
@@ -129,7 +151,13 @@ components:
         keys:
           - "ssh-rsa AAAAB3NzaC1..."
           - "ssh-rsa AAAAB3NzaC1..."
-
+    get-user-container-info-200:
+      value:
+        id: "f03b1930b2ef"
+        image: "gp"
+        ports: "0.0.0.0:5000-5000/tcp"
+        status: "running"
+        containerName: "gp"
 paths:
   /api/v1/groups:
     get:
@@ -362,3 +390,18 @@ paths:
           description: "Not found - Could not find user with ID {userId}"
         500:
           description: "Internal server error - Something went wrong when executing container action"
+  /api/v1/students/{user_id}/container/info:
+    get:
+      tags:
+        - "users"
+      summary: "Retrieve relevant user's container info"
+      operationId: "getUserContainerInfo"
+      parameters:
+        - $ref: "#/components/parameters/user_id"
+      responses:
+        200:
+          $ref: "#/components/responses/get-user-container-info-200"
+        404:
+          description: "Not found - Could not find user with ID {userId}"
+        500:
+          description: "Internal server error - Something went wrong when fetching container info"

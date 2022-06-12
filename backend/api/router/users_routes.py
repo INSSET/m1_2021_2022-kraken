@@ -233,12 +233,12 @@ def post_container_action(user_id, action):
             abort(500, description='Internal server error - Something went wrong when executing container action')
 
 
-@users_routes.route('/api/v1/students/<int:user_id>/')
+@users_routes.route('/api/v1/students/<int:user_id>/container/info')
 def get_student_container_info(user_id):
     try:
         user = pwd.getpwuid(user_id)
         group = grp.getgrgid(user.pw_gid)
-        return Response(gestprojlib.getStudentContainerInformations(group.gr_name, user.pw_name, containerName),
+        return Response(json.dumps(gestprojlib.getStudentContainerInformations(group.gr_name, user.pw_name, containerName)),
                         mimetype='application/json', status=200)
     except KeyError:
         if not pwd.getpwuid(user_id):
