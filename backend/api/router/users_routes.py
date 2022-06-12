@@ -233,7 +233,7 @@ def post_container_action(user_id, action):
             abort(500, description='Internal server error - Something went wrong when executing container action')
 
 
-@users_routes.route('/api/v1/students/<int:user_id>/container/info')
+@users_routes.route('/api/v1/students/<int:user_id>/container/info', methods=['GET'])
 def get_student_container_info(user_id):
     try:
         user = pwd.getpwuid(user_id)
