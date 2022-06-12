@@ -10,6 +10,8 @@ import gestprojlib
 
 groups_routes = Blueprint('groups_routes', __name__)
 
+containerType = 'symfony'
+
 
 @groups_routes.route('/api/v1/groups', methods=['GET'])
 def get_groups():
@@ -148,3 +150,17 @@ def delete_group(group_id):
         return Response('Group ' + group.gr_name + ' has been deleted', mimetype='application/json', status=200)
     except KeyError:
         abort(404, description='Not found - Could not find group with ID ' + group_id)
+
+
+@groups_routes.route('/api/v1/groups/<string:group_name>/container/command/<string:action>', methods=['POST'])
+def post_container_action(group_name, action):
+    try:
+        grp.getgrnam(group_name)
+        gestprojlib.executeContainerActionForTheGroup(action, group_name, containerType)
+
+        return Response('Container command: ' + action + ', for group' + group_name + ' has been executed', mimetype='application/json', status=200)
+    except KeyError:
+        if not grp.getgrnam(group_name):
+            abort(404, description='Not found - Could not find group with ID ' + group_name)
+        else:
+            abort(500, description='Internal server error - Something went wrong when executing container action')

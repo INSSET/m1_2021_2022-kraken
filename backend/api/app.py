@@ -3,13 +3,11 @@ from flask.cli import load_dotenv
 from flask_cors import CORS
 
 from router.groups_routes import groups_routes
-from router.keys_routes import keys_routes
 from router.users_routes import users_routes
 
 app = Flask(__name__)
 app.register_blueprint(users_routes)
 app.register_blueprint(groups_routes)
-app.register_blueprint(keys_routes)
 
 app.config["DEBUG"] = True
 CORS(app)

@@ -41,6 +41,13 @@ components:
       properties:
         key:
           type: string
+    SshKeys:
+      type: object
+      properties:
+        keys:
+          type: array
+          items:
+            type: string
   parameters:
     group_id:
       in: path
@@ -63,6 +70,14 @@ components:
       required: true
       schema:
         type: integer
+    action:
+      in: path
+      name: action
+      description: Docker compose action
+      required: true
+      schema:
+        type: string
+        enum: [up, down, restart, rebuild, nuke]
   responses:
     get-groups-200:
       description: GET groups list OK
@@ -82,22 +97,38 @@ components:
           examples:
             200 - OK:
               $ref: "#/components/examples/get-user-by-id-200"
+    get-user-ssh-keys-by-id-200:
+      description: GET user SSH keys by ID OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/SshKeys"
+          examples:
+            200 - OK:
+              $ref: "#/components/examples/get-user-ssh-keys-by-id-200"
   examples:
     get-groups-200:
       value:
         - group_id: "10001"
           group_name: "ccm1"
           users_names:
-            - "toto@toto.com, tata@tata.com"
+            - "toto@toto.com"
+            - "tata@tata.com"
         - group_id: "10002"
           group_name: "ccm2"
           users_names:
-            - "toto.toto, tata.tata"
+            - "toto.toto"
+            - "tata.tata"
     get-user-by-id-200:
       value:
         user_id: "10001"
         user_name: "harold.trannois"
         group_id: "10000"
+    get-user-ssh-keys-by-id-200:
+      value:
+        keys:
+          - "ssh-rsa AAAAB3NzaC1..."
+          - "ssh-rsa AAAAB3NzaC1..."
 
 paths:
   /api/v1/groups:
@@ -152,7 +183,8 @@ paths:
                     group_id: "10001"
                     group_name: "ccm1"
                     users_names:
-                      - "toto.toto, tata.tata"
+                      - "toto.toto"
+                      - "tata.tata"
         404:
           description: "Not found - Could not find group with ID {groupId}"
     patch:
@@ -212,6 +244,18 @@ paths:
       responses:
         201:
           description: CREATED
+  /api/v1/groups/{group_name}/container/command/{action}:
+    post:
+      tags:
+        - "groups"
+      summary: "Send action command to trigger docker-compose execution for whole group"
+      operationId: "postGroupContainerAction"
+      parameters:
+        - $ref: "#/components/parameters/group_name"
+        - $ref: "#/components/parameters/action"
+      responses:
+        200:
+          description: OK
 
   /api/v1/students/:
     post:
@@ -287,3 +331,34 @@ paths:
             description: "Not found - Could not find user with ID {userId}"
           500:
             description: "Internal server error - Something went wrong when writing ssh keys"
+  /api/v1/students/{user_id}/keys:
+    get:
+      tags:
+        - "users"
+      summary: "Get user ssh keys by UID"
+      operationId: "getUserSshKeysById"
+      parameters:
+        - $ref: "#/components/parameters/user_id"
+      responses:
+        200:
+          $ref: "#/components/responses/get-user-ssh-keys-by-id-200"
+        404:
+          description: "Not found - Could not find user with ID {userId}"
+        500:
+          description: "Internal server error - Something went wrong when retrieving ssh keys"
+  /api/v1/students/{user_id}/container/command/{action}:
+    post:
+      tags:
+        - "users"
+      summary: "Send action command to trigger docker-compose execution for user"
+      operationId: "postUserContainerAction"
+      parameters:
+        - $ref: "#/components/parameters/user_id"
+        - $ref: "#/components/parameters/action"
+      responses:
+        200:
+          description: "OK - Container command: {action}, for {userName} has been executed"
+        404:
+          description: "Not found - Could not find user with ID {userId}"
+        500:
+          description: "Internal server error - Something went wrong when executing container action"
