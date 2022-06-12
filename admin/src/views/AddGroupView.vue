@@ -1,5 +1,13 @@
 <template>
     <v-container>
+        <div class="ma-2" v-if="msgError != ''" >
+            <v-icon
+                color="red"
+            >
+                mdi-alert-circle-outline
+            </v-icon>
+            {{ msgError }}
+        </div>
         <v-form>
             <v-text-field
                 label="Nom du groupe"
@@ -55,6 +63,9 @@
 <script>
 import { createGroupsWithCSV } from '../utils/requests';
 export default {
+    computed: mapState({
+        msgError: 'msgErrorCreateGroup',
+    }),
     data() {
         return {
             group_name: "",

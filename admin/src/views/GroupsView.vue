@@ -14,7 +14,7 @@
       >
         mdi-alert-circle-outline
       </v-icon>
-        {{ msgError }}
+      {{ msgError }}
     </div>
     <v-table>
       <thead>

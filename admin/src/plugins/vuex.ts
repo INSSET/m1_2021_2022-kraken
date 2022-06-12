@@ -24,6 +24,8 @@ const store = createStore({
             ),
         ],
         msgErrorGetGroups: "",
+        msgErrorCreateGroup: "",
+        msgErrorUpdateGroupName: "",
     },
     mutations: {
         setGroups (state, payload) {
@@ -31,6 +33,17 @@ const store = createStore({
         },
         setMsgErrorGetGroups (state, payload) {
             state.msgErrorGetGroups = payload.msgErrorGetGroups
+        },
+        setMsgErrorCreateGroup (state, payload) {
+            state.msgErrorCreateGroup = payload.msgErrorCreateGroup
+        },
+        setMsgErrorUpdateGroupName (state, payload) {
+            state.msgErrorUpdateGroupName = payload.msgErrorUpdateGroupName
+        },
+        resetAllMsgError (state, payload) {
+            state.msgErrorGetGroups = ""
+            state.msgErrorCreateGroup = ""
+            state.msgErrorUpdateGroupName = ""
         }
     }
 })

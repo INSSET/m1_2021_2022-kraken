@@ -7,6 +7,14 @@
       </v-form>
       <v-btn class="ml-4" icon="mdi-pencil" @click="disabled = (disabled + 1) % 2"></v-btn>
     </h1>
+    <div class="ma-2" v-if="msgError != ''" >
+      <v-icon
+        color="red"
+      >
+        mdi-alert-circle-outline
+      </v-icon>
+      {{ msgError }}
+    </div>
     <v-table>
       <thead>
       <tr>
@@ -37,6 +45,9 @@ export default {
     group() {
       return this.$store.state.groups.find(group => group.id == this.$route.params.group_id)
     },
+    msgError() {
+      return this.$store.state.msgErrorUpdateGroupName
+    }
   },
   data() {
     return {
