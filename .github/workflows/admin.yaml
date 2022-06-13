@@ -10,12 +10,6 @@ on:
 
 jobs:
 
-  # Run every required checking (lint, build, sonar, etc...)
-  vue:
-    uses: ./.github/workflows/VUE.yaml
-    with:
-      workdir: './admin'
-
   # Build & Push the Docker image from the admin panel
   docker:
     needs: ['vue']
