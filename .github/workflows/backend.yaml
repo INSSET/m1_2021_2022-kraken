@@ -27,9 +27,14 @@ jobs:
     with:
       workdir: './backend/api'
 
+  sonarqube:
+    uses: ./.github/workflows/SONARQUBE.yaml
+    with:
+      workdir: './backend'
+
   # Build & Push the Docker image from the admin panel
   docker:
-    needs: ['flask']
+    needs: ['flask', 'sonarqube']
     uses: ./.github/workflows/DOCKER.yaml
     with:
       # Dockerfile build entry point (see. https://docs.docker.com/engine/context/working-with-contexts/)

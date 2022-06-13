@@ -16,9 +16,14 @@ jobs:
     with:
       workdir: './students'
 
+  sonarqube:
+    uses: ./.github/workflows/SONARQUBE.yaml
+    with:
+      workdir: './students'
+
   # Build & Push the Docker image from the student panel
   docker:
-    needs: ['vue']
+    needs: ['vue', 'sonarqube']
     uses: ./.github/workflows/DOCKER.yaml
     with:
       # Dockerfile build entry point (see. https://docs.docker.com/engine/context/working-with-contexts/)
