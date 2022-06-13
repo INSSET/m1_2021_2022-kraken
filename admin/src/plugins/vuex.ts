@@ -38,22 +38,22 @@ const store = createStore({
                 group_id: "1",
             }
         ],
-        containerInfo: [
-            {
+        containerInfo: {
+            1: {
                 id: "1",
                 image: "synfony-5.2.1",
                 ports: "20001",
                 status: "up",
                 containerName: "Mon Symfony"
             },
-            {
+            2: {
                 id: "2",
                 image: "pgsql-10.0.4",
                 ports: "30000",
                 status: "down",
                 containerName: "Ma base de donnée"
-            },
-        ],
+            }
+        },
     },
     mutations: {
         setGroups (state, payload) {

@@ -14,15 +14,10 @@ export default new class StudentService {
 
         axios.get(`/student/${idStudent}`).then(response => {
             container.commit({
-                type: "containerInfo",
-                allContainer: response.data,
+                type: "reloadContainer",
+                allContainer: response.data[idStudent],
             });
-        }).catch(err => {
-            container.commit({
-                type: "containerInfo",
-                allContainer: [],
-            });
-        });
+        })
 
     }
 
@@ -34,12 +29,12 @@ export default new class StudentService {
     async getStudentInformation(idStudent: string) {
         axios.get(`/student/${idStudent}`).then(response => {
             container.commit({
-                type: "students",
+                type: "reloadStudents",
                 studentInformation: response.data,
             });
         }).catch(err => {
             container.commit({
-                type: "students",
+                type: "reloadStudents",
                 studentInformation: [],
             })
         })
