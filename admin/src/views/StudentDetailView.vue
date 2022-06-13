@@ -85,11 +85,7 @@
         },
         methods: {
             actionContainer: function (idStudent: string, action: string) {
-                fetch("http://0.0.0.0:5000/api/v1/students/" + idStudent + "/container/command/" + action, {
-                    "method": "POST"
-                }).then(function (response) {
-                    return response;
-                })
+                StudentService.setActionContainer(idStudent, action);
             },
             getKeys: function (idStudent: string) {
                 StudentService.getSshKeys(idStudent)
