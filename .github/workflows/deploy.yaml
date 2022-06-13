@@ -1,27 +1,66 @@
-name: Build / Push Students
-
-# This workflow deploy the Students Panel
-# @author Fragan
-# @version 0.1.0
+name: Deploy release
 
 on:
   push:
-    branches: ['master', 'main']
+    branches: ['main']
 
 jobs:
 
-  # Build & Push the Docker image from the student panel
-  docker:
-    needs: ['vue']
+  admin:
     uses: ./.github/workflows/DOCKER.yaml
-    secrets:
-      SSH_HOST: ${{ secrets.SSH_HOST }}
-      SSH_USER: ${{ secrets.SSH_USER }}
-      PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+    with:
+      # Dockerfile build entry point (see. https://docs.docker.com/engine/context/working-with-contexts/)
+      context: './admin'
+      # Dockerfile build target (see. https://docs.docker.com/develop/develop-images/multistage-build/)
+      registry: ghcr.io
+      image_name: ${{ github.repository }}-admin
+
+  students:
+    uses: ./.github/workflows/DOCKER.yaml
     with:
       # Dockerfile build entry point (see. https://docs.docker.com/engine/context/working-with-contexts/)
       context: './students'
       # Dockerfile build target (see. https://docs.docker.com/develop/develop-images/multistage-build/)
-      target: 'production'
       registry: ghcr.io
-      image_name: kraken-students
+      image_name: ${{ github.repository }}-students
+
+  backend:
+    uses: ./.github/workflows/DOCKER.yaml
+    with:
+      # Dockerfile build entry point (see. https://docs.docker.com/engine/context/working-with-contexts/)
+      context: './backend'
+      # Dockerfile build target (see. https://docs.docker.com/develop/develop-images/multistage-build/)
+      registry: ghcr.io
+      image_name: ${{ github.repository }}-backend
+
+  eploy-to-production:
+    needs: ['admin', 'students', 'backend']
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          registry: ${{ inputs.registry }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upgrade projet from remote server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          port: 22
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            cd /home/fragan/gestproj/src
+            git pull
+            docker compose -f docker-compose.dev.yml -f up -d --build
