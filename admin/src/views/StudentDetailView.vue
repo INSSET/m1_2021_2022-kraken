@@ -76,7 +76,7 @@
         computed: mapState({
             containerInfo: 'containerInfo',
             studentInformation: 'students',
-            listSshKey: 'listSshKey'
+            listSshKey: 'listSshKey',
             student() { return this.$store.state.students.find(student => student.user_id == this.$route.params.student_id)},
         }),
         mounted() {
