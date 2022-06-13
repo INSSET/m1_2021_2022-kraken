@@ -14,6 +14,8 @@ on:
 jobs:
 
   build:
+    if: !contains(github.ref_name, 'develop')
+      && !contains(github.ref_name, 'master')
     name: Check source code
     runs-on: ubuntu-latest
     steps:

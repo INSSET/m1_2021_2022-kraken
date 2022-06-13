@@ -40,4 +40,4 @@ jobs:
       context: './backend'
       # Dockerfile build target (see. https://docs.docker.com/develop/develop-images/multistage-build/)
       registry: ghcr.io
-      image_name: kraken-backend
+      image_name: ${{ github.repository }}-backend
