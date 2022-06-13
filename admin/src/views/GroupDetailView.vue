@@ -23,6 +23,7 @@
                 >
                     <td>{{ user.name }}</td>
                     <td>
+                        <v-btn size="small" class="float-right" :to="'/student/1'" flat icon=mdi-minus></v-btn>
                     </td>
                 </tr>
             </tbody>

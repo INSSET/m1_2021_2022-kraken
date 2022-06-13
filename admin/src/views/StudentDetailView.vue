@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <v-span class="text-h2 text-center">Environnement de Paquet Tanguy</v-span>
+        <v-span class="text-h2 text-center">Environnement de {{student.user_name.replace('.', ' ')}}</v-span>
         <v-row class="pa-3" v-if="containerInfo">
             <v-col
                 v-for="container in containerInfo"
@@ -45,6 +45,7 @@
                     </v-table>
                 </v-card>
             </v-col>
+            
         </v-row>
     </v-container>
 </template>
@@ -52,6 +53,7 @@
 <script lang="ts">
     import {mapState} from 'vuex';
     import StudentService from "@/services/student-service";
+
 
     // Récupérer le port SSH du container
     // Refresh des logs tous les x temps
@@ -73,14 +75,18 @@
             StudentService.getStudentInformation(this.$route.params.group_id);
         },
         methods: {
-            startContainer: function () {
+            actionContainer: function () {
                 fetch("0.0.0.0:5000/api/v1/groups/{group_name}/container/command/{action}:", {
                     "method": "POST"
+                }).then(function (response) {
+                    return response;
                 })
             },
-            stopContainer: function (group_id) {
-                fetch("0.0.0.0:5000/api/v1/students/" + group_id, {
-                    "method": "PATCH"
+            getKeys: function (user_id) {
+                fetch("0.0.0.0:5000/api/v1/students/" + user_id + "/keys", {
+                    "method": "GET"
+                }).then(function (response) {
+                    return response;
                 })
             }
         }
