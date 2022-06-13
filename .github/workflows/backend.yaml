@@ -17,10 +17,10 @@ jobs:
     with:
       workdir: './backend/cli'
 
-  flask-backend:
+  flask-gplib:
     uses: ./.github/workflows/FLASK.yaml
     with:
-      workdir: './backend/backend'
+      workdir: './backend/gplib'
 
   flask-api:
     uses: ./.github/workflows/FLASK.yaml
@@ -29,7 +29,7 @@ jobs:
 
   # Build & Push the Docker image from the admin panel
   docker:
-    needs: ['flask-cli', 'flask-backend', 'flask-api']
+    needs: ['flask-cli', 'flask-gplib', 'flask-api']
     uses: ./.github/workflows/DOCKER.yaml
     secrets:
       SSH_HOST: ${{ secrets.SSH_HOST }}
