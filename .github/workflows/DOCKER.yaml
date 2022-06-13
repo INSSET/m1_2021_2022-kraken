@@ -121,4 +121,5 @@ jobs:
           port: 22
           key: ${{ secrets.PRIVATE_KEY }}
           script: echo "test1" > test
+          debug: true
 
