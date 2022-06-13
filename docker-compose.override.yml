@@ -7,24 +7,13 @@ services:
     container_name: ${APP_NAME}-traefik
     command:
       - --log.level=DEBUG
-#      - --certificatesresolvers.letsencrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
       - --api.insecure=true
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
       - --entrypoints.web.address=:80
       - --entrypoints.websecure.address=:443
-#      - --entrypoints.websecure.http.tls.domains[0].main=$DOMAIN
-#      - --entrypoints.websecure.http.tls.domains[0].sans=*.$DOMAIN
-#      - --entrypoints.websecure.http.tls.certresolver=letsencrypt
-#      - --certificatesresolvers.letsencrypt.acme.tlschallenge=true
-#      - --certificatesresolvers.letsencrypt.acme.email=$ACME_EMAIL
-#      - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
     labels:
       - "traefik.enable=true"
-#      - "traefik.http.routers.traefik-api.service=api@internal"
-#      - "traefik.http.routers.traefik-api.tls=true"
-#      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
-#      - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true"
     ports:
       - "80:80"
       - "443:443"
@@ -48,11 +37,7 @@ services:
       - ./prometheus/prometheus.rules.yml:/etc/prometheus/prometheus.rules.yml:ro
       - prometheus-data:/prometheus
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.$TRAEFIK_KEY-prometheus.rule=Host(`$HOST`)"
-#      - "traefik.http.routers.$TRAEFIK_KEY-prometheus.tls=true"
-#      - "traefik.http.routers.$TRAEFIK_KEY-prometheus.tls.certresolver=letsencrypt"
-      - "traefik.http.services.$TRAEFIK_KEY-prometheus-service.loadbalancer.server.port=9090"
+      - "traefik.enable=false"
     depends_on:
       - traefik
     networks:
@@ -74,13 +59,7 @@ services:
     container_name: ${APP_NAME}-grafana
     labels:
       - "traefik.enable=true"
-#      - "traefik.http.routers.$TRAEFIK_KEY-grafana.tls=true"
-#      - "traefik.http.routers.$TRAEFIK_KEY-grafana.tls.certresolver=letsencrypt"
-#      - "traefik.http.routers.$TRAEFIK_KEY-grafana.rule=Host(`$GRAFANA_HOST`)"
-#      - "traefik.http.routers.$TRAEFIK_KEY-grafana-web.middlewares=redirect-to-https"
-      - "traefik.http.routers.$TRAEFIK_KEY-grafana-web.rule=host(`$GRAFANA_HOST`)"
-      - "traefik.http.routers.$TRAEFIK_KEY-grafana-web.entrypoints=web"
-#      - "traefik.http.routers.$TRAEFIK_KEY-grafana.entrypoints=websecure"
+      - "traefik.http.routers.$TRAEFIK_KEY-grafana-web.rule=host(`grafana.$HOST`)"
       - "traefik.http.services.$TRAEFIK_KEY-grafana-service.loadbalancer.server.port=3000"
     volumes:
       - ./grafana/dashboards.yaml:/etc/grafana/provisioning/dashboards/all.yaml

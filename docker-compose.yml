@@ -6,7 +6,7 @@ services:
     container_name: ${APP_NAME}-admin
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.$TRAEFIK_KEY-admin-web.rule=host(`admin.insset.localhost`)"
+      - "traefik.http.routers.$TRAEFIK_KEY-admin-web.rule=host(`admin.$HOST`)"
     build:
       context: ./admin
     networks:
@@ -16,7 +16,7 @@ services:
     container_name: ${APP_NAME}-students
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.$TRAEFIK_KEY-students-web.rule=host(`students.insset.localhost`)"
+      - "traefik.http.routers.$TRAEFIK_KEY-students-web.rule=host(`students.$HOST`)"
     build:
       context: ./students
     networks:
@@ -26,7 +26,7 @@ services:
     container_name: ${APP_NAME}-backend
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.$TRAEFIK_KEY-backend-web.rule=host(`backend.insset.localhost`)"
+      - "traefik.http.routers.$TRAEFIK_KEY-backend-web.rule=host(`backend.$HOST`)"
       - "traefik.http.services.$TRAEFIK_KEY-backend-service.loadbalancer.server.port=5000"
     build:
       context: ./backend
