@@ -6,6 +6,10 @@
 utiliser la cli
 ```shell
 python3 cli.py [COMMANDS]
+
+OU
+
+gp [COMMANDS]
 ```
 
 - add
