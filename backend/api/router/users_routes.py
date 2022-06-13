@@ -143,17 +143,17 @@ def get_users_by_group(group_name):
     return Response(json.dumps(liste, cls=Encoder), mimetype="application/json", status=200)
 
 
-@users_routes.route('/api/v1/students/<int:user_id>', methods=['DELETE'])
-def delete_user(user_id):
+@users_routes.route('/api/v1/students/<string:user_name>', methods=['DELETE'])
+def delete_user(user_name):
     try:
-        user = pwd.getpwuid(user_id)
+        pwd.getpwnam(user_name[0:26])
 
-        os.system('userdel -f --remove %s' % user.pw_name)
-        os.system("userdel -f --remove sftp.%s" % user.pw_name)
+        os.system('userdel -f --remove %s' % user_name)
+        os.system("userdel -f --remove sftp.%s" % user_name)
 
-        return Response('User ' + user.pw_name + ' has been deleted', mimetype='application/json', status=200)
+        return Response('User ' + user_name + ' has been deleted', mimetype='application/json', status=200)
     except KeyError:
-        abort(404, description='Not found - Could not find user with ID ' + user_id)
+        abort(404, description='Not found - Could not find user with Name ' + user_name)
 
 
 @users_routes.route('/api/v1/students/<int:user_id>/ssh/upload/', methods=['POST'])

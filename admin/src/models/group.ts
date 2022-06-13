@@ -38,7 +38,7 @@ export default class Group {
     }
 
     removeUser(student: Student): void {
-        //this._users = this._users.filter(user => student.id !== user.id);
+        this._users = this._users.filter(user => student.id !== user.id);
     }
 
 }

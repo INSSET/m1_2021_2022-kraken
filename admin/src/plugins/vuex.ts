@@ -10,16 +10,16 @@ const store = createStore({
                 1,
                 "Group 1",
                 [
-                    new Student("toto"),
-                    new Student("tata"),
+                    new Student(1,"toto","Group 1"),
+                    new Student(2,"tata", "Group 1"),
                 ]
             ),
             new Group(
                 2,
                 "Group 2",
                 [
-                    new Student("tutu"),
-                    new Student("titi"),
+                    new Student(3,"tutu","Group 2"),
+                    new Student(4,"titi","Group 2"),
                 ]
             ),
         ],
