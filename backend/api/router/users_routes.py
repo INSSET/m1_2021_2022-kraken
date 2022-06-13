@@ -296,7 +296,7 @@ def update_student_dockerfile(user_id):
             abort(500, description='Internal server error - Something went wrong when updating Dockerfile')
 
 
-@users_routes.route('/api/v1/students/<int:user_id>/container/<int:user_id>/logs', methods=['GET'])
+@users_routes.route('/api/v1/students/<int:user_id>/container/<int:container_id>/logs', methods=['GET'])
 def get_student_container_logs(user_id, container_id):
     try:
         pwd.getpwuid(user_id)
