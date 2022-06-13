@@ -35,9 +35,9 @@
                             <tr>
                                 <td>Actions</td>
                                 <td class="text-right">
-                                <span :class="{'d-none': container.status == 'down'}"><v-btn size="small" @click="stopContainer()" icon="mdi-stop"></v-btn></span>
-                                    <span :class="{'d-none': container.status == 'up'}"><v-btn size="small" @click="startContainer()" icon="mdi-play"></v-btn></span>
-                                    <span><v-btn size="small" @click="restartContainer()" icon="mdi-reload"></v-btn></span>
+                                <span :class="{'d-none': container.status == 'down'}"><v-btn size="small" @click="actionContainer(student.user_id, 'down')" icon="mdi-stop"></v-btn></span>
+                                    <span :class="{'d-none': container.status == 'up'}"><v-btn size="small" @click="actionContainer(student.user_id, 'up')" icon="mdi-play"></v-btn></span>
+                                    <span><v-btn size="small" @click="actionContainer(student.user_id, 'restart')" icon="mdi-reload"></v-btn></span>
                                     <span><v-btn size="small" @click="getLogs()" icon="mdi-format-list-text"></v-btn></span>
                                 </td>
                             </tr>
@@ -75,15 +75,13 @@
             StudentService.getStudentInformation(this.$route.params.group_id);
         },
         methods: {
-            actionContainer: function () {
-                fetch("0.0.0.0:5000/api/v1/groups/{group_name}/container/command/{action}:", {
+            actionContainer: function (idStudent: string, action: string) {
+                fetch("http://0.0.0.0:5000/api/v1/students/" + idStudent + "/container/command/" + action, {
                     "method": "POST"
-                }).then(function (response) {
-                    return response;
                 })
             },
-            getKeys: function (user_id) {
-                fetch("0.0.0.0:5000/api/v1/students/" + user_id + "/keys", {
+            getKeys: function (user_id: string) {
+                fetch("http://0.0.0.0:5000/api/v1/students/" + user_id + "/keys", {
                     "method": "GET"
                 }).then(function (response) {
                     return response;
