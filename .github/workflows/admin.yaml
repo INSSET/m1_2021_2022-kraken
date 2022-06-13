@@ -12,7 +12,6 @@ jobs:
 
   # Build & Push the Docker image from the admin panel
   docker:
-    needs: ['vue']
     uses: ./.github/workflows/DOCKER.yaml
     secrets:
       SSH_HOST: ${{ secrets.SSH_HOST }}
