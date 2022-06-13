@@ -6,7 +6,7 @@ name: Build / Push Backend
 
 on:
   push:
-    branches: ['feature/**', 'hotfix/**', 'develop', 'main']
+    branches: ['feature/**', 'hotfix/**', 'develop']
 
 jobs:
 
