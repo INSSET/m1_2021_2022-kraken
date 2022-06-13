@@ -92,6 +92,13 @@ components:
       required: true
       schema:
         type: integer
+    user_name:
+      in: path
+      name: user_name
+      description: User name
+      required: true
+      schema:
+        type: string
     action:
       in: path
       name: action
@@ -343,19 +350,20 @@ paths:
                 example:
                   message: "L'étudiant·e existe déjà !"
 
-  /api/v1/students/{user_id}:
+  /api/v1/students/{user_name}:
     get:
       tags:
         - "users"
-      summary: "Get user by UID"
-      operationId: "getUserById"
+      summary: "Get user by name"
+      operationId: "getUserByName"
       parameters:
-        - $ref: "#/components/parameters/user_id"
+        - $ref: "#/components/parameters/user_name"
       responses:
         200:
           $ref: "#/components/responses/get-user-by-id-200"
         404:
           description: "Not found - Could not find user with ID {userId}"
+  /api/v1/students/{user_id}:
     delete:
       tags:
         - "users"
