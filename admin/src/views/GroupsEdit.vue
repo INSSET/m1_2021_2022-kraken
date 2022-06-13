@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { updateGroupName } from '../utils/requests'
+import GroupService from "@/services/group-service";
 export default {
   computed: {
     group() {
@@ -54,6 +54,7 @@ export default {
       disabled: 1
     }
   },
+  provide: { GroupService },
   methods: {
     deleteUser: function (user_name) {
       fetch("0.0.0.0:5000/", {
@@ -61,7 +62,7 @@ export default {
       })
     },
     renameGroup: function (group_id, group_name) {
-      updateGroupName(group_id, group_name)
+      GroupService.updateName(group_id, group_name)
       this.disabled = 1
     }
   }

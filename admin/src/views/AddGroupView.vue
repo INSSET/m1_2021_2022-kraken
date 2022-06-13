@@ -61,11 +61,13 @@
 </template>
 
 <script>
-import { createGroupsWithCSV } from '../utils/requests';
+import {mapState} from 'vuex';
+import GroupService from "@/services/group-service";
 export default {
     computed: mapState({
         msgError: 'msgErrorCreateGroup',
     }),
+    provide: { GroupService },
     data() {
         return {
             group_name: "",
@@ -89,8 +91,8 @@ export default {
             }
             fileReader.readAsText(e.target.files[0])
         },
-        onSubmit: function(e) {
-            createGroupsWithCSV(this.group_name, this.csvFile)
+        onSubmit: function() {
+            GroupService.create(this.group_name, this.csvFile)
         }
     }
 }

@@ -46,7 +46,6 @@
 <script>
 import {mapState} from 'vuex';
 import GroupService from "@/services/group-service";
-import { getGroups } from '../utils/requests';
 
 export default {
   data() {
@@ -58,8 +57,7 @@ export default {
     msgError: 'msgErrorGetGroups',
   }),
   mounted() {
-    //GroupService.findAll()
-    getGroups()
+    GroupService.findAll()
   }
 }
 </script>
