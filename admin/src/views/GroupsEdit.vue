@@ -2,11 +2,19 @@
   <v-container>
     <h1 class="d-flex">
       <span>Groupe :</span>
-      <v-form class="pl-3" @submit="renameGroup(group.group_id)">
-        <v-text-field v-model="group.group_name" :disabled="disabled == 1"></v-text-field>
+      <v-form class="pl-3" @submit="renameGroup(group.id, group.name)">
+        <v-text-field v-model="group.name" :disabled="disabled == 1"></v-text-field>
       </v-form>
       <v-btn class="ml-4" icon="mdi-pencil" @click="disabled = (disabled + 1) % 2"></v-btn>
     </h1>
+    <div class="ma-2" v-if="msgError != ''" >
+      <v-icon
+        color="red"
+      >
+        mdi-alert-circle-outline
+      </v-icon>
+      {{ msgError }}
+    </div>
     <v-table>
       <thead>
       <tr>
@@ -17,12 +25,12 @@
       </thead>
       <tbody>
       <tr
-          v-for="(user,i) in group.users_names"
+          v-for="(user,i) in group.users"
           :key="i"
       >
-        <td>{{ user }}</td>
+        <td>{{ user.name }}</td>
         <td>
-          <v-btn size="small" class="float-right" flat icon=mdi-minus @click="deleteUser(user.users_names)"></v-btn>
+          <v-btn size="small" class="float-right" flat icon=mdi-minus @click="deleteUser(user.name)"></v-btn>
         </td>
       </tr>
       </tbody>
@@ -31,27 +39,30 @@
 </template>
 
 <script>
+import GroupService from "@/services/group-service";
 export default {
   computed: {
     group() {
-      return this.$store.state.groups.find(group => group.group_id == this.$route.params.group_id)
+      return this.$store.state.groups.find(group => group.id == this.$route.params.group_id)
     },
+    msgError() {
+      return this.$store.state.msgErrorUpdateGroupName
+    }
   },
   data() {
     return {
       disabled: 1
     }
   },
+  provide: { GroupService },
   methods: {
     deleteUser: function (user_name) {
       fetch("0.0.0.0:5000/", {
         "method": "DELETE"
       })
     },
-    renameGroup: function (group_id) {
-      fetch("0.0.0.0:5000/api/v1/students/" + group_id, {
-        "method": "PATCH"
-      })
+    renameGroup: function (group_id, group_name) {
+      GroupService.updateName(group_id, group_name)
       this.disabled = 1
     }
   }

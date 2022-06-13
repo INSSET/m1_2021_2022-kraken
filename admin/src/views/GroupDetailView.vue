@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <v-container>
-            Nom : {{ group.group_name }}
+            Nom : {{ group.name }}
             <v-btn class="mx-4" size="small" to="/about" icon="mdi-pencil" ></v-btn>
         </v-container>
         <v-divider insset />
@@ -18,10 +18,10 @@
             </thead>
             <tbody>
                 <tr
-                    v-for="(user, i) in group.users_names"
+                    v-for="(user, i) in group.users"
                     :key="i"
                 >
-                    <td>{{ user }}</td>
+                    <td>{{ user.name }}</td>
                     <td>
                     </td>
                 </tr>
@@ -33,7 +33,7 @@
 <script>
 export default {
     computed: {
-        group() { return this.$store.state.groups.find(group => group.group_id == this.$route.params.group_id)},
+        group() { return this.$store.state.groups.find(group => group.id == this.$route.params.group_id)},
     },
     data () {
         return {
