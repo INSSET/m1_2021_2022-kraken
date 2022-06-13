@@ -6,9 +6,11 @@
 utiliser la cli
 ```shell
 python3 cli.py [COMMANDS]
+```
 
 OU
 
+```shell
 gp [COMMANDS]
 ```
 
@@ -19,7 +21,7 @@ gp [COMMANDS]
     - group : Supprime un groupe et ses utilisateurs
     - user : Supprime un utilisateur à partir de son adresse mail
 - container : Permet d'interagir avec les containers des étudiants
-    -> actions possibles : afficher les logs
+    -> afficher les logs
 - student : Permet d'interagir avec les espaces étudiants
-    -> actions possibles : update les clés SSH
+    -> update les clés SSH
 - ssh : retourne un port ssh pour un container
