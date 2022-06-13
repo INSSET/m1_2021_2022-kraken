@@ -30,7 +30,7 @@
       >
         <td>{{ user.name }}</td>
         <td>
-          <v-btn size="small" class="float-right" flat icon=mdi-minus @click="deleteUser(user.name)"></v-btn>
+          <v-btn size="small" class="float-right" flat icon=mdi-minus @click="deleteUser(user.user_id)"></v-btn>
         </td>
       </tr>
       </tbody>
@@ -56,8 +56,8 @@ export default {
   },
   provide: { GroupService },
   methods: {
-    deleteUser: function (user_name) {
-      fetch("0.0.0.0:5000/", {
+    deleteUser: function (user_id) {
+      fetch("0.0.0.0:5000/api/v1/students/" + user_id, {
         "method": "DELETE"
       })
     },
