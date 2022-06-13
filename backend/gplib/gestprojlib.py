@@ -1,16 +1,13 @@
 import csv
-import os
 import grp
-import pwd
 import logging
 import logging.handlers
+import os
+import pwd
 import subprocess
-import ovh
-import time
 
-CONF_PATH = os.path.dirname(__file__)+"/conf"
+CONF_PATH = os.path.dirname(__file__) + "/conf"
 SENDMAIL = False
-
 
 """
 =================================================
@@ -44,6 +41,7 @@ Ensemble de fonctions utilitaire
 =================================================
 """
 
+
 def silentCommand(command):
     os.system(command + "> /dev/null 2>&1")
 
@@ -60,8 +58,8 @@ def initStudentListFromFile(path):
     elif file_extension == '.txt':
         return init_liste_etudiant_txt(path)
 
-def getSshPortFromPool():
 
+def getSshPortFromPool():
     sshPoolFilePath = "/home/gestproj/ssh-ports-pool.dat"
     sshPoolFile = open(sshPoolFilePath, "r")
 
@@ -81,6 +79,7 @@ def getSshPortFromPool():
     sshPoolFile.write("MIN=%s\nMAX=%s\nIND=%s" % (pool["MIN"], pool["MAX"], tempPort))
 
     return tempPort
+
 
 def init_liste_etudiant_csv(nom_fichier_csv):
     """
@@ -102,7 +101,7 @@ def init_liste_etudiant_csv(nom_fichier_csv):
             # pour éviter de dépasser les 32 caractères du login quand on rajoute sftp. devant
             login = login[0:26]
             liste.append({'email': mail, 'login': login,
-                         'domain': login.replace('.', '-')})
+                          'domain': login.replace('.', '-')})
 
     return liste
 
@@ -126,7 +125,7 @@ def init_liste_etudiant_txt(nom_fichier_txt):
                     testexist = True
             if not testexist:
                 liste.append({'email': mail, 'login': login,
-                             'domain': login.replace('.', '-')})
+                              'domain': login.replace('.', '-')})
 
     return liste
 
@@ -137,8 +136,8 @@ Ensemble de fonctions de gestion de Docker
 =================================================
 """
 
-def executeContainerActionForTheGroup(action, group, type):
 
+def executeContainerActionForTheGroup(action, group, type):
     if getDockerComposeCommandByAction(action) == None:
         raise Exception("L'action %s n'existe pas" % action)
 
@@ -153,9 +152,7 @@ def executeContainerActionForTheGroup(action, group, type):
         containerCommandExecutor(studentDirectoryPath, studentDirectory, action, type)
 
 
-
 def executeContainerActionForAStudent(action, student, group, type):
-
     if getDockerComposeCommandByAction(action) is None:
         raise Exception("L'action %s n'existe pas" % action)
 
@@ -169,9 +166,7 @@ def executeContainerActionForAStudent(action, student, group, type):
     containerCommandExecutor(studentDirectoryPath, student, action, type)
 
 
-
 def containerCommandExecutor(studentDirectoryPath, studentDirectory, action, type):
-
     if type is None:
         for studentDirectoryContainerPath in os.listdir(studentDirectoryPath):
             os.chdir(studentDirectoryPath + "/" + studentDirectoryContainerPath)
@@ -186,13 +181,15 @@ def containerCommandExecutor(studentDirectoryPath, studentDirectory, action, typ
         else:
             raise Exception(
                 "Le type de container [%s] n'est pas disponible pour l'utilisateur %s (DirectoryNotFound)" % (
-                type, studentDirectory))
+                    type, studentDirectory))
     return
 
-def getStudentContainerInformations(group, student, container):
 
+def getStudentContainerInformations(group, student, container):
     prefix = group + "-" + student.replace(".", "-") + "-" + container
-    proc = subprocess.Popen(["docker ps -af \"name=^%s\" --format \"table {{.ID}}|{{.Names}}|{{.Image}}|{{.Ports}}|{{.State}}\"" % prefix], shell=True, stdout=subprocess.PIPE).stdout
+    proc = subprocess.Popen(
+        ["docker ps -af \"name=^%s\" --format \"table {{.ID}}|{{.Names}}|{{.Image}}|{{.Ports}}|{{.State}}\"" % prefix],
+        shell=True, stdout=subprocess.PIPE).stdout
     output = proc.read()
     s = output.decode()
     s = s[:s.rfind('\n')]
@@ -207,8 +204,8 @@ def getStudentContainerInformations(group, student, container):
 
     return result
 
-def getContainerLogs(containerId):
 
+def getContainerLogs(containerId):
     proc = subprocess.Popen(["docker logs %s" % containerId], shell=True, stdout=subprocess.PIPE).stdout
     output = proc.read()
     s = output.decode()
@@ -229,7 +226,6 @@ def getDockerComposeCommandByAction(action):
 
 
 def pushFileOntoAContainer(containerId, source, mode, target):
-
     if mode != 1 and mode != 0:
         raise Exception("Le mode de push n'est pas connu. Options : 1 ou 0")
 
@@ -237,6 +233,7 @@ def pushFileOntoAContainer(containerId, source, mode, target):
         os.system("docker exec %s su -c \"cat %s %s %s\"" % (containerId, source, mode, target))
     except Exception as exception:
         logger.error(exception)
+
 
 def liste_etudiant_group(group):
     """
@@ -251,7 +248,7 @@ def liste_etudiant_group(group):
         for user in pwd.getpwall():
             if user.pw_gid == info_grp.gr_gid:
                 liste.append({'user': user, 'login': user.pw_name,
-                             'domain': user.pw_name.replace('.', '-')})
+                              'domain': user.pw_name.replace('.', '-')})
     except KeyError:
         logger.error("Ref user non trouvé ")
 
@@ -274,6 +271,7 @@ def build_ip(uid, ipclass):
     ip = "%s.%s.%s" % (ipclass, ip_class_b, ip_class_c)
     return ip
 
+
 """
 
 Création User :
@@ -284,6 +282,7 @@ Création User :
     - Modifier les .env des dossier copier avec les informations du l'utilisateur
 
 """
+
 
 def createUsers(list, group):
     """
@@ -310,7 +309,8 @@ def createUsers(list, group):
         except KeyError:
 
             # Création de l'utilisateur
-            os.system("useradd -d /home/etudiants/%s -K UID_MIN=10002 -m --skel %s --shell %s -N -g %s %s" % (student['login'], userSkellPath, "/bin/bash", group, student['login']))
+            os.system("useradd -d /home/etudiants/%s -K UID_MIN=10002 -m --skel %s --shell %s -N -g %s %s" % (
+            student['login'], userSkellPath, "/bin/bash", group, student['login']))
 
             # os.system("chown -R www-data:sftp /home/etudiants/%s/.ssh" % etudiant['login'])
             # met un pass pour activer le compte
@@ -322,14 +322,19 @@ def createUsers(list, group):
             os.system("mkdir -p /home/gestproj/.docker/%s/%s" % (group, student['login']))
 
             # On prépare les docker-skell de l'étudiant
-            os.system("cd /home/gestproj/docker-skell/ && for file in *; do cp -r $file /home/gestproj/.docker/%s/%s/$file; done" % (group, student['login']))
+            os.system(
+                "cd /home/gestproj/docker-skell/ && for file in *; do cp -r $file /home/gestproj/.docker/%s/%s/$file; done" % (
+                group, student['login']))
 
             sshPort = getSshPortFromPool()
             # On vient remplir les .env avec les variables attendus en fonction du login
-            os.system("for file in /home/gestproj/.docker/%s/%s/*; do [ -d \"$file\" ] && find $file -name '.env.example' | xargs -I{} cat {} | sed -e 's/{STUDENT_NAME}/%s/g' -e 's/{STUDENT_NAME_WITH_DASH}/%s/g' -e 's/#//g' -e 's/{STUDENT_GROUP}/%s/g' -e 's/{STUDENT_SSH_PORT}/%s/g' > $file/.env; done" % (group, student['login'], student['login'], student['login'].replace(".", "-"), group, sshPort))
+            os.system(
+                "for file in /home/gestproj/.docker/%s/%s/*; do [ -d \"$file\" ] && find $file -name '.env.example' | xargs -I{} cat {} | sed -e 's/{STUDENT_NAME}/%s/g' -e 's/{STUDENT_NAME_WITH_DASH}/%s/g' -e 's/#//g' -e 's/{STUDENT_GROUP}/%s/g' -e 's/{STUDENT_SSH_PORT}/%s/g' > $file/.env; done" % (
+                group, student['login'], student['login'], student['login'].replace(".", "-"), group, sshPort))
 
     logger.info("users created")
     return
+
 
 def deleteUser(email):
     """
@@ -358,15 +363,13 @@ def deleteUser(email):
     return
 
 
-def updateAndPropagateSshKeys(student, sshKeyFile, isFile = False):
-
+def updateAndPropagateSshKeys(student, sshKeyFile, isFile=False):
     try:
 
         userExist = pwd.getpwnam(student)
 
     except KeyError as exception:
         raise Exception("L'utilisateur %s n'existe pas" % student)
-
 
     userBaseHomePath = "/home/etudiants/" + student
 
@@ -383,7 +386,6 @@ def updateAndPropagateSshKeys(student, sshKeyFile, isFile = False):
 
     else:
         raise Exception("Le dossier home de l'utilisateur % n'existe pas" % student)
-
 
 
 def create_sftp_users(liste, shell="/bin/bash"):
@@ -446,6 +448,7 @@ def createGroup(group_name):
     logger.info("group %s created", group_name)
     return
 
+
 def deleteGroup(group):
     """
     Suprime tous les utilisateurs appartenant à se groupe, en comparant
@@ -492,6 +495,7 @@ def sup_sftp_users(group):
 
     except KeyError:
         logger.error("Le group_name %s n'existe pas ", group)
+
 
 def create_sql(liste, ipclass):
     with open("../data/createUserMySQL.sql", 'w') as sql_file:
