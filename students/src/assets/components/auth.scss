@@ -1,0 +1,143 @@
+.auth-container {
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-height: 100vh;
+
+  .alert {
+
+    margin-top: 1em;
+
+  }
+
+  .auth-content {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    img {
+
+      width: 80px;
+
+    }
+
+    .auth-account {
+
+      background-color: map-get($colors, "secondary");
+      padding: 15px;
+      text-align: center;
+      margin-top: 1.5em;
+      border-radius: 5px;
+      color: map-get($colors, "third");
+      min-width: 450px;
+
+      a {
+
+        color: map-get($colors, "third");
+        text-decoration: none;
+        transition: .3s;
+
+        &:hover {
+
+          color: map-get($colors, "primary");
+
+        }
+
+      }
+
+    }
+
+    .auth-form {
+
+      background-color: map-get($colors, "secondaryL");
+      padding: 35px;
+      min-width: 450px;
+      margin-top: 1em;
+      border-bottom: 4px solid map-get($colors, "primary");
+      border-radius: 5px;
+      position: relative;
+
+      .auth-loader {
+
+        z-index: 100;
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        background-color: rgba(map-get($colors, "secondary"), .9);
+        top: 0;
+        left: 0;
+        border-radius: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        i {
+
+          font-size: 2em;
+          color: map-get($colors, "primary");
+
+        }
+
+      }
+
+      .button-primary {
+
+        margin: 0;
+        margin-top: 2em;
+
+      }
+
+      .auth-title {
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5em;
+
+        hr {
+
+          background-color: map-get($colors, "third");
+          width: 100%;
+
+        }
+
+        h6 {
+
+          position: relative;
+          display: block;
+          color: map-get($colors, "third");
+          width: 100%;
+          text-align: center;
+          text-transform: uppercase;
+          font-weight: 500;
+          font-size: .9em;
+          margin: 0 15px;
+          white-space: nowrap;
+          letter-spacing: 1px;
+
+        }
+
+      }
+
+    }
+
+  }
+
+}
+
+.forgot-password {
+
+  color: map-get($colors, "third");
+  transition: .3s;
+
+  &:hover {
+
+    color: map-get($colors, "primary");
+
+  }
+
+}

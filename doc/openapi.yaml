@@ -1,0 +1,481 @@
+openapi: 3.0.3
+info:
+  description: "Lorem ipsum"
+  version: "1.0.0"
+  title: "Gestproj"
+  contact:
+    email: "harold.trannois@u-picardie.com"
+
+components:
+  schemas:
+    Groups:
+      type: object
+      properties:
+        group_id:
+          type: string
+        group_name:
+          type: string
+        users_names:
+          type: array
+          items:
+            type: string
+    User:
+      type: object
+      properties:
+        user_id:
+          type: string
+        user_name:
+          type: string
+        group_id:
+          type: string
+    PostUserRequestDto:
+      type: object
+      properties:
+        firstname:
+          type: string
+        lastname:
+          type: string
+        groupName:
+          type: string
+    PostSshKeyDto:
+      type: object
+      properties:
+        key:
+          type: string
+    SshKeys:
+      type: object
+      properties:
+        keys:
+          type: array
+          items:
+            type: string
+    Dockerfile:
+      type: object
+      properties:
+        dockerFile:
+          type: array
+          items:
+            type: string
+    ContainerInfo:
+      type: object
+      properties:
+        id:
+          type: string
+        image:
+          type: string
+        ports:
+          type: string
+        status:
+          type: string
+        containerName:
+          type: string
+
+  parameters:
+    group_id:
+      in: path
+      name: group_id
+      description: GID
+      required: true
+      schema:
+        type: integer
+    group_name:
+      in: path
+      name: group_name
+      description: Group name
+      required: true
+      schema:
+        type: string
+    user_id:
+      in: path
+      name: user_id
+      description: UIDs
+      required: true
+      schema:
+        type: integer
+    user_name:
+      in: path
+      name: user_name
+      description: User name
+      required: true
+      schema:
+        type: string
+    action:
+      in: path
+      name: action
+      description: Docker compose action
+      required: true
+      schema:
+        type: string
+        enum: [up, down, restart, rebuild, nuke]
+
+  responses:
+    get-groups-200:
+      description: GET groups list OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Groups"
+          examples:
+            200 - OK:
+              $ref: "#/components/examples/get-groups-200"
+    get-user-by-id-200:
+      description: GET user by ID OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/User"
+          examples:
+            200 - OK:
+              $ref: "#/components/examples/get-user-by-id-200"
+    get-user-ssh-keys-by-id-200:
+      description: GET user SSH keys by ID OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/SshKeys"
+          examples:
+            200 - OK:
+              $ref: "#/components/examples/get-user-ssh-keys-by-id-200"
+    get-user-container-info-200:
+      description: GET user container info OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ContainerInfo"
+          examples:
+            200 - OK:
+              $ref: "#/components/examples/get-user-container-info-200"
+    get-user-dockerfile-200:
+      description: GET user Dockerfile OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Dockerfile"
+          examples:
+            200 - OK:
+              $ref: "#/components/examples/get-user-dockerfile-200"
+
+  examples:
+    get-groups-200:
+      value:
+        - group_id: "10001"
+          group_name: "ccm1"
+          users_names:
+            - "toto@toto.com"
+            - "tata@tata.com"
+        - group_id: "10002"
+          group_name: "ccm2"
+          users_names:
+            - "toto.toto"
+            - "tata.tata"
+    get-user-by-id-200:
+      value:
+        user_id: "10001"
+        user_name: "harold.trannois"
+        group_id: "10000"
+    get-user-ssh-keys-by-id-200:
+      value:
+        keys:
+          - "ssh-rsa AAAAB3NzaC1..."
+          - "ssh-rsa AAAAB3NzaC1..."
+    get-user-container-info-200:
+      value:
+        id: "f03b1930b2ef"
+        image: "gp"
+        ports: "0.0.0.0:5000-5000/tcp"
+        status: "running"
+        containerName: "gp"
+    get-user-dockerfile-200:
+      value:
+        dockerFile:
+          - "ARG PHP_VERSION=8.1\n"
+          - "FROM php:${PHP_VERSION}-fpm\n"
+          - "..."
+
+paths:
+  /api/v1/groups:
+    get:
+      tags:
+        - "groups"
+      summary: "Retrieve all groups"
+      operationId: "getGroups"
+      responses:
+        "200":
+          $ref: "#/components/responses/get-groups-200"
+        "404":
+          description: "Groups not found"
+    post:
+      tags:
+        - "groups"
+      summary: "Create new group"
+      operationId: "addGroup"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                groupName:
+                  type: string
+      responses:
+        201:
+          description: CREATED
+        500:
+          description: Internal server error
+
+  /api/v1/groups/{group_id}:
+    get:
+      tags:
+        - "groups"
+      summary: "Get group by GID"
+      operationId: "getGroupById"
+      parameters:
+        - $ref: "#/components/parameters/group_id"
+      responses:
+        200:
+          description: GET groups list OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Groups"
+              examples:
+                200:
+                  value:
+                    group_id: "10001"
+                    group_name: "ccm1"
+                    users_names:
+                      - "toto.toto"
+                      - "tata.tata"
+        404:
+          description: "Not found - Could not find group with ID {groupId}"
+    patch:
+      tags:
+        - "groups"
+      summary: "Update group with new name"
+      operationId: "patchGroup"
+      parameters:
+        - $ref: "#/components/parameters/group_id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                groupName:
+                  type: string
+      responses:
+        200:
+          description: "Group with ID {groupId} has been updated"
+        400:
+          description: "Bad request - Missing mandatory input value"
+        404:
+          description: "Not found - Could not find group with ID {groupId}"
+    delete:
+      tags:
+        - "groups"
+      summary: "Delete group by GID"
+      operationId: "deleteGroupById"
+      parameters:
+        - $ref: "#/components/parameters/group_id"
+      responses:
+        200:
+          description: OK
+        404:
+          description: "Not found - Could not find group with ID {groupId}"
+
+  /api/v1/groups/{group_name}/upload:
+    post:
+      tags:
+        - "groups"
+      summary: "Upload CSV files to create Users with given group name, also use to update a group with a new CSV"
+      operationId: "postUsersFromCSV"
+      parameters:
+        - $ref: "#/components/parameters/group_name"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        201:
+          description: CREATED
+  /api/v1/groups/{group_name}/container/command/{action}:
+    post:
+      tags:
+        - "groups"
+      summary: "Send action command to trigger docker-compose execution for whole group"
+      operationId: "postGroupContainerAction"
+      parameters:
+        - $ref: "#/components/parameters/group_name"
+        - $ref: "#/components/parameters/action"
+      responses:
+        200:
+          description: OK
+        404:
+          description: "Not found - Could not find group with ID {groupName}"
+        500:
+          description: "Internal server error - Something went wrong when executing container action"
+
+  /api/v1/students/:
+    post:
+      tags:
+        - "users"
+      summary: "Create new single user"
+      operationId: "postNewUser"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostUserRequestDto"
+      responses:
+        201:
+          description: CREATED
+        409:
+          description: CONFLICT
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "L'étudiant·e existe déjà !"
+
+  /api/v1/students/{user_name}:
+    get:
+      tags:
+        - "users"
+      summary: "Get user by name"
+      operationId: "getUserByName"
+      parameters:
+        - $ref: "#/components/parameters/user_name"
+      responses:
+        200:
+          $ref: "#/components/responses/get-user-by-id-200"
+        404:
+          description: "Not found - Could not find user with ID {userId}"
+  /api/v1/students/{user_id}:
+    delete:
+      tags:
+        - "users"
+      summary: "Delete user by UID"
+      operationId: "deleteUserById"
+      parameters:
+        - $ref: "#/components/parameters/user_id"
+      responses:
+        200:
+          description: OK
+        404:
+          description: "Not found - Could not find user with ID {userId}"
+
+  /api/v1/students/{user_id}/ssh/upload:
+      post:
+        tags:
+          - "users"
+        summary: "Upload SSH Key"
+        operationId: "postSshKey"
+        parameters:
+          - $ref: "#/components/parameters/user_id"
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostSshKeyDto"
+        responses:
+          200:
+            description: OK - Key has been successfully uploaded
+          404:
+            description: "Not found - Could not find user with ID {userId}"
+          500:
+            description: "Internal server error - Something went wrong when writing ssh keys"
+  /api/v1/students/{user_id}/keys:
+    get:
+      tags:
+        - "users"
+      summary: "Get user ssh keys by UID"
+      operationId: "getUserSshKeysById"
+      parameters:
+        - $ref: "#/components/parameters/user_id"
+      responses:
+        200:
+          $ref: "#/components/responses/get-user-ssh-keys-by-id-200"
+        404:
+          description: "Not found - Could not find user with ID {userId}"
+        500:
+          description: "Internal server error - Something went wrong when retrieving ssh keys"
+  /api/v1/students/{user_id}/container/command/{action}:
+    post:
+      tags:
+        - "users"
+      summary: "Send action command to trigger docker-compose execution for user"
+      operationId: "postUserContainerAction"
+      parameters:
+        - $ref: "#/components/parameters/user_id"
+        - $ref: "#/components/parameters/action"
+      responses:
+        200:
+          description: "OK - Container command: {action}, for {userName} has been executed"
+        404:
+          description: "Not found - Could not find user with ID {userId}"
+        500:
+          description: "Internal server error - Something went wrong when executing container action"
+  /api/v1/students/{user_id}/container/info:
+    get:
+      tags:
+        - "users"
+      summary: "Retrieve relevant user's container info"
+      operationId: "getUserContainerInfo"
+      parameters:
+        - $ref: "#/components/parameters/user_id"
+      responses:
+        200:
+          $ref: "#/components/responses/get-user-container-info-200"
+        404:
+          description: "Not found - Could not find user with ID {userId}"
+        500:
+          description: "Internal server error - Something went wrong when fetching container info"
+  /api/v1/students/{user_id}/dockerfile:
+    get:
+      tags:
+        - "users"
+      summary: "Retrieve user Dockerfile as a string array"
+      operationId: "getUserDockerfile"
+      parameters:
+        - $ref: "#/components/parameters/user_id"
+      responses:
+        200:
+          $ref: "#/components/responses/get-user-dockerfile-200"
+        404:
+          description: "Not found - Could not find user with ID {userId}"
+        500:
+          description: "Internal server error - Something went wrong when fetching Dockerfile"
+    post:
+      tags:
+        - "users"
+      summary: "Update user Dockerfile"
+      operationId: "postUserDockerfile"
+      parameters:
+        - $ref: "#/components/parameters/user_id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Dockerfile"
+      responses:
+        200:
+          description: "OK - {userName} Dockerfile has been updated"
+        404:
+          description: "Not found - Could not find user with ID {userId}"
+        500:
+          description: "Internal server error - Something went wrong when updating Dockerfile"
