@@ -45,10 +45,10 @@ def get_users():
     return Response(encoded_users, mimetype="application/json", status=200)
 
 
-@users_routes.route("/api/v1/students/<int:user_id>/", methods=["GET"])
-def get_user_by_id(user_id):
+@users_routes.route("/api/v1/students/<string:user_name>/", methods=["GET"])
+def get_user_by_id(user_name):
     try:
-        user_trouve = pwd.getpwuid(user_id)
+        user_trouve = pwd.getpwnam(user_name[0:26])
         user_id = str(user_trouve.pw_uid)
         user_name = str(user_trouve.pw_name)
         group_id = str(user_trouve.pw_gid)
@@ -62,7 +62,7 @@ def get_user_by_id(user_id):
 
         return Response(encoded_user, mimetype="application/json", status=200)
     except KeyError:
-        abort(404, description='Not found - Could not find user with ID ' + user_id)
+        abort(404, description='Not found - Could not find user with name ' + user_name)
 
 
 @users_routes.route('/api/v1/students/<int:user_id>/keys/', methods=['GET'])
