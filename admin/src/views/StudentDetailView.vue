@@ -1,7 +1,8 @@
 <template>
     <v-container>
-        <v-span class="text-h2 text-center">Environnement de {{student.user_name.replace('.', ' ')}}</v-span>
-        <v-row class="pa-3" v-if="containerInfo">
+        <p class="text-h2 text-center">Environnement de {{student.user_name.replace('.', ' ')}}</p>
+        <p class="text-h3">Containers</p>
+        <v-row class="pa-3" v-if="containerInfo.length > 0">
             <v-col
                 v-for="container in containerInfo"
                 :key="container"
@@ -45,14 +46,36 @@
                     </v-table>
                 </v-card>
             </v-col>
+        </v-row>
+        <p v-else class="text-error pa-2">Pas de containers</p>
+
+        <v-row>           
             <v-col
-                v-for="sshKey in listSshKey"
-                :key="sshKey"
+                class="pa-2"
                 cols="12"
             >
-                <v-card>
-                    {{sshKey}}
-                </v-card>
+
+                <p class="text-h3">Clés SSH</p>
+
+                <v-btn class="my-3" size="small" @click="displayTextarea = !displayTextarea">Ajouter une clé</v-btn>
+                <v-form @submit="addSshKey(student.user_id)" :class="{'d-none': !displayTextarea}">
+                    <v-textarea></v-textarea>
+                    <v-btn class="mt-3" @click="addSshKey(student.user_id), displayTextarea = !displayTextarea">Valider</v-btn>
+                    <v-btn class="mt-3 mx-3" @click="displayTextarea = !displayTextarea">Annuler</v-btn>
+                </v-form>
+                <div v-if="listSshKey.length > 0">
+                    <v-col
+                        v-for="sshKey in listSshKey"
+                        :key="sshKey"
+                        cols="12"
+                    >
+                        <v-card class="pa-2 break-word">
+                            {{sshKey}}
+                        </v-card>
+                    </v-col>
+                </div>
+                <p v-else class="text-error pa-2">Pas de clés SSH</p>
+                
             </v-col>
         </v-row>
     </v-container>
@@ -73,6 +96,11 @@
     // => symfony.paquet.tanguy.insset.localhost
     export default {
         provide: { StudentService },
+        data() {
+            return {
+            displayTextarea: false
+            }
+        },
         computed: mapState({
             containerInfo: 'containerInfo',
             studentInformation: 'students',
@@ -88,8 +116,11 @@
                 StudentService.setActionContainer(idStudent, action);
             },
             getKeys: function (idStudent: string) {
-                StudentService.getSshKeys(idStudent)
-            }
+                StudentService.getSshKeys(idStudent);
+            },
+            addSshKey: function (idStudent: string) {
+                StudentService.addSshKey(idStudent);
+            },
         }
     } 
 </script>
@@ -105,5 +136,13 @@
         &-reload {
             color: orange;
         }
+    }
+
+    textarea {
+        width: 100%;
+    }
+
+    .break-word {
+        word-break: break-all;
     }
 </style>

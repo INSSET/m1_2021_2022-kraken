@@ -68,4 +68,18 @@ export default new class StudentService {
             })
         })
     }
+
+    /**
+     * 
+     * @param idStudent 
+     */
+    async addSshKey(idStudent: string) {
+        axios.post("http://0.0.0.0:5000/api/v1/students"+idStudent+"/ssh/upload").then(function (response) {
+            if (response.status == 200) {
+                container.commit({
+                    type: "reloadSshKey"
+                })
+            }
+        })
+    }
 }
