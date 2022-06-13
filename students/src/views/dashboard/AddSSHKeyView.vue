@@ -14,11 +14,12 @@
 
         <CardComponent title="Nouvelle clé ssh">
 
-          <form>
+          <form @submit="onSubmit">
 
             <div class="form-group">
               <label for="sshKey">Clé</label>
-              <textarea id="sshKey" class="form-control" rows="6" placeholder="ssh-rsa AAAA..."></textarea>
+              <textarea id="sshKey" class="form-control" rows="6" placeholder="ssh-rsa AAAA..."
+              v-model="sshKey"></textarea>
             </div>
 
             <div class="form-group">
@@ -42,13 +43,33 @@ import CardComponent from "@/components/utils/card/CardComponent.vue";
 import DashboardAppView from "@/views/includes/DashboardAppView.vue";
 import BreadcrumbComponent from "@/components/utils/breadcrumb/BreadcrumbComponent.vue";
 import BreadcrumbItemComponent from "@/components/utils/breadcrumb/BreadcrumbItemComponent.vue";
+import axios from "axios"
+axios.defaults.baseURL = "http://backend.insset.localhost/api/v1";
 
 export default {
   name: "AddSSHKeyView",
   components: {CardComponent, DashboardAppView, BreadcrumbComponent, BreadcrumbItemComponent},
-  props: [
-      "sskKey"
-  ]
+  data() {
+    return{
+      sshKey: null,
+    } 
+  },
+  methods:{
+    onSubmit : function(){
+        axios.get("http://backend.insset.localhost/api/v1/students/john.doe")
+        .then((res) => {
+          var user_id = res.data.user_id;
+          var sentKey = { key: this.sshKey };
+          console.log(sentKey)
+          axios.post("http://backend.insset.localhost/api/v1/students/"+user_id+"/ssh/upload/", sentKey)
+            .catch(error => {
+              console.error('There was an error!', error);
+            })
+          }
+        )        
+        event.preventDefault();
+    }
+  }
 }
 </script>
 
