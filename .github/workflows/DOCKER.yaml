@@ -102,6 +102,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
   deploy-to-production:
+    if: contains(github.ref_name, 'master')
     runs-on: ubuntu-latest
     environment: production
     permissions:
@@ -127,6 +128,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           port: 22
           key: ${{ secrets.PRIVATE_KEY }}
-          script: echo "test1" > test
-          debug: true
-
+          script: |
+            cd /home/fragan/gestproj/src
+            git pull
+            docker compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.prod.yml up -d --build

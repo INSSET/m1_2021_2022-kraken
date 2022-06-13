@@ -1,0 +1,27 @@
+name: Build / Push Students
+
+# This workflow deploy the Students Panel
+# @author Fragan
+# @version 0.1.0
+
+on:
+  push:
+    branches: ['master', 'main']
+
+jobs:
+
+  # Build & Push the Docker image from the student panel
+  docker:
+    needs: ['vue']
+    uses: ./.github/workflows/DOCKER.yaml
+    secrets:
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+      PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+    with:
+      # Dockerfile build entry point (see. https://docs.docker.com/engine/context/working-with-contexts/)
+      context: './students'
+      # Dockerfile build target (see. https://docs.docker.com/develop/develop-images/multistage-build/)
+      target: 'production'
+      registry: ghcr.io
+      image_name: kraken-students
