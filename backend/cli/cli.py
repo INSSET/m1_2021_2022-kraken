@@ -1,5 +1,4 @@
 import click
-import gestprojmail
 import grp
 import pwd
 import os
@@ -142,16 +141,16 @@ def student(action, login, sshKey):
 
     return
 
-@click.command(name='test')
-def test():
+@click.command(name='ssh')
+def ssh():
     print(gp.getSshPortFromPool())
 
 # Init commands
 main.add_command(add)
 main.add_command(rm)
 main.add_command(container)
-main.add_command(test)
 main.add_command(student)
+main.add_command(ssh)
 
 # Add
 add.add_command(createGroup)

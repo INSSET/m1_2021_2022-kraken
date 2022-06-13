@@ -5,26 +5,17 @@
 # Documentation
 utiliser la cli
 ```shell
-python3 main.py [COMMANDS]
+python3 cli.py [COMMANDS]
 ```
 
-- create
-    - acces : Crée un groupe a partir d'une liste d'etudiants
-    - vhost : Crée des virtual hosts pour les membres du groupe
-    - compose : Installe les docker compose des membres du groupe
-    - container : Crée les containers pour les membres du groupe (fonction écrite dans la cli mais pas dans la lib gestproj)
-    - sftp : Crée des utilisateurs SFTP pour les membres du groupe
-    - domain : Crée des domaines(OVH) pour les étudiants de la liste (fonction écrite dans la cli mais pas dans la lib gestproj)
-    - sql : Cree un utilisateur SQL pour chaque membres du groupe (fonction écrite dans la cli mais pas dans la lib gestproj)
-- delete
-    - group : Supprime les utilisateurs du groupe, puis le groupe
-    - vhost : Supprime les Virtual Hosts du groupe
-    - user : supprime un utilisateur (à partir de son mail)
-    - container : supprime les containers du groupe
-    - sftp : supprime les utilisateurs SFTP du groupe
 - add
-    - acces : crée une liste d'utilisateurs et les affecte au groupe
-    - vhost : Crée des virtual hosts pour les membres du groupe
-- run
-    - run containers : lance les containers des membres du groupe
-- send : la fonction ne fonctionne pas !
+    - group : Crée un groupe a partir d'une liste d'etudiants
+    - user : Crée des virtual hosts pour les membres du groupe
+- rm
+    - group : Supprime un groupe et ses utilisateurs
+    - user : Supprime un utilisateur à partir de son adresse mail
+- container : Permet d'interagir avec les containers des étudiants
+    -> actions possibles : afficher les logs
+- student : Permet d'interagir avec les espaces étudiants
+    -> actions possibles : update les clés SSH
+- ssh : retourne un port ssh pour un container
