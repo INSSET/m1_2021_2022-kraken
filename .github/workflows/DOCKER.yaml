@@ -102,6 +102,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
   deploy-to-production:
+    needs: ['build-and-push-image']
     if: contains(github.ref_name, 'master')
     runs-on: ubuntu-latest
     environment: production
