@@ -40,4 +40,32 @@ export default new class StudentService {
         })
     }
 
+    /**
+     * 
+     * @param idStudent 
+     * @param action 
+     */
+    async setActionContainer(idStudent: string, action: string) {
+        axios.post("http://0.0.0.0:5000/api/v1/students/" + idStudent + "/container/command/" + action).then(function (response) {
+            if (response.status == 200) {
+                container.commit({
+                    type: "reloadContainer"
+                })
+            }
+        })
+    }
+
+    /**
+     * 
+     * @param idStudent 
+     */
+    async getSshKeys(idStudent: string) {
+        axios.get("http://0.0.0.0:5000/api/v1/students/" + idStudent + "/keys")
+        .then(function (response) {
+            container.commit({
+                type: "reloadSshKey",
+                sshKeys: response.data,
+            })
+        })
+    }
 }

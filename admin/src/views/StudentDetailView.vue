@@ -45,7 +45,15 @@
                     </v-table>
                 </v-card>
             </v-col>
-            
+            <v-col
+                v-for="sshKey in listSshKey"
+                :key="sshKey"
+                cols="12"
+            >
+                <v-card>
+                    {{sshKey}}
+                </v-card>
+            </v-col>
         </v-row>
     </v-container>
 </template>
@@ -68,11 +76,12 @@
         computed: mapState({
             containerInfo: 'containerInfo',
             studentInformation: 'students',
+            listSshKey: 'listSshKey'
             student() { return this.$store.state.students.find(student => student.user_id == this.$route.params.student_id)},
         }),
         mounted() {
-            StudentService.getContainerInfo(this.$route.params.group_id);
-            StudentService.getStudentInformation(this.$route.params.group_id);
+            StudentService.getContainerInfo(this.$route.params.student_id);
+            StudentService.getStudentInformation(this.$route.params.student_id);
         },
         methods: {
             actionContainer: function (idStudent: string, action: string) {
@@ -82,12 +91,8 @@
                     return response;
                 })
             },
-            getKeys: function (user_id: string) {
-                fetch("http://0.0.0.0:5000/api/v1/students/" + user_id + "/keys", {
-                    "method": "GET"
-                }).then(function (response) {
-                    return response;
-                })
+            getKeys: function (idStudent: string) {
+                StudentService.getSshKeys(idStudent)
             }
         }
     } 

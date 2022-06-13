@@ -54,6 +54,9 @@ const store = createStore({
                 containerName: "Ma base de donnée"
             }
         },
+        listSshKey: {
+
+        },
     },
     mutations: {
         setGroups (state, payload) {
@@ -79,6 +82,9 @@ const store = createStore({
         reloadContainer (state, payload) {
             state.containerInfo = payload.containerInfo;
         },
+        reloadSshKey (state, payload) {
+            state.listSshKey = payload.listSshKey
+         }
     }
 })
 
