@@ -54,6 +54,7 @@
     import {mapState} from 'vuex';
     import StudentService from "@/services/student-service";
 
+
     // Récupérer le port SSH du container
     // Refresh des logs tous les x temps
     // SSH
@@ -77,6 +78,8 @@
             actionContainer: function (idStudent: string, action: string) {
                 fetch("http://0.0.0.0:5000/api/v1/students/" + idStudent + "/container/command/" + action, {
                     "method": "POST"
+                }).then(function (response) {
+                    return response;
                 })
             },
             getKeys: function (user_id: string) {
