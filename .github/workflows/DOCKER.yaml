@@ -24,6 +24,12 @@ on:
     secrets:
       token:
         required: false
+      PRIVATE_KEY:
+        required: true
+      SSH_USER:
+        required: true
+      SSH_HOST:
+        required: true
 
 jobs:
 
@@ -94,3 +100,35 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+  deploy-to-production:
+    if: contains(github.ref_name, 'master')
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          registry: ${{ inputs.registry }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upgrade projet from remote server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          port: 22
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            cd /home/fragan/gestproj/src
+            git pull
+            docker compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.prod.yml up -d --build
