@@ -54,7 +54,6 @@
     import {mapState} from 'vuex';
     import StudentService from "@/services/student-service";
 
-
     // Récupérer le port SSH du container
     // Refresh des logs tous les x temps
     // SSH
