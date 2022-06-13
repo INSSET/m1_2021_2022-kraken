@@ -57,7 +57,7 @@ export default {
   provide: { GroupService },
   methods: {
     deleteUser: function (user_id) {
-      fetch("0.0.0.0:5000/api/v1/students/" + user_id, {
+      fetch("http://0.0.0.0:5000/api/v1/students/" + user_id, {
         "method": "DELETE"
       })
     },
