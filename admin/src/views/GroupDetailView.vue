@@ -2,7 +2,7 @@
     <v-container>
         <v-container>
             Nom : {{ group.name }}
-            <v-btn class="mx-4" size="small" to="/about" icon="mdi-pencil" ></v-btn>
+            <v-btn class="mx-4" size="small" :to="'/groupsEdit/'+group.id" icon="mdi-pencil" ></v-btn>
         </v-container>
         <v-divider insset />
         <v-table>

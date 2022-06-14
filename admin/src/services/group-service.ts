@@ -24,7 +24,7 @@ export default new class GroupService {
                 res.data.forEach((group: { group_id: number, group_name: string, users_names: string[]; }) => {
                     let students: Array<Student> = [];
                     group.users_names.forEach(studentName => {
-                        students.push(new Student(studentName))
+                        students.push(new Student(0, studentName, group.group_name))
                     });
                     groups.push(new Group(group.group_id, group.group_name, students))
                 });

@@ -363,19 +363,18 @@ paths:
           $ref: "#/components/responses/get-user-by-id-200"
         404:
           description: "Not found - Could not find user with ID {userId}"
-  /api/v1/students/{user_id}:
     delete:
       tags:
         - "users"
-      summary: "Delete user by UID"
-      operationId: "deleteUserById"
+      summary: "Delete user by Name"
+      operationId: "deleteUserByName"
       parameters:
-        - $ref: "#/components/parameters/user_id"
+        - $ref: "#/components/parameters/user_name"
       responses:
         200:
           description: OK
         404:
-          description: "Not found - Could not find user with ID {userId}"
+          description: "Not found - Could not find user with Name {userName}"
 
   /api/v1/students/{user_id}/ssh/upload:
       post:
