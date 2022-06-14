@@ -25,7 +25,7 @@ export default new class StudentService {
     }
 
     /**
-     * get Student information
+     * get Student information by his id
      * 
      * @param idStudent
      */
@@ -44,6 +44,21 @@ export default new class StudentService {
     }
 
     /**
+     * Get Student information by his name
+     * 
+     * @param nameStudent 
+     */
+    async getStudentInformationByName(nameStudent: string) {
+        axios.get("http://0.0.0.0:5000/api/v1/students/"+nameStudent).then(response => {
+            container.commit({
+                type: "reloadStudents",
+                studentInformation: response.data,
+            })
+        })
+    }
+
+    /**
+     * Set action to container
      * 
      * @param idStudent 
      * @param action 
@@ -59,6 +74,7 @@ export default new class StudentService {
     }
 
     /**
+     * Get all ssh keys for a student
      * 
      * @param idStudent 
      */
@@ -73,6 +89,7 @@ export default new class StudentService {
     }
 
     /**
+     * Add ssh key to a student
      * 
      * @param idStudent 
      */
@@ -102,5 +119,33 @@ export default new class StudentService {
         })
 
     }
+    /**
+     * 
+     * @param idStudent 
+     */
+     async getDockerFile(idStudent: string) {
+        axios.get("http://0.0.0.0:5000/api/v1/students"+idStudent+"/dockerfile").then(function (response) {
+            if (response.status == 200) {
+                container.commit({
+                    type: "reloadDockerfile",
+                    dockerfile: response.data
+                })
+            }
+        })
+    }
 
+    /**
+     * 
+     * @param idStudent 
+     */
+     async setDockerFile(idStudent: string) {
+        axios.post("http://0.0.0.0:5000/api/v1/students"+idStudent+"/dockerfile").then(function (response) {
+            if (response.status == 200) {
+                container.commit({
+                    type: "reloadDockerfile",
+                    dockerfile: response.data
+                })
+            }
+        })
+    }
 }

@@ -57,11 +57,11 @@
 
                 <p class="text-h3">Clés SSH</p>
 
-                <v-btn class="my-3" size="small" @click="displayTextarea = !displayTextarea">Ajouter une clé</v-btn>
-                <v-form @submit="addSshKey(student.user_id)" :class="{'d-none': !displayTextarea}">
-                    <v-textarea></v-textarea>
-                    <v-btn class="mt-3" @click="addSshKey(student.user_id), displayTextarea = !displayTextarea">Valider</v-btn>
-                    <v-btn class="mt-3 mx-3" @click="displayTextarea = !displayTextarea">Annuler</v-btn>
+                <v-btn class="my-3" size="small" @click="displayTextareaSsh = !displayTextareaSsh">Ajouter une clé</v-btn>
+                <v-form @submit="addSshKey(student.user_id)" :class="{'d-none': !displayTextareaSsh}">
+                    <v-textarea autofocus></v-textarea>
+                    <v-btn class="mt-3" @click="addSshKey(student.user_id), displayTextareaSsh = !displayTextareaSsh">Valider</v-btn>
+                    <v-btn class="mt-3 mx-3" @click="displayTextareaSsh = !displayTextareaSsh">Annuler</v-btn>
                 </v-form>
                 <div v-if="listSshKey.length > 0">
                     <v-col
@@ -77,6 +77,22 @@
                 <p v-else class="text-error pa-2">Pas de clés SSH</p>
                 
             </v-col>
+
+            <!--<p class="text-h3">DockerFile</p>
+            <v-col
+            class="pa-2"
+                cols="12"
+            >
+                <v-card class="pa-2" :class="{'d-none': displayTextareaDockerfile}">{{dockerfile}}</v-card>
+                <v-form :class="{'d-none': !displayTextareaDockerfile}">
+                    <v-textarea autofocus v-model="dockerfile">
+                        {{dockerfile}}
+                    </v-textarea>
+                    <v-btn class="mt-3" @click="setDockerFile(student.user_id), displayTextareaDockerfile = !displayTextareaDockerfile">Valider</v-btn>
+                    <v-btn class="mt-3 mx-3" @click="displayTextareaDockerfile = !displayTextareaDockerfile">Annuler</v-btn>
+                </v-form>
+                <v-btn class="my-3" size="small" @click="displayTextareaDockerfile = !displayTextareaDockerfile">Modifier</v-btn>
+            </v-col> -->
         </v-row>
     </v-container>
 </template>
@@ -98,13 +114,15 @@
         provide: { StudentService },
         data() {
             return {
-            displayTextarea: false
+                displayTextareaSsh: false,
+                //displayTextareaDockerfile: false
             }
         },
         computed: mapState({
             containerInfo: 'containerInfo',
             studentInformation: 'students',
             listSshKey: 'listSshKey',
+            //dockerfile: 'dockerfile',
             student() { return this.$store.state.students.find(student => student.user_id == this.$route.params.student_id)},
         }),
         mounted() {
@@ -121,6 +139,12 @@
             addSshKey: function (idStudent: string) {
                 StudentService.addSshKey(idStudent);
             },
+            /* getDockerFile: function(idStudent: string) {
+                StudentService.getDockerFile(idStudent);
+            },
+            setDockerFile: function(idStudent: string) {
+                StudentService.setDockerFile(idStudent);
+            } */
         }
     } 
 </script>
@@ -144,5 +168,9 @@
 
     .break-word {
         word-break: break-all;
+    }
+
+    .v-form {
+        width: 100%;
     }
 </style>
