@@ -99,4 +99,34 @@ export default new class StudentService {
             }
         })
     }
+
+    /**
+     * 
+     * @param idStudent 
+     */
+     async getDockerFile(idStudent: string) {
+        axios.get("http://0.0.0.0:5000/api/v1/students"+idStudent+"/dockerfile").then(function (response) {
+            if (response.status == 200) {
+                container.commit({
+                    type: "reloadDockerfile",
+                    dockerfile: response.data
+                })
+            }
+        })
+    }
+
+    /**
+     * 
+     * @param idStudent 
+     */
+     async setDockerFile(idStudent: string) {
+        axios.post("http://0.0.0.0:5000/api/v1/students"+idStudent+"/dockerfile").then(function (response) {
+            if (response.status == 200) {
+                container.commit({
+                    type: "reloadDockerfile",
+                    dockerfile: response.data
+                })
+            }
+        })
+    }
 }
