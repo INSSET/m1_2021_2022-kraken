@@ -17,7 +17,6 @@ sys.path.append("/usr/src/app/gplib")
 users_routes = Blueprint("users_routes", __name__)
 
 containerType = 'symfony'
-containerName = 'symfony-app'
 
 
 @users_routes.route("/api/v1/students", methods=["OPTIONS"])
@@ -238,9 +237,12 @@ def get_student_container_info(user_id):
     try:
         user = pwd.getpwuid(user_id)
         group = grp.getgrgid(user.pw_gid)
-        return Response(
-            json.dumps(gestprojlib.getStudentContainerInformations(group.gr_name, user.pw_name, containerName)),
-            mimetype='application/json', status=200)
+
+        info_app = gestprojlib.getStudentContainerInformations(group.gr_name, user.pw_name, 'symfony-app')
+        info_nginx = gestprojlib.getStudentContainerInformations(group.gr_name, user.pw_name, 'symfony-nginx')
+        list_info = [info_app, info_nginx]
+
+        return Response(json.dumps(list_info), mimetype='application/json', status=200)
     except KeyError:
         if not pwd.getpwuid(user_id):
             abort(404, description='Not found - Could not find user ID ' + user_id)
