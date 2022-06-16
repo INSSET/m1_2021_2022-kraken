@@ -26,4 +26,12 @@ Route::middleware(['auth'])->prefix('/')->group(static function () {
     Route::get(RoutesDefinition::ROOT_URL, [IndexController::class, 'index'])->name(RoutesDefinition::ROOT_NAME);
     Route::get(RoutesDefinition::LOGOUT_URL, [AuthenticationController::class, 'logout'])->name(RoutesDefinition::LOGOUT_NAME);
 
+    Route::controller(GroupsController::class)->group(static function () {
+        Route::get(RoutesDefinition::GROUPS_LIST_URL, 'index')->name(RoutesDefinition::GROUPS_LIST_NAME);
+        Route::get(RoutesDefinition::GROUPS_EDIT_URL, 'edit')->name(RoutesDefinition::GROUPS_EDIT_NAME);
+
+        Route::post(RoutesDefinition::GROUPS_ADD_URL, 'add')->name(RoutesDefinition::GROUPS_ADD_NAME);
+        Route::post(RoutesDefinition::GROUPS_UPDATE_URL, 'update')->name(RoutesDefinition::GROUPS_UPDATE_NAME);
+    });
+
 });
