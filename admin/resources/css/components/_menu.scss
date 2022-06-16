@@ -1,0 +1,131 @@
+.menu {
+
+    background-color: map-get($colors, "secondaryL");
+    width: 300px;
+    height: 100vh;
+
+    .menu-container {
+
+
+        padding: 0 25px;
+
+    }
+
+    .menu-brand {
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 2em;
+        border-bottom: 1px solid map-get($colors, "secondaryLL");
+        padding: 15px 25px;
+        min-height: 80px;
+
+        .brand-title {
+
+            color: map-get($colors, "third");
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 1.2em;
+            margin-bottom: 0;
+
+        }
+
+    }
+
+    .menu-section {
+
+        margin-bottom: 2em;
+
+        .menu-section-title {
+
+            font-family: map-get($fonts, "primary");
+            text-transform: uppercase;
+            font-weight: 700;
+            color: map-get($colors, "gray");
+            font-size: .7em;
+            margin-bottom: 2em;
+
+        }
+
+        .menu-section-list {
+
+            list-style-type: none;
+            padding: 0;
+
+            .menu-section-item {
+
+                margin-bottom: 1em;
+
+                a {
+
+                    position: relative;
+                    display: block;
+                    color: map-get($colors, "third");
+                    text-decoration: none;
+                    font-family: map-get($fonts, "primary");
+                    font-size: .95em;
+                    width: 100%;
+
+                    &:hover {
+
+                        color: map-get($colors, "white");
+
+                    }
+
+                    .collapse-icon {
+
+                        font-size: .8em;
+                        position: absolute;
+                        top: 4px;
+                        right: 0;
+                        text-align: right;
+                        transition: all .35s;
+
+                        i {
+                            width: initial;
+                        }
+
+                        &.active {
+
+                            transform: rotate(90deg);
+
+                        }
+
+                    }
+
+                    i {
+
+                        text-align: left;
+                        width: 25px;
+
+                    }
+
+                }
+
+                .menu-collapse {
+                    max-height: 0;
+                    overflow: hidden;
+                    transition: max-height 0.2s ease-out;
+                }
+
+                .menu-sub-section {
+
+                    margin-top: 1em;
+
+                    .menu-section-item {
+
+                        padding-left: 29px;
+                        margin-bottom: .5em;
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+}

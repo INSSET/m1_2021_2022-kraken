@@ -1,0 +1,14 @@
+.alert {
+
+    padding: 12px 24px;
+    border-radius: 0;
+    width: 100%;
+    color: map-get($colors, "third");
+
+    &.alert-error {
+
+        background-color: #E67676;
+
+    }
+
+}

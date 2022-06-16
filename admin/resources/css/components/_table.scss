@@ -1,0 +1,53 @@
+table {
+
+    td,
+    th {
+
+        max-width: 150px;
+
+    }
+
+    thead {
+
+        th {
+
+            color: map-get($colors, "gray");
+            font-weight: 700;
+
+        }
+
+    }
+
+    tbody {
+
+        tr {
+
+            $height: 45px;
+
+            height: $height;
+            line-height: $height;
+
+            td {
+                vertical-align: middle;
+                color: map-get($colors, "gray");
+                border-bottom: 1px solid rgba(map-get($colors, "third"), .2);
+
+            }
+
+        }
+
+    }
+
+    .table-action {
+
+        a {
+
+            color: map-get($colors, "third");
+            font-size: 1.1em;
+            margin-right: 1em;
+
+        }
+
+    }
+
+}

@@ -1,0 +1,44 @@
+.search {
+
+    position: relative;
+
+    .search-result-list {
+
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        flex-wrap: wrap;
+        list-style-type: none;
+        padding-left: 0;
+        background-color: map-get($colors, "secondaryLL");
+        width: 100%;
+
+        .search-result-item {
+
+            width: calc((100% / 8) + .5em);
+            padding: 25px;
+
+            &.no-data {
+
+                width: 100%;
+                text-align: center;
+
+            }
+
+            a {
+                color: map-get($colors, "third");
+
+            }
+
+            img {
+
+                width: 30px;
+                margin-right: .5em;
+
+            }
+
+        }
+
+    }
+
+}

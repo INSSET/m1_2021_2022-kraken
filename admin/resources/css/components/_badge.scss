@@ -1,0 +1,83 @@
+.badge {
+
+    font-size: .7em;
+    background-color: map-get($colors, "secondaryLL");
+    border-radius: 25px;
+    padding: 5px 9px;
+    margin-right: 3px;
+    color: map-get($colors, "white");
+
+    &:first-of-type {
+        margin-left: 3px;
+    }
+
+    &.danger,
+    &.ban {
+
+        background-color: map-get($colors, "red");
+
+    }
+
+    &.warning,
+    &.kick {
+
+        background-color: map-get($colors, "yellow");
+
+    }
+
+    &.mute {
+
+        background-color: map-get($colors, "orange");
+
+    }
+
+    &.blacklist {
+
+        background-color: #393B47;
+
+    }
+
+    &.success {
+
+        background-color: map-get($colors, "green");
+
+    }
+
+    &.clickable {
+
+        margin-bottom: .5em;
+        line-height: 15px;
+        font-size: .9em;
+
+        span {
+
+            display: inline-block;
+            margin-left: 5px;
+            cursor: pointer;
+            transition: .2s;
+
+            i {
+
+                color: map-get($colors, "red");
+
+            }
+
+        }
+
+        &:first-of-type {
+
+            margin-left: 0;
+
+        }
+
+    }
+
+    &.ip {
+
+        font-family: 'Inconsolata', monospace;
+        font-size: .9em;
+        letter-spacing: 1px;
+
+    }
+
+}
