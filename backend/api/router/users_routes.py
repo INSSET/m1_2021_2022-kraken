@@ -166,13 +166,13 @@ def upload(user_id):
     try:
         user = pwd.getpwuid(user_id)
         student_path = str(path) + '/../../etudiants/' + user.pw_name + '/.ssh'
-        sftp_path = str(path) + '/../../etudiants/' + user.pw_name + '/sftp/.ssh'
+        # sftp_path = str(path) + '/../../etudiants/' + user.pw_name + '/sftp/.ssh'
 
         # Check if authorized_keys file exists
-        sftp_auth_file = exists(sftp_path + '/authorized_keys')
-        if not sftp_auth_file:
-            sftp_keys_file = open(sftp_path + '/authorized_keys', "x")
-            sftp_keys_file.close()
+        # sftp_auth_file = exists(sftp_path + '/authorized_keys')
+        # if not sftp_auth_file:
+        #    sftp_keys_file = open(sftp_path + '/authorized_keys', "x")
+        #    sftp_keys_file.close()
 
         ssh_auth_file = exists(student_path + '/authorized_keys')
         if not ssh_auth_file:
@@ -186,12 +186,12 @@ def upload(user_id):
                 keyList.append(line.rstrip("\n"))
 
         # Check if the key is already stored in sftp authorized_keys file'
-        sftpList = []
-        with open(os.path.join(sftp_path + '/authorized_keys'), 'r') as sftp_file:
-            for line in sftp_file.readlines():
-                sftpList.append(line.rstrip("\n"))
+        # sftpList = []
+        # with open(os.path.join(sftp_path + '/authorized_keys'), 'r') as sftp_file:
+        #    for line in sftp_file.readlines():
+        #        sftpList.append(line.rstrip("\n"))
 
-        if ssh_key not in keyList and ssh_key not in sftpList:
+        if ssh_key not in keyList:
 
             with open(os.path.join(student_path + '/authorized_keys'), 'a', newline="") as key_file:
                 key_file.write(ssh_key + '\n')
@@ -199,11 +199,11 @@ def upload(user_id):
 
             print('ssh key added')
 
-            with open(os.path.join(sftp_path + '/authorized_keys'), 'a', newline="") as key_file:
-                key_file.write(ssh_key + '\n')
-                os.chown(os.path.join(student_path + '/authorized_keys'), user_id, os.getuid())
+            # with open(os.path.join(sftp_path + '/authorized_keys'), 'a', newline="") as key_file:
+            #     key_file.write(ssh_key + '\n')
+            #     os.chown(os.path.join(student_path + '/authorized_keys'), user_id, os.getuid())
 
-            print('ssh key added to sftp')
+            # print('ssh key added to sftp')
 
             return Response('Key has been successfully uploaded', mimetype='application/json', status=200)
         else:
