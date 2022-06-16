@@ -43,7 +43,7 @@ jobs:
       registry: ghcr.io
       image_name: ${{ github.repository }}-backend
 
-  eploy-to-production:
+  deploy-to-production:
     needs: ['admin', 'students', 'backend']
     runs-on: ubuntu-latest
     environment: production
