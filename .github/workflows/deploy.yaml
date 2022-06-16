@@ -3,6 +3,16 @@ name: Deploy release
 on:
   push:
     branches: ['main']
+  workflow_call:
+    secrets:
+      token:
+        required: false
+      PRIVATE_KEY:
+        required: true
+      SSH_USER:
+        required: true
+      SSH_HOST:
+        required: true
 
 jobs:
 
@@ -33,7 +43,7 @@ jobs:
       registry: ghcr.io
       image_name: ${{ github.repository }}-backend
 
-  eploy-to-production:
+  deploy-to-production:
     needs: ['admin', 'students', 'backend']
     runs-on: ubuntu-latest
     environment: production

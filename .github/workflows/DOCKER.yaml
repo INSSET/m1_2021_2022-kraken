@@ -21,15 +21,6 @@ on:
       target:
         required: false
         type: string
-    secrets:
-      token:
-        required: false
-      PRIVATE_KEY:
-        required: true
-      SSH_USER:
-        required: true
-      SSH_HOST:
-        required: true
 
 jobs:
 
