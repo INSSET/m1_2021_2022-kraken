@@ -4,8 +4,8 @@
       <v-card>
         <v-layout>
           <v-navigation-drawer
-            class="bg-deep-purple"
             theme="dark"
+            class="bg-purple-darken-4"
             permanent
           >
             <v-list color="transparent">
@@ -19,12 +19,6 @@
                 <v-btn  to="/groups" variant="plain">
                   <v-icon>mdi-account-multiple</v-icon>
                   Groups
-                </v-btn>
-              </v-list-item>
-              <v-list-item >
-                <v-btn  to="/about" variant="plain">
-                  <v-icon>mdi-help-circle</v-icon>
-                  About
                 </v-btn>
               </v-list-item>
             </v-list>

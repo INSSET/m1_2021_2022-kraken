@@ -17,7 +17,6 @@ sys.path.append("/usr/src/app/gplib")
 users_routes = Blueprint("users_routes", __name__)
 
 containerType = 'symfony'
-containerName = 'symfony-app'
 
 
 @users_routes.route("/api/v1/students", methods=["OPTIONS"])
@@ -143,17 +142,17 @@ def get_users_by_group(group_name):
     return Response(json.dumps(liste, cls=Encoder), mimetype="application/json", status=200)
 
 
-@users_routes.route('/api/v1/students/<int:user_id>', methods=['DELETE'])
-def delete_user(user_id):
+@users_routes.route('/api/v1/students/<string:user_name>', methods=['DELETE'])
+def delete_user(user_name):
     try:
-        user = pwd.getpwuid(user_id)
+        pwd.getpwnam(user_name[0:26])
 
-        os.system('userdel -f --remove %s' % user.pw_name)
-        os.system("userdel -f --remove sftp.%s" % user.pw_name)
+        os.system('userdel -f --remove %s' % user_name)
+        os.system("userdel -f --remove sftp.%s" % user_name)
 
-        return Response('User ' + user.pw_name + ' has been deleted', mimetype='application/json', status=200)
+        return Response('User ' + user_name + ' has been deleted', mimetype='application/json', status=200)
     except KeyError:
-        abort(404, description='Not found - Could not find user with ID ' + user_id)
+        abort(404, description='Not found - Could not find user with Name ' + user_name)
 
 
 @users_routes.route('/api/v1/students/<int:user_id>/ssh/upload/', methods=['POST'])
@@ -167,13 +166,13 @@ def upload(user_id):
     try:
         user = pwd.getpwuid(user_id)
         student_path = str(path) + '/../../etudiants/' + user.pw_name + '/.ssh'
-        sftp_path = str(path) + '/../../etudiants/' + user.pw_name + '/sftp/.ssh'
+        # sftp_path = str(path) + '/../../etudiants/' + user.pw_name + '/sftp/.ssh'
 
         # Check if authorized_keys file exists
-        sftp_auth_file = exists(sftp_path + '/authorized_keys')
-        if not sftp_auth_file:
-            sftp_keys_file = open(sftp_path + '/authorized_keys', "x")
-            sftp_keys_file.close()
+        # sftp_auth_file = exists(sftp_path + '/authorized_keys')
+        # if not sftp_auth_file:
+        #    sftp_keys_file = open(sftp_path + '/authorized_keys', "x")
+        #    sftp_keys_file.close()
 
         ssh_auth_file = exists(student_path + '/authorized_keys')
         if not ssh_auth_file:
@@ -187,12 +186,12 @@ def upload(user_id):
                 keyList.append(line.rstrip("\n"))
 
         # Check if the key is already stored in sftp authorized_keys file'
-        sftpList = []
-        with open(os.path.join(sftp_path + '/authorized_keys'), 'r') as sftp_file:
-            for line in sftp_file.readlines():
-                sftpList.append(line.rstrip("\n"))
+        # sftpList = []
+        # with open(os.path.join(sftp_path + '/authorized_keys'), 'r') as sftp_file:
+        #    for line in sftp_file.readlines():
+        #        sftpList.append(line.rstrip("\n"))
 
-        if ssh_key not in keyList and ssh_key not in sftpList:
+        if ssh_key not in keyList:
 
             with open(os.path.join(student_path + '/authorized_keys'), 'a', newline="") as key_file:
                 key_file.write(ssh_key + '\n')
@@ -200,11 +199,11 @@ def upload(user_id):
 
             print('ssh key added')
 
-            with open(os.path.join(sftp_path + '/authorized_keys'), 'a', newline="") as key_file:
-                key_file.write(ssh_key + '\n')
-                os.chown(os.path.join(student_path + '/authorized_keys'), user_id, os.getuid())
+            # with open(os.path.join(sftp_path + '/authorized_keys'), 'a', newline="") as key_file:
+            #     key_file.write(ssh_key + '\n')
+            #     os.chown(os.path.join(student_path + '/authorized_keys'), user_id, os.getuid())
 
-            print('ssh key added to sftp')
+            # print('ssh key added to sftp')
 
             return Response('Key has been successfully uploaded', mimetype='application/json', status=200)
         else:
@@ -238,9 +237,12 @@ def get_student_container_info(user_id):
     try:
         user = pwd.getpwuid(user_id)
         group = grp.getgrgid(user.pw_gid)
-        return Response(
-            json.dumps(gestprojlib.getStudentContainerInformations(group.gr_name, user.pw_name, containerName)),
-            mimetype='application/json', status=200)
+
+        info_app = gestprojlib.getStudentContainerInformations(group.gr_name, user.pw_name, 'symfony-app')
+        info_nginx = gestprojlib.getStudentContainerInformations(group.gr_name, user.pw_name, 'symfony-nginx')
+        list_info = [info_app, info_nginx]
+
+        return Response(json.dumps(list_info), mimetype='application/json', status=200)
     except KeyError:
         if not pwd.getpwuid(user_id):
             abort(404, description='Not found - Could not find user ID ' + user_id)

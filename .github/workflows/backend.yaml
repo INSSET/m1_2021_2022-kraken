@@ -6,7 +6,7 @@ name: Build / Push Backend
 
 on:
   push:
-    branches: ['feature/**', 'hotfix/**', 'develop', 'main']
+    branches: ['feature/**', 'hotfix/**', 'develop']
 
 jobs:
 
@@ -17,11 +17,6 @@ jobs:
     with:
       workdir: './backend/cli'
 
-  flask-backend:
-    uses: ./.github/workflows/FLASK.yaml
-    with:
-      workdir: './backend/backend'
-
   flask-api:
     uses: ./.github/workflows/FLASK.yaml
     with:
@@ -29,7 +24,7 @@ jobs:
 
   # Build & Push the Docker image from the admin panel
   docker:
-    needs: ['flask']
+    needs: ['flask-cli', 'flask-api']
     uses: ./.github/workflows/DOCKER.yaml
     secrets:
       SSH_HOST: ${{ secrets.SSH_HOST }}

@@ -30,7 +30,7 @@
       >
         <td>{{ user.name }}</td>
         <td>
-          <v-btn size="small" class="float-right" flat icon=mdi-minus @click="deleteUser(user.name)"></v-btn>
+          <v-btn size="small" class="float-right" flat icon=mdi-minus @click="deleteUser(user.name, group.id)"></v-btn>
         </td>
       </tr>
       </tbody>
@@ -40,6 +40,7 @@
 
 <script>
 import GroupService from "@/services/group-service";
+import StudentService from "@/services/student-service";
 export default {
   computed: {
     group() {
@@ -54,12 +55,10 @@ export default {
       disabled: 1
     }
   },
-  provide: { GroupService },
+  provide: { GroupService, StudentService },
   methods: {
-    deleteUser: function (user_name) {
-      fetch("0.0.0.0:5000/", {
-        "method": "DELETE"
-      })
+    deleteUser: function (user_name, group_id) {
+      StudentService.deleteStudentFromGroup(user_name, group_id)
     },
     renameGroup: function (group_id, group_name) {
       GroupService.updateName(group_id, group_name)

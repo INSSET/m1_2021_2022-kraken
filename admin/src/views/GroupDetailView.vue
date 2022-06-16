@@ -2,7 +2,7 @@
     <v-container>
         <v-container>
             Nom : {{ group.name }}
-            <v-btn class="mx-4" size="small" to="/about" icon="mdi-pencil" ></v-btn>
+            <v-btn class="mx-4" size="small" :to="'/groupsEdit/'+group.id" icon="mdi-pencil" ></v-btn>
         </v-container>
         <v-divider insset />
         <v-table>
@@ -23,6 +23,7 @@
                 >
                     <td>{{ user.name }}</td>
                     <td>
+                        <v-btn size="small" class="float-right" :to="'/student/'+getIdStudent(user.name)" icon=mdi-laptop></v-btn>
                     </td>
                 </tr>
             </tbody>
@@ -30,15 +31,24 @@
     </v-container>
 </template>
 
-<script>
-export default {
-    computed: {
-        group() { return this.$store.state.groups.find(group => group.id == this.$route.params.group_id)},
-    },
-    data () {
-        return {
+<script lang="ts">
 
+    import {mapState} from 'vuex';
+    import StudentService from "@/services/student-service";
+
+    export default {
+        provide: { StudentService },
+        computed: mapState({
+            group() { return this.$store.state.groups.find(group => group.id == this.$route.params.group_id)},        }),
+        data () {
+            return {
+
+            }
+        },
+        method: {
+            getIdStudent: function(nameStudent: string) {
+                StudentService.getStudentInformationByName(nameStudent);
+            }
         }
     }
-}
 </script>
