@@ -22,6 +22,20 @@
 
         </div>
 
+        <div class="menu-section">
+
+            <h6 class="menu-section-title">VMs</h6>
+
+            <ul class="menu-section-list">
+
+                <li class="menu-section-item">
+                    <a href="#"><i class="fa-brands fa-docker"></i>   Dockerfile</a>
+                </li>
+
+            </ul>
+
+        </div>
+
     </div>
 
 </section>

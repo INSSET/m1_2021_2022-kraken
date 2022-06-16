@@ -33,5 +33,11 @@ Route::middleware(['auth'])->prefix('/')->group(static function () {
         Route::post(RoutesDefinition::GROUPS_ADD_URL, 'add')->name(RoutesDefinition::GROUPS_ADD_NAME);
         Route::post(RoutesDefinition::GROUPS_UPDATE_URL, 'update')->name(RoutesDefinition::GROUPS_UPDATE_NAME);
     });
+    
+    Route::controller(StudentsController::class)->group(static function () {
+        Route::get(RoutesDefinition::STUDENT_SHOW_URL, 'show')->name(RoutesDefinition::STUDENT_SHOW_NAME);
+        Route::post(RoutesDefinition::STUDENT_ADD_KEY_URL, 'uploadSshKey')->name(RoutesDefinition::STUDENT_ADD_KEY_NAME);
+        Route::get(RoutesDefinition::STUDENT_SEND_ACTION_URL, 'sendContainerCommand')->name(RoutesDefinition::STUDENT_SEND_ACTION_NAME);
+    });
 
 });
