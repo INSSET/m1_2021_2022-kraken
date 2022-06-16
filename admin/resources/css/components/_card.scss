@@ -1,0 +1,53 @@
+.card {
+
+    border-radius: 5px;
+    border: none;
+    background-color: map-get($colors, "secondaryL");
+    box-shadow: $boxShadow;
+    width: 100%;
+    padding: 25px;
+    color: map-get($colors, "third");
+    margin-bottom: 2em;
+
+    .card-title {
+
+        text-transform: uppercase;
+        font-family: map-get($fonts, "primary");
+        font-weight: 700;
+        font-size: .8em;
+        color: map-get($colors, "gray");
+        margin-bottom: 1em;
+        width: 100%;
+
+    }
+
+    .sub-card {
+
+        padding: 25px;
+        border: 1px solid rgba(map-get($colors, "third"), .1);
+        margin-bottom: 2em;
+        width: 100%;
+
+    }
+
+    .loader {
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+
+        i {
+            font-size: 2em;
+        }
+
+        p {
+            width: 100%;
+            text-align: center;
+            margin-top: .7em;
+            margin-bottom: 0;
+        }
+
+    }
+
+}

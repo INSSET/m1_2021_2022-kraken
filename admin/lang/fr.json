@@ -1,0 +1,9 @@
+{
+    "cardinal.root": "Panel",
+    "cardinal.root.cardinal": "Administration",
+    "cardinal.root.cardinal.groups": "Liste des groupes",
+    "cardinal.root.cardinal.groups.edit": "Editer un groupe",
+    "cardinal.root.cardinal.students": "Etudiants",
+    "cardinal.root.cardinal.students.show": "Profil d'un étudiant",
+    "administrator": "Administrateur"
+}

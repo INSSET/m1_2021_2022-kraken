@@ -1,0 +1,18 @@
+.hyr-toast {
+
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    color: map-get($colors, "white");
+    z-index: 1000;
+    min-width: 200px;
+    box-shadow: $boxShadow;
+    padding: 12px 25px;
+
+    &.success {
+
+        background-color: #43D390;
+
+    }
+
+}
