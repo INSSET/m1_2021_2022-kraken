@@ -25,7 +25,6 @@ class RoutesDefinition
     public const LOGOUT_URL = 'logout';
     public const LOGOUT_NAME = 'logout';
 
-<<<<<<< HEAD
     /*
      * Groups Routes
      */
@@ -41,7 +40,6 @@ class RoutesDefinition
 
     public const GROUPS_ADD_URL = '/groups/add';
     public const GROUPS_ADD_NAME = self::ROUTE_NAME_PREFIX . 'groups.add';
-=======
     
     /*
      * Students Routes
@@ -57,6 +55,5 @@ class RoutesDefinition
     public const STUDENT_SEND_ACTION_NAME = self::ROUTE_NAME_PREFIX . 'students.send.action';
 
 
->>>>>>> add student dashboard
 
 }
