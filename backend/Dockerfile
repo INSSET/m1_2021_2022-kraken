@@ -66,7 +66,6 @@ WORKDIR /home/$USER
 COPY --chown=$USER:$USER gplib gplib/
 COPY --chown=$USER:$USER api api/
 COPY --chown=$USER:$USER cli cli/
-COPY --chown=$USER:$USER data data/
 COPY --chown=$USER:$USER ovh ovh/
 COPY --chown=$USER:$USER config/docker-skell docker-skell/
 COPY --chown=$USER:$USER config/user-skell user-skell/
