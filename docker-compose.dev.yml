@@ -76,11 +76,39 @@ services:
 
   admin:
     container_name: ${APP_NAME}-admin
+    build:
+      context: ./admin
+    depends_on:
+      - admin-database
+    volumes:
+      - adminPublicDisk:/var/www/html
+    networks:
+      - traefik
+
+  admin-nginx:
+    container_name: ${APP_NAME}-admin-nginx
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.$TRAEFIK_KEY-admin-web.rule=host(`admin.$HOST`)"
+    depends_on:
+      - admin
     build:
-      context: ./admin
+      context: ./admin/docker/nginx
+    volumes:
+      - adminPublicDisk:/var/www/html
+    networks:
+      - traefik
+
+  admin-database:
+    image: mysql:5.7
+    container_name: ${APP_NAME}-admin-database
+    environment:
+      - MYSQL_DATABASE=gestproj
+      - MYSQL_ROOT_PASSWORD=gestproj
+      - MYSQL_PASSWORD=gestproj
+      - MYSQL_USER=gestproj
+    volumes:
+      - adminDatabase:/var/lib/mysql
     networks:
       - traefik
 
@@ -118,4 +146,6 @@ networks:
 
 volumes:
   backendData: {}
-  prometheus-data: { }
+  prometheus-data: {}
+  adminDatabase: {}
+  adminPublicDisk: {}

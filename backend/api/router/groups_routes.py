@@ -95,11 +95,8 @@ def upload_group(group_name):
 
         f = request.files['file']
         f.save('/tmp/' + f.filename)
-
         student_list = gestprojlib.initStudentListFromFile('/tmp/' + f.filename)
-
         stored_users = gestprojlib.liste_etudiant_group(group_name)
-
         users_list = []
         students = []
 
@@ -124,15 +121,11 @@ def upload_group(group_name):
         return Response(mimetype='application/json', status=201)
     except KeyError:
         gestprojlib.createGroup(group_name)
-
         f = request.files['file']
         f.save('/tmp/' + f.filename)
         student_list = gestprojlib.initStudentListFromFile('/tmp/' + f.filename)
-
         gestprojlib.createUsers(student_list, group_name)
-
         gestprojlib.create_sftp_users(student_list)
-
         f.close()
         os.remove('/tmp/' + f.filename)
 

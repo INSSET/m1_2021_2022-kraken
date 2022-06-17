@@ -21,7 +21,7 @@
 
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
-    <title>Hyrisia | Cardinal - @yield('title')</title>
+    <title>Admin | GestProj - @yield('title')</title>
 </head>
 <body>
 
