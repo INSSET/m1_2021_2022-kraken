@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use JsonException;
 use Throwable;
 
-class SSHController extends Controller
+class StudentController extends Controller
 {
     public function __construct(
         private StudentService $studentService
@@ -30,12 +30,9 @@ class SSHController extends Controller
 
         $sshKeys = $this->studentService->getSshStudentKey($student->getId());
 
-        $containers = $this->studentService->getContainers($student->getId());
-
         return view('ssh.show', [
             'student' => $student,
-            'sshKeys' => $sshKeys,
-            'containers' => $containers
+            'sshKeys' => $sshKeys
         ]);
 
     }
@@ -57,6 +54,22 @@ class SSHController extends Controller
 
         return redirect()->back();
 
+    }
+
+    public function show_containers(string $student)
+    {
+        $student = $this->studentService->findOneByName($student);
+
+        if (null === $student) {
+            abort(404);
+        }
+
+        $containers = $this->studentService->getContainers($student->getId());
+
+        return view('containers.index', [
+            'student' => $student,
+            'containers' => $containers
+        ]);
     }
 
     public function sendContainerCommand(int $id, string $action) {

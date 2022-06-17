@@ -41,7 +41,10 @@ class RoutesDefinition
      *  Container Routes
      */
 
-    public const STUDENT_SEND_ACTION_URL = '/students/{student}/container/command/{action}';
-    public const STUDENT_SEND_ACTION_NAME = self::ROUTE_NAME_PREFIX . 'students.send.action';
+    public const CONTAINERS_INDEX_URL = '/containers/{student}';
+    public const CONTAINERS_INDEX_NAME = self::ROUTE_NAME_PREFIX . 'containers';
+
+    public const CONTAINERS_SEND_ACTION_URL = '/students/{student}/container/command/{action}';
+    public const CONTAINERS_SEND_ACTION_NAME = self::ROUTE_NAME_PREFIX . 'containers.send.action';
 
 }

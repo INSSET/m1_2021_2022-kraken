@@ -10,26 +10,20 @@
 
         <div class="menu-section">
 
-            <h6 class="menu-section-title">Etudiants</h6>
+            <h6 class="menu-section-title">Mon espace</h6>
 
             <ul class="menu-section-list">
 
                 <li class="menu-section-item">
-                    <a href="{{ route(\App\Helpers\RoutesDefinition::SSH_SHOW_NAME, ['student' => explode("@", auth()->user()->email)[0]]) }}"><i class="fa-duotone fa-folder-open"></i>   Mes Clés</a>
+                    <a href="{{ route(\App\Helpers\RoutesDefinition::SSH_SHOW_NAME, ['student' => explode("@", auth()->user()->email)[0]]) }}"><i class="fa-duotone fa-folder-open"></i>   Mes Clés SSH</a>
                 </li>
 
             </ul>
 
-        </div>
-
-        <div class="menu-section">
-
-            <h6 class="menu-section-title">VMs</h6>
-
             <ul class="menu-section-list">
 
                 <li class="menu-section-item">
-                    <a href="#"><i class="fa-brands fa-docker"></i>   Dockerfile</a>
+                    <a href="{{ route(\App\Helpers\RoutesDefinition::CONTAINERS_INDEX_NAME, ['student' => explode("@", auth()->user()->email)[0]]) }}"><i class="fa-brands fa-docker"></i>   Mes Conteneurs</a>
                 </li>
 
             </ul>
