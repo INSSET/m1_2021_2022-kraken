@@ -1,0 +1,27 @@
+.label {
+
+    padding: 4px 8px;
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: .7em;
+    color: map-get($colors, "white");
+
+    &:hover {
+
+        color: map-get($colors, "white");
+
+    }
+
+    &.administrator,
+    &.no {
+
+        background-color: #D34343;
+
+    }
+
+    &.yes {
+        background-color: #43D390;
+    }
+
+}

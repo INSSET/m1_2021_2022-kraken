@@ -1,0 +1,33 @@
+.modal {
+
+    font-size: 1em;
+
+    .modal-content {
+
+        background-color: map-get($colors, "secondary");
+        text-align: center;
+        padding: 35px;
+
+        .modal-header {
+
+            color: map-get($colors, "gray");
+            border-color: rgba(map-get($colors, "third"), .2);
+
+        }
+
+        .modal-body {
+
+            color: map-get($colors, "gray");
+
+        }
+
+    }
+
+    .warning-modal-icon {
+
+        font-size: 4em;
+        color: #ffbc00;
+
+    }
+
+}

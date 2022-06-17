@@ -1,0 +1,141 @@
+.livechat-filters {
+
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 1.5em;
+
+    .form-group {
+
+        margin-right: 1.5em;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        flex-wrap: wrap;
+
+        label:first-of-type {
+
+            width: 100%;
+
+        }
+
+        label[data-on-label] {
+
+            margin-bottom: 0;
+
+        }
+
+    }
+
+}
+
+.livechat-row {
+
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    margin-bottom: .7em;
+    opacity: 1;
+    animation: fadeIn .5s ease;
+
+    .livechat-row-content {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .livechat-row-informations {
+
+        font-size: .65em;
+        color: rgba(map-get($colors, "gray"), 1);
+        margin-top: .5em;
+
+    }
+
+    .livechat-item {
+
+        background-color: map-get($colors, "secondaryLL");
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 25px;
+        width: 100%;
+        margin-right: .5em;
+
+        img {
+
+            border-radius: 50%;
+            width: 25px;
+            margin-right: .5em;
+
+        }
+
+        p {
+            margin-bottom: -2px;
+
+            span {
+
+                font-size: .7em;
+                margin: 0 .6em;
+
+            }
+
+        }
+
+        .themis-informations {
+
+            .themis-score {
+
+                background-color: map-get($colors, "gray");
+                font-size: .8em;
+                border-radius: 15px;
+                padding: 5px 10px;
+                color: map-get($colors, "secondary");
+                margin-left: .5em;
+
+            }
+
+            .is-reported {
+
+                background-color: map-get($colors, "red");
+                font-size: .8em;
+                color: map-get($colors, "white");
+                border-radius: 15px;
+                padding: 5px 10px;
+
+            }
+
+        }
+
+    }
+
+    .livechat-report {
+        background-color: map-get($colors, "secondaryLL");
+        border-radius: 50%;
+        padding: 10px;
+        height: 45px;
+        width: 45px;
+        text-align: center;
+        font-size: 1.4em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: map-get($colors, "yellow");
+    }
+
+}
+
+@keyframes fadeIn {
+
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+
+}
