@@ -1,0 +1,61 @@
+.note {
+
+    position: relative;
+    background-color: map-get($colors, "secondaryLL");
+    color: map-get($colors, "white");
+    padding: 25px;
+    font-size: .9em;
+    margin-bottom: 1.5em;
+    margin-right: 1em;
+
+    .trash-note,
+    .pin-note {
+
+        display: block;
+        position: absolute;
+        width: 30px;
+        right: 15px;
+        border: none;
+        background-color: transparent;
+        z-index: 5;
+        text-align: center;
+
+    }
+
+    .trash-note {
+
+        bottom: 25px;
+        color: map-get($colors, "red");
+
+    }
+
+    .pin-note {
+
+        top: 25px;
+        color: map-get($colors, "green");
+
+        &.pinned {
+
+            color: map-get($colors, "yellow");
+
+        }
+
+    }
+
+    span {
+
+        color: map-get($colors, "third");
+
+    }
+
+}
+
+.note-container {
+
+    &.scrollable {
+        overflow-y: auto;
+    }
+
+    max-height: 400px;
+
+}

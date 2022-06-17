@@ -1,0 +1,203 @@
+input[data-switch] {
+
+    display: none;
+
+    & + label {
+        width: 56px;
+        height: 24px;
+        background-color: #f1f3fa;
+        background-image: none;
+        border-radius: 2rem;
+        cursor: pointer;
+        display: inline-block;
+        text-align: center;
+        position: relative;
+        -webkit-transition: all .1s ease-in-out;
+        transition: all .1s ease-in-out;
+
+        &:before {
+            color: #313a46;
+            content: attr(data-off-label);
+            display: block;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: .75rem;
+            line-height: 24px;
+            position: absolute;
+            right: 3px;
+            margin: 0 .21667rem;
+            top: 0;
+            text-align: center;
+            min-width: 1.66667rem;
+            overflow: hidden;
+            -webkit-transition: all .1s ease-in-out;
+            transition: all .1s ease-in-out
+        }
+
+        &:after {
+            content: "";
+            position: absolute;
+            left: 4px;
+            background-color: #adb5bd;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+            border-radius: 2rem;
+            height: 18px;
+            width: 18px;
+            top: 3px;
+            -webkit-transition: all .1s ease-in-out;
+            transition: all .1s ease-in-out
+        }
+
+    }
+
+
+    &:checked + label {
+        background-color: map-get($colors, "primary");
+
+        &:before {
+            color: #fff;
+            content: attr(data-on-label);
+            right: auto;
+            left: 4px
+        }
+
+        &:after {
+            left: 34px;
+            background-color: #f1f3fa
+        }
+
+    }
+
+}
+
+.hyr-form-group {
+
+    margin-bottom: 1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    flex-basis: 100%;
+
+}
+
+.hyr-input {
+
+    border-radius: 5px;
+    border: 1px solid map-get($colors, "third");
+    background-color: transparent;
+    padding: 9px 12px;
+    width: 100%;
+    margin-bottom: 1em;
+    color: map-get($colors, "third");
+
+    &:focus {
+
+        outline: none;
+
+    }
+
+    &::placeholder {
+
+        color: map-get($colors, "third");
+
+    }
+
+}
+
+.form-check {
+
+    .form-check-input {
+
+        border-color: map-get($colors, "third");
+        background-color: transparent;
+        transition: .3s;
+
+        &:focus {
+
+            box-shadow: none;
+
+        }
+
+    }
+
+    .form-check-label {
+
+        transition: .3s;
+        color: map-get($colors, "third");
+
+        a {
+            color: map-get($colors, "third");
+        }
+
+    }
+
+}
+
+.crud {
+
+    .form-group {
+
+        margin-bottom: 2em;
+
+    }
+
+}
+
+.form-group {
+
+    label {
+
+        color: map-get($colors, "gray");
+        margin-bottom: .5em;
+
+    }
+
+    .form-control,
+    .form-select {
+
+        background-color: map-get($colors, "secondaryLL");
+        border-color: map-get($colors, "gray");
+        color: map-get($colors, "third");
+
+        &::placeholder {
+            color: map-get($colors, "third");
+        }
+
+        &.disabled {
+            opacity: .7;
+        }
+
+    }
+
+    .form-select {
+
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23aab8c5' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+
+    }
+
+}
+
+.input-error {
+
+    display: block;
+    margin-top: .5em;
+    color: #D34343;
+
+}
+
+.btn-grouped {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .btn {
+
+        margin-left: 15px;
+
+    }
+
+}
+

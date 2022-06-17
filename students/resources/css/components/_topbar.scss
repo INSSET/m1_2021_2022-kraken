@@ -1,0 +1,71 @@
+.topbar {
+
+    width: 100%;
+    padding: 15px 45px;
+    background-color: map-get($colors, "secondaryL");
+    box-shadow: $boxShadow;
+    height: 80px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    z-index: 10;
+
+    .user-profile,
+    a {
+
+        margin-left: 1.5em;
+
+    }
+
+    a {
+
+        font-size: 1.1em;
+        color: map-get($colors, "third");
+
+    }
+
+}
+
+.user-profile {
+
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    img {
+        width: 32px;
+        border-radius: 50%;
+    }
+
+    .user-profile-informations {
+
+        width: 100%;
+        margin-left: 1em;
+
+        h5,
+        span {
+            display: block;
+            margin-bottom: 0;
+        }
+
+        h5 {
+
+            font-size: 1em;
+            color: map-get($colors, "third");
+
+        }
+
+        span {
+
+            text-transform: uppercase;
+            font-weight: 700;
+            font-family: map-get($fonts, "primary");
+            color: map-get($colors, "gray");
+            font-size: .7em;
+            margin-top: .2em;
+
+        }
+
+    }
+
+}
